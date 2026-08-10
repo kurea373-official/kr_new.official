@@ -1,0 +1,819 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Sudoku</title>
+<link rel="stylesheet" href="../css/style.css"><style>
+
+        
+.kr-embed-sudoku{
+
+    --casino-gold:#d4af37;
+    --casino-gold-light:#f5d36a;
+
+    --bg:#090909;
+    --card:#181818;
+    --card-hover:#222;
+
+    --text:#f5f5f5;
+    --sub:#a6a6a6;
+
+    --border:rgba(212,175,55,.18);
+
+}
+
+
+
+.kr-embed-sudoku{
+
+    margin:0;
+
+    min-height:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:
+    radial-gradient(circle at top,
+    #2d2d2d,
+    #161616 45%,
+    #090909);
+
+}
+
+
+
+.kr-embed-sudoku h1{
+
+    width:100%;
+
+    text-align:center;
+
+    margin:25px 0 35px;
+
+    color:#d4af37;
+
+    font-size:42px;
+
+    font-weight:700;
+
+    letter-spacing:.08em;
+
+    text-shadow:
+        0 0 12px rgba(212,175,55,.3);
+
+}
+
+
+
+
+.kr-embed-sudoku #sudoku{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(9,42px);
+
+    gap:0;
+
+
+    margin:30px auto;
+
+
+    width:378px;
+
+    padding:0;
+
+
+    background:#090909;
+
+
+    border:
+
+    3px solid #d4af37;
+
+
+    box-shadow:
+
+    0 0 30px rgba(212,175,55,.25);
+
+}
+
+
+.kr-embed-sudoku .cell{
+
+    width:42px;
+
+    height:42px;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #191919,
+        #090909
+    );
+
+
+    border:
+
+    1px solid rgba(212,175,55,.25);
+
+
+    font-size:20px;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    color:#fff;
+
+
+    box-sizing:border-box;
+
+}
+.kr-embed-sudoku #controls button{
+
+    min-width:180px;
+
+}
+
+
+.kr-embed-sudoku .cell input{
+
+    width:100%;
+    height:100%;
+
+    border:none;
+
+    text-align:center;
+
+    font-size:20px;
+
+    background:transparent;
+
+    color:#f5d36a;
+
+}
+.kr-embed-sudoku .cell:nth-child(3n){
+    border-right:2px solid #d4af37;
+}
+.kr-embed-sudoku .cell:nth-child(9n){
+    border-right:none;
+}
+
+
+.kr-embed-sudoku .cell input:focus{
+
+    outline:none;
+
+    background:rgba(212,175,55,0.08);
+
+}
+
+
+
+.kr-embed-sudoku .fixed{
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #3b2f08,
+        #1a1400
+    );
+
+
+    color:#f5d36a;
+
+
+    font-weight:bold;
+
+
+    box-shadow:
+
+    inset 0 0 10px rgba(212,175,55,.25);
+
+}
+
+
+
+.kr-embed-sudoku #controls{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin:35px 0;
+
+}
+
+
+
+.kr-embed-sudoku button{
+
+    margin:5px;
+
+    padding:8px 18px;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #f5d36a,
+        #d4af37
+    );
+
+
+    color:#090909;
+
+
+    border:none;
+
+    border-radius:8px;
+
+
+    font-weight:bold;
+
+
+    cursor:pointer;
+
+
+    transition:.3s;
+
+}
+
+
+.kr-embed-sudoku button:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+
+    0 0 18px rgba(212,175,55,.6);
+
+}
+
+
+.kr-embed-sudoku button:hover{
+
+    background:#f5d36a;
+
+    box-shadow:
+    0 0 15px rgba(212,175,55,0.7);
+
+}
+
+
+
+
+.kr-embed-sudoku #previousResultsTable{
+
+    margin-top:20px;
+
+    display:none;
+
+}
+
+
+
+.kr-embed-sudoku table{
+
+    width:50%;
+
+    margin:20px auto;
+
+    border-collapse:collapse;
+
+    color:#fff;
+
+}
+
+
+
+.kr-embed-sudoku th,.kr-embed-sudoku td{
+
+    padding:10px;
+
+    border:1px solid rgba(212,175,55,0.4);
+
+    text-align:center;
+
+}
+
+
+
+.kr-embed-sudoku th{
+
+    background:#1a1505;
+
+    color:#d4af37;
+
+}
+
+
+
+
+.kr-embed-sudoku .difficulty-options{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:30px;
+
+    flex-wrap:wrap;
+
+}
+
+
+.kr-embed-sudoku .difficulty-options label{
+
+    margin:0 10px;
+
+    color:#ddd;
+
+}
+
+
+
+
+
+.kr-embed-sudoku::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+
+.kr-embed-sudoku::-webkit-scrollbar-thumb{
+
+    background:#6e5314;
+
+    border-radius:20px;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer{
+
+    margin-top:auto;
+
+    width:100%;
+
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #18130a,
+        #090909
+    );
+
+
+    color:#f5e3a2;
+
+
+    
+    border-top:
+
+    3px solid #d4af37;
+
+
+    box-shadow:
+
+    0 -8px 25px rgba(212,175,55,.18);
+
+
+    padding:35px 0;
+
+}
+
+
+
+
+.kr-embed-sudoku .sudoku-footer h2{
+
+    color:#f5d36a;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer .footer-title{
+
+    color:#e8c968;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer .footer-message{
+
+    color:#f5e3a2;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer small{
+
+    color:#c8b77a;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer .footer-divider{
+
+    background:#d4af37;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer a{
+
+    color:#f5d36a;
+
+    text-decoration:none;
+
+}
+
+
+
+.kr-embed-sudoku .sudoku-footer a:hover{
+
+    color:#fff1a8;
+
+}
+
+
+
+  
+   
+
+
+
+    </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR001</span><div class="game-embed kr-embed-sudoku">
+    <h1>ナンプレ（数独）</h1>
+    <div id="sudoku"></div>
+
+    <div id="controls">
+        <div class="difficulty-options">
+            <label><input type="radio" name="difficulty" value="easy" checked>下級</label>
+            <label><input type="radio" name="difficulty" value="medium">中級</label>
+            <label><input type="radio" name="difficulty" value="hard">上級</label>
+        </div>
+        <button onclick="resetGame()">リセット</button>
+        <button onclick="restartGame()">リスタート</button>
+        <button onclick="showHint()">ヒント</button>
+        <button onclick="showSolution()">模範解答表示</button>
+        <button onclick="saveProgress()">作業保存</button>
+        <button onclick="showPreviousResults()">過去の結果を表示</button>
+    </div>
+
+    <h2>過去のゲーム結果</h2>
+    <table id="previousResultsTable">
+        <thead>
+            <tr>
+                <th>ゲーム回数</th>
+                <th>状態</th>
+            </tr>
+        </thead>
+        <tbody id="previousResultBody">
+        </tbody>
+    </table>
+
+    
+  <footer class="site-footer sudoku-footer">
+    <div class="footer-inner">
+
+        <h2>♠ KR OFFICIAL ♣</h2>
+        <p class="footer-title">Number-Challenge Game </p>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-message">
+           Deep of Thinking
+        </p>
+
+        <small>
+            © 2026 kurekure.a1024. ALL Rights Reserved. <br>
+            Designed & Developed by KR サイトID KR005-@kurekure.a1024
+        </small>
+
+    </div>
+</footer>
+</div></section></div></main></div><script src="../js/common.js"></script><script>
+        let sudokuBoard = [];
+        let initialBoard = [];
+        let solutionBoard = [];
+        let previousResults = JSON.parse(localStorage.getItem('sudokuResults')) || [];
+        let currentGameNumber = previousResults.length + 1;
+        let difficulty = 'easy'; // デフォルトの難易度
+
+        function createBoard() {
+            const sudokuDiv = document.getElementById('sudoku');
+            sudokuDiv.innerHTML = '';
+
+            for (let i = 0; i < 9; i++) {
+                sudokuBoard[i] = [];
+                initialBoard[i] = [];
+                solutionBoard[i] = [];
+                for (let j = 0; j < 9; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.maxLength = 1;
+                    input.dataset.row = i;
+                    input.dataset.col = j;
+                    input.addEventListener('input', validateInput);
+
+                    cell.appendChild(input);
+                    sudokuDiv.appendChild(cell);
+
+                    sudokuBoard[i][j] = 0;
+                    initialBoard[i][j] = 0;
+                }
+            }
+
+            // 難易度を取得
+            difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+
+            // 一部のセルに初期値を設定（固定セル）
+            setInitialValues();
+        }
+
+        function generateSolvedBoard() {
+            const board = Array.from({ length: 9 }, () => Array(9).fill(0));
+            fillBoard(board);
+            return board;
+        }
+
+        function fillBoard(board) {
+            function isValid(board, row, col, num) {
+                for (let i = 0; i < 9; i++) {
+                    if (board[row][i] === num || board[i][col] === num) {
+                        return false;
+                    }
+                }
+                const startRow = Math.floor(row / 3) * 3;
+                const startCol = Math.floor(col / 3) * 3;
+                for (let i = startRow; i < startRow + 3; i++) {
+                    for (let j = startCol; j < startCol + 3; j++) {
+                        if (board[i][j] === num) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function solve(board) {
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (board[row][col] === 0) {
+                            for (let num = 1; num <= 9; num++) {
+                                if (isValid(board, row, col, num)) {
+                                    board[row][col] = num;
+                                    if (solve(board)) {
+                                        return true;
+                                    } else {
+                                        board[row][col] = 0; // バックトラック
+                                    }
+                                }
+                            }
+                            return false; // 解が見つからなかった場合
+                        }
+                    }
+                }
+                return true; // 全てのセルが埋まった場合
+            }
+
+            solve(board);
+        }
+
+        function generateRandomInitialValues() {
+            const solvedBoard = generateSolvedBoard();
+            const initialValues = Array.from({ length: 9 }, () => Array(9).fill(0));
+            let filledCells = 0;
+            let maxCells;
+
+            // 難易度に応じて初期値の数を設定
+            switch (difficulty) {
+                case 'easy':
+                    maxCells = 20;
+                    break;
+                case 'medium':
+                    maxCells = 15;
+                    break;
+                case 'hard':
+                    maxCells = 10;
+                    break;
+                default:
+                    maxCells = 20;
+            }
+
+            while (filledCells < maxCells) {
+                const row = Math.floor(Math.random() * 9);
+                const col = Math.floor(Math.random() * 9);
+                if (initialValues[row][col] === 0) {
+                    initialValues[row][col] = solvedBoard[row][col];
+                    filledCells++;
+                }
+            }
+
+            return initialValues;
+        }
+
+      function setInitialValues() {
+    const solvedBoard = generateSolvedBoard();
+    const initialValues = generateRandomInitialValues();
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            solutionBoard[i][j] = solvedBoard[i][j];
+            if (initialValues[i][j] !== 0) {
+                const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`); // 修正箇所
+                cell.value = initialValues[i][j];
+                cell.disabled = true;
+                cell.parentElement.classList.add('fixed');
+                sudokuBoard[i][j] = initialValues[i][j];
+                initialBoard[i][j] = initialValues[i][j];
+            }
+        }
+    }
+}
+
+    function validateInput(e) {
+        const input = e.target;
+        const value = parseInt(input.value);
+        const row = parseInt(input.dataset.row);
+        const col = parseInt(input.dataset.col);
+
+        if (isNaN(value) || value < 1 || value > 9) {
+            input.value = '';
+            return;
+        }
+
+        // 同じ行、列、3x3ブロックに同じ数字がないか検証
+        if (!isValidMove(row, col, value)) {
+            input.value = '';
+            return;
+        }
+
+        sudokuBoard[row][col] = value;
+        checkGameCompletion(); // ゲーム完了判定
+    }
+
+    function isValidMove(row, col, num) {
+        // 同じ行に同じ数字がないかチェック
+        for (let i = 0; i < 9; i++) {
+            if (i !== col && sudokuBoard[row][i] === num) {
+                return false;
+            }
+        }
+
+        // 同じ列に同じ数字がないかチェック
+        for (let i = 0; i < 9; i++) {
+            if (i !== row && sudokuBoard[i][col] === num) {
+                return false;
+            }
+        }
+
+        // 同じ3x3ブロックに同じ数字がないかチェック
+        const startRow = Math.floor(row / 3) * 3;
+        const startCol = Math.floor(col / 3) * 3;
+        for (let i = startRow; i < startRow + 3; i++) {
+            for (let j = startCol; j < startCol + 3; j++) {
+                if (i !== row && j !== col && sudokuBoard[i][j] === num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    function checkGameCompletion() {
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                if (sudokuBoard[i][j] === 0) {
+                    return; // まだ未入力のセルがある場合は完了していない
+                }
+            }
+        }
+        alert('ゲーム完了！おめでとうございます！');
+    }
+
+    function resetGame() {
+        if (confirm('リセットしますか？進行中のゲームが失われます。')) {
+            createBoard();
+        }
+    }
+
+    function restartGame() {
+        if (confirm('リスタートしますか？進行中のゲームが失われます。')) {
+            sudokuBoard = initialBoard.map(arr => arr.slice());
+            updateBoard();
+        }
+    }
+
+    function updateBoard() {
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const input = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+                if (!input.disabled) {
+                    input.value = sudokuBoard[i][j] || '';
+                }
+            }
+        }
+    }
+
+    function showHint() {
+        let emptyCells = [];
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                if (sudokuBoard[i][j] === 0) {
+                    emptyCells.push({ row: i, col: j });
+                }
+            }
+        }
+
+        if (emptyCells.length > 0) {
+            const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            const correctValue = solutionBoard[randomCell.row][randomCell.col];
+            const input = document.querySelector(`[data-row="${randomCell.row}"][data-col="${randomCell.col}"]`);
+            input.value = correctValue;
+            sudokuBoard[randomCell.row][randomCell.col] = correctValue;
+            checkGameCompletion(); // ゲーム完了判定
+        } else {
+            alert('ヒントが見つかりません。');
+        }
+    }
+
+    function showSolution() {
+        if (confirm('模範解答を表示しますか？現在の進行は失われます。')) {
+            sudokuBoard = solutionBoard.map(arr => arr.slice());
+            updateBoard();
+            checkGameCompletion(); // ゲーム完了判定
+        }
+    }
+
+    function saveProgress() {
+        localStorage.setItem('sudokuProgress', JSON.stringify(sudokuBoard));
+        saveResult('進行中');
+        alert('ゲームが保存されました。');
+    }
+
+    function saveResult(status) {
+        previousResults.push({
+            gameNumber: currentGameNumber,
+            status: status
+        });
+        localStorage.setItem('sudokuResults', JSON.stringify(previousResults));
+        currentGameNumber++;
+    }
+
+    function showPreviousResults() {
+        const tableBody = document.getElementById('previousResultBody');
+        tableBody.innerHTML = '';
+
+        previousResults.forEach(result => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${result.gameNumber}</td><td>${result.status}</td>`;
+            tableBody.appendChild(row);
+        });
+
+        document.getElementById('previousResultsTable').style.display = 'table';
+    }
+
+    window.onload = function() {
+        const savedProgress = localStorage.getItem('sudokuProgress');
+        if (savedProgress) {
+            sudokuBoard = JSON.parse(savedProgress);
+            initialBoard = sudokuBoard.map(arr => arr.slice());
+            updateBoard();
+            checkGameCompletion(); // ゲーム完了判定
+        } else {
+            createBoard();
+        }
+
+        showPreviousResults();
+    };
+
+try{krUnlock('KR001')}catch(e){}</script></body></html>

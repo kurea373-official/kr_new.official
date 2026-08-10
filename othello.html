@@ -1,0 +1,838 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Othello Collection</title>
+<link rel="stylesheet" href="../css/style.css"><style>
+        .kr-embed-othello{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            background: linear-gradient(135deg, #6B8E23, #228B22);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height:auto;
+        }
+
+        .kr-embed-othello #game-container{
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .kr-embed-othello h1{
+            color: #004d40;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .kr-embed-othello #game-board{
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px;
+            width: 100%;
+            max-width: 480px;
+            background-color: #27ae60;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .kr-embed-othello .cell{
+            aspect-ratio: 1 / 1;
+            background-color: #27ae60;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .kr-embed-othello .cell:hover{
+            background-color: #76e1e3;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .kr-embed-othello .piece{
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .kr-embed-othello .black{
+            background-color: #2f2f2f;
+        }
+
+        .kr-embed-othello .white{
+            background-color: #ffffff;
+        }
+
+        .kr-embed-othello .controls{
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .kr-embed-othello .button{
+            font-size: 1rem;
+            padding: 12px 24px;
+            margin: 6px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .kr-embed-othello .button:hover{
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .kr-embed-othello .button:disabled{
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .kr-embed-othello .pass-button{
+            background-color: #FFD700;
+            color: #fff;
+        }
+
+        .kr-embed-othello .reset-button{
+            background-color: #C0C0C0;
+            color: #fff;
+        }
+
+        .kr-embed-othello .save-button{
+            background-color: #C47222;
+            color: #fff;
+        }
+
+        .kr-embed-othello #pass-message{
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            display: inline-block;
+        }
+
+        @media (max-width: 600px){
+            .kr-embed-othello #game-board{
+                gap: 4px;
+                padding: 8px;
+            }
+
+            .kr-embed-othello .cell{
+                border-radius: 6px;
+            }
+
+            .kr-embed-othello .piece{
+                width: 70%;
+                height: 70%;
+            }
+
+            .kr-embed-othello .button{
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+
+            .kr-embed-othello #pass-message{
+                font-size: 1rem;
+            }
+        }
+
+        .kr-embed-othello #win-message-tab,.kr-embed-othello #difficulty-changed-tab{
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .kr-embed-othello #explanation{
+            margin-top: 20px;
+        }
+
+        .kr-embed-othello #explanation-content{
+            display: none;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .kr-embed-othello #explanation-content p{
+            margin-bottom: 12px;
+        }
+
+        .kr-embed-othello #color-controls,.kr-embed-othello #difficulty-controls{
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .kr-embed-othello #color-controls label,.kr-embed-othello #difficulty-controls button{
+            margin: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+        }
+
+        .kr-embed-othello #password-input{
+            width: 220px;
+            padding: 12px;
+            margin-top: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .kr-embed-othello .othello-footer{
+
+    background:#fafafa;
+
+    color:#222;
+
+    border-top:2px solid #444;
+}
+
+
+ .kr-embed-othello .othello-footer{
+
+    background:
+    linear-gradient(180deg,#f7f7f7,#d9d9d9);
+
+    border-top:2px solid #8b8b8b;
+
+    color:#222;
+
+}
+
+.kr-embed-othello .othello-footer .footer-divider{
+
+    background:#8b8b8b;
+
+}
+
+.kr-embed-othello .othello-footer h2,.kr-embed-othello .othello-footer p,.kr-embed-othello .othello-footer small{
+
+    color:#222;
+
+}
+.kr-embed-othello .site-footer{
+
+    margin-top:60px;
+
+    width:100%;
+
+    padding:35px 20px;
+
+    text-align:center;
+
+    box-sizing:border-box;
+
+    color:#fff;
+
+}
+
+.kr-embed-othello .footer-inner{
+
+    max-width:1100px;
+
+    margin:auto;
+
+}
+
+.kr-embed-othello .footer-divider{
+
+    width:90px;
+
+    height:2px;
+
+    margin:20px auto;
+
+}
+
+.kr-embed-othello .footer-title{
+
+    margin-top:8px;
+
+}
+
+.kr-embed-othello .footer-message{
+
+    margin:15px 0;
+
+}
+
+.kr-embed-othello .footer-inner small{
+
+    display:block;
+
+    line-height:1.8;
+
+}
+
+
+
+.kr-embed-othello .site-footer{
+
+    margin-top:70px;
+
+    width:100%;
+
+    padding:40px 20px;
+
+    text-align:center;
+
+    box-sizing:border-box;
+
+    background:
+    linear-gradient(
+        180deg,
+        #145a32,
+        #0d3d24,
+        #061d12
+    );
+
+    border-top:2px solid #d4af37;
+
+    box-shadow:
+        0 -8px 25px rgba(0,0,0,.45),
+        0 -2px 15px rgba(212,175,55,.15);
+
+    color:#f5f5f5;
+
+}
+
+.kr-embed-othello .footer-inner{
+
+    max-width:1100px;
+
+    margin:auto;
+
+}
+
+.kr-embed-othello .footer-inner h2{
+
+    margin:0;
+
+    font-size:28px;
+
+    letter-spacing:.08em;
+
+    color:#d4af37;
+
+    text-shadow:
+        0 0 10px rgba(212,175,55,.25);
+
+}
+
+.kr-embed-othello .footer-title{
+
+    margin-top:8px;
+
+    font-size:15px;
+
+    color:#d8d8d8;
+
+}
+
+.kr-embed-othello .footer-divider{
+
+    width:90px;
+
+    height:2px;
+
+    margin:22px auto;
+
+    background:#d4af37;
+
+}
+
+.kr-embed-othello .footer-message{
+
+    margin:18px 0;
+
+    color:#f5f5f5;
+
+}
+
+.kr-embed-othello .footer-links{
+
+    margin:20px 0;
+
+}
+
+.kr-embed-othello .footer-links a{
+
+    color:#f5d36a;
+
+    text-decoration:none;
+
+    margin:0 12px;
+
+    transition:.25s;
+
+}
+
+.kr-embed-othello .footer-links a:hover{
+
+    color:#ffffff;
+
+    text-shadow:
+        0 0 8px rgba(245,211,106,.5);
+
+}
+
+.kr-embed-othello .footer-inner small{
+
+    display:block;
+
+    line-height:1.8;
+
+    color:#bfc8bf;
+
+}
+
+    </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR004</span><div class="game-embed kr-embed-othello">
+    <div id="game-container">
+        <h1>ゲームを開始してください（あなたは黒駒です）</h1>
+        <div id="game-board"></div>
+        <div id="turn-indicator">現在のターン: あなた</div>
+        <div class="controls">
+            <button class="button pass-button" id="pass-button">パス</button>
+            <button class="button reset-button" id="reset-button">リセット</button>
+            <button class="button save-button" id="save-button">結果をPDFに保存</button>
+        </div>
+        <div>
+            <p>スコア - 黒: <span id="black-score">0</span> 白: <span id="white-score">0</span></p>
+        </div>
+        <h2 id="result"></h2>
+        <p id="pass-message"></p>
+        <div id="win-message-tab">
+            <p id="win-message"></p>
+            <p>こちらは無効です: <span id="win-password-display"></span></p>
+<p>難易度調節用パスワード: <span id="difficulty-password-display"></span></p>
+<input type="text" id="password-input" placeholder="パスワードを入力">
+<button id="show-win-message">表示</button>
+<button id="show-difficulty-controls">難易度変更</button>
+</div>
+<div id="difficulty-controls" style="display: none;">
+<button id="easy-button">入門</button>
+<button id="normal-button">チョイムズ</button>
+<button id="hard-button">激ムズ</button>
+<button id="very-hardest-button">達人</button>
+</div>
+<div id="difficulty-changed-tab">
+<p id="difficulty-changed-message"></p>
+</div>
+<div id="explanation">
+<button id="toggle-explanation">ゲームについての説明</button>
+<div id="explanation-content">
+<p>・黒の駒があなたです。白い駒はAIがひっくり返します。</p>
+<p>・ゲームは、盤上に空白のマスがなくなった時、または両プレイヤーが連続連続してパスした時に終了します。</p>
+<p>・ゲーム終了時、盤上にある自分の駒の数が多いプレイヤーが勝利となります。</p>
+<p>・盤面の色、ならびに駒の色はサイト下部の変更ボタンを用いて変えることができます。</p>
+<p>・勝利した場合はパスワードと入力欄が表示されます。そのパスワードを入力することで難易度を四段階に変化することが可能です</P>
+<p>・結果をPDFに保存というボタンはおすと怪文書が表示されます。面白いので興味ある方はぜひ（ウイルスに感染することはないです）</P>
+</div>
+</div>
+<div id="color-controls">
+<label for="board-color">盤の色:</label>
+<input type="color" id="board-color" value="#2c7a7b">
+<label for="black-piece-color">黒駒の色:</label>
+<input type="color" id="black-piece-color" value="#2f2f2f">
+<label for="white-piece-color">白駒の色:</label>
+<input type="color" id="white-piece-color" value="#ffffff">
+</div>
+</div>
+
+
+
+
+<footer class="site-footer ">
+    <div class="footer-inner">
+
+        <h2>● KR OFFICIAL ○</h2>
+        <p class="footer-title">Othello Collection</p>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-message">
+            Think • Reverse • Win
+        </p>
+
+        
+
+        <small>
+            © 2026 kurekure.a1024 ALL Rights Reserved. <br>
+            Designed & Developed by KR サイトID KR004-@kurekure.a1024
+        </small>
+
+    </div>
+</footer>
+    
+</div></section></div></main></div><script src="../js/common.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script><script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script><script>
+document.addEventListener('DOMContentLoaded', () => {
+const boardSize = 8;
+let board = Array(boardSize).fill(null).map(() => Array(boardSize).fill(null));
+let currentPlayer = 'black';
+let difficulty = 2;
+let winPassword;
+let difficultyPassword;
+const gameBoard = document.getElementById('game-board');
+
+        function generatePassword(length = 8) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        function initializeBoard() {
+            board = Array(boardSize).fill(null).map(() => Array(boardSize).fill(null));
+            board[3][3] = 'white';
+            board[3][4] = 'black';
+            board[4][3] = 'black';
+            board[4][4] = 'white';
+            currentPlayer = 'black';
+            updateScores();
+            updateTurnIndicator();
+            togglePassButton();
+            document.getElementById('pass-message').textContent = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('win-message-tab').style.display = 'none';
+            document.getElementById('difficulty-controls').style.display = 'none';
+            document.getElementById('difficulty-changed-tab').style.display = 'none';
+            drawBoard();
+            winPassword = generatePassword();
+            difficultyPassword = generatePassword();
+            document.getElementById('win-password-display').textContent = winPassword;
+            document.getElementById('difficulty-password-display').textContent = difficultyPassword;
+        }
+
+        function drawBoard() {
+            gameBoard.innerHTML = '';
+            const boardColor = document.getElementById('board-color').value;
+            gameBoard.style.backgroundColor = boardColor;
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+
+                    if (board[row][col]) {
+                        const piece = document.createElement('div');
+                        piece.className = `piece ${board[row][col]}`;
+                        cell.appendChild(piece);
+                    }
+
+                    cell.addEventListener('click', () => handleMove(row, col));
+                    gameBoard.appendChild(cell);
+                }
+            }
+            checkGameOver();
+        }
+
+        function handleMove(row, col) {
+            if (board[row][col] !== null) return;
+            const flips = getFlips(row, col, currentPlayer);
+            if (flips.length > 0) {
+                board[row][col] = currentPlayer;
+                flips.forEach(([r, c]) => (board[r][c] = currentPlayer));
+                passCount = 0;
+                currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+                document.getElementById('pass-message').textContent = '';
+                updateScores();
+                updateTurnIndicator();
+                drawBoard();
+                if (currentPlayer === 'white') {
+                    setTimeout(aiMove, 500);
+                }
+            }
+        }
+
+        function aiMove() {
+            let bestMove = null;
+            let bestScore = -Infinity;
+
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    if (board[row][col] === null) {
+                        const flips = getFlips(row, col, 'white');
+                        if (flips.length > 0) {
+                            const score = evaluateMove(row, col, flips);
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMove = { row, col };
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (bestMove) {
+                handleMove(bestMove.row, bestMove.col);
+            } else {
+                handlePass();
+            }
+        }
+
+        function evaluateMove(row, col, flips) {
+            let score = flips.length;
+            if ((row === 0 || row === boardSize - 1) && (col === 0 || col === boardSize - 1)) {
+                score += 15 * difficulty;
+            } else if (row === 0 || row === boardSize - 1 || col === 0 || col === boardSize - 1) {
+                score += 8 * difficulty;
+            }
+            return score;
+        }
+
+        function getFlips(row, col, player) {
+            const directions = [
+                [-1, 0], [1, 0], [0, -1], [0, 1],
+                [-1, -1], [-1, 1], [1, -1], [1, 1]
+            ];
+            const flips = [];
+
+            directions.forEach(([dr, dc]) => {
+                const line = [];
+                let r = row + dr;
+                let c = col + dc;
+
+                while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
+                    if (board[r][c] === null) break;
+                    if (board[r][c] === player) {
+                        flips.push(...line);
+                        break;
+                    }
+                    line.push([r, c]);
+                    r += dr;
+                    c += dc;
+                }
+            });
+
+            return flips;
+        }
+
+        let passCount = 0;
+
+        function handlePass() {
+            const playerName = currentPlayer === 'black' ? '黒' : '白';
+            document.getElementById('pass-message').textContent = `${playerName}がパスしました`;
+            passCount++;
+            if (passCount >= 2) {
+                endGame();return;
+}
+
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            updateTurnIndicator();
+            if (currentPlayer === 'white') {
+                setTimeout(aiMove, 500);
+            }
+        }
+
+        function endGame() {
+            document.getElementById('pass-button').disabled = true;
+            const flatBoard = board.flat();
+            const blackCount = flatBoard.filter(cell => cell === 'black').length;
+            const whiteCount = flatBoard.filter(cell => cell === 'white').length;
+            const resultText = blackCount > whiteCount
+                ? `黒の勝ち！ ${blackCount} 対 ${whiteCount}`
+                : whiteCount > blackCount
+                    ? `白の勝ち！ ${whiteCount} 対 ${blackCount}`
+                    : `引き分け！ ${blackCount} 対 ${whiteCount}`;
+
+            document.getElementById('result').textContent = resultText;
+            if (blackCount > whiteCount || whiteCount > blackCount) {
+                document.getElementById('win-message-tab').style.display = 'block';
+                document.getElementById('win-message').textContent = `勝利！`;
+            }
+        }
+
+        function checkGameOver() {
+            const flatBoard = board.flat();
+            if (!flatBoard.includes(null) || passCount >= 2) {
+                endGame();
+            }
+        }
+
+        document.getElementById('pass-button').addEventListener('click', () => {
+            handlePass();
+            const playerName = currentPlayer === 'black' ? '黒' : '白';
+            document.getElementById('pass-message').textContent = `${playerName}がパスしました`;
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            updateTurnIndicator();
+            if (currentPlayer === 'white') {
+                setTimeout(aiMove, 500);
+            }
+        });
+
+        function togglePassButton() {
+            document.getElementById('pass-button').disabled = false;
+        }
+
+        function updateScores() {
+            const flatBoard = board.flat();
+            document.getElementById('black-score').textContent = flatBoard.filter(cell => cell === 'black').length;
+            document.getElementById('white-score').textContent = flatBoard.filter(cell => cell === 'white').length;
+        }
+
+        function updateTurnIndicator() {
+            const playerName = currentPlayer === 'black' ? 'あなた' : 'AI';
+            document.getElementById('turn-indicator').textContent = `現在のターン: ${playerName}`;
+        }
+
+        document.getElementById('reset-button').addEventListener('click', () => {
+            initializeBoard();
+            document.getElementById('pass-button').disabled = false;
+        });
+
+        document.getElementById('toggle-explanation').addEventListener('click', () => {
+            const explanationContent = document.getElementById('explanation-content');
+            explanationContent.style.display = explanationContent.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.getElementById('board-color').addEventListener('change', drawBoard);
+        document.getElementById('black-piece-color').addEventListener('change', drawBoard);
+        document.getElementById('white-piece-color').addEventListener('change', drawBoard);
+
+        document.getElementById('save-button').addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+
+            drawBoardToCanvas(canvas);
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF();
+            pdf.addImage(imgData, 'PNG', 10, 10, 100, 100);
+            pdf.text(`結果: ${document.getElementById('result').textContent}`, 10, 120);
+            pdf.save('othello_result.pdf');
+        });
+
+        function setDifficulty(newDifficulty) {
+            difficulty = newDifficulty;
+            initializeBoard();
+            if (currentPlayer === 'white') {
+                setTimeout(aiMove, 500);
+            }
+        }
+
+        document.getElementById('easy-button').addEventListener('click', () => {
+            setDifficulty(1);
+            showDifficultyChangedTab('簡単');
+        });
+
+        document.getElementById('normal-button').addEventListener('click', () => {
+            setDifficulty(2);
+            showDifficultyChangedTab('普通');
+        });
+
+        document.getElementById('hard-button').addEventListener('click', () => {
+            setDifficulty(3);
+            showDifficultyChangedTab('難しい');
+        });
+
+        document.getElementById('very-hardest-button').addEventListener('click', () => {
+            setDifficulty(4);
+            showDifficultyChangedTab('非常に難しい');
+        });
+
+        document.getElementById('show-win-message').addEventListener('click', () => {
+            const password = document.getElementById('password-input').value;
+            if (password === winPassword) {
+                document.getElementById('win-message').textContent = `おめでとうございます！！！あなたの勝利です！！頂点目指してがんばってください！！`;
+            } else {
+                alert('パスワードが違います。');
+            }
+        });
+
+        document.getElementById('show-difficulty-controls').addEventListener('click', () => {
+            const password = document.getElementById('password-input').value;
+            if (password === difficultyPassword) {
+                document.getElementById('difficulty-controls').style.display = 'block';
+            } else {
+                alert('パスワードが違います。');
+            }
+        });
+
+        function showDifficultyChangedTab(difficultyLevel) {
+            document.getElementById('difficulty-changed-message').textContent = `難易度を「${difficultyLevel}」に変更しました。`;
+            document.getElementById('difficulty-changed-tab').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('difficulty-changed-tab').style.display = 'none';
+            }, 3000);
+        }
+
+        function drawBoardToCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const cellSize = canvas.width / boardSize;
+            const pieceSize = cellSize * 0.8;
+            const boardColor = document.getElementById('board-color').value;
+            const blackPieceColor = document.getElementById('black-piece-color').value;
+            const whitePieceColor = document.getElementById('white-piece-color').value;
+
+            ctx.fillStyle = boardColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#000';
+            for (let i = 1; i < boardSize; i++) {
+                ctx.beginPath();
+                ctx.moveTo(cellSize * i, 0);
+                ctx.lineTo(cellSize * i, canvas.height);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, cellSize * i);
+                ctx.lineTo(canvas.width, cellSize * i);
+                ctx.stroke();
+            }
+
+            for (let row = 0; row < boardSize; row++) {
+                for (let col = 0; col < boardSize; col++) {
+                    if (board[row][col]) {
+                        const centerX = col * cellSize + cellSize / 2;
+                        const centerY = row * cellSize + cellSize / 2;
+
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, pieceSize / 2, 0, 2 * Math.PI);
+                        ctx.fillStyle = board[row][col] === 'black' ? blackPieceColor : whitePieceColor;
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        initializeBoard();
+    });
+
+try{krUnlock('KR004')}catch(e){}</script></body></html>

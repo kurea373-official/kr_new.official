@@ -1,0 +1,143 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Numerical Reasoning 10000</title>
+<link rel="stylesheet" href="../css/style.css"><style>
+        .kr-embed-num10000 table{
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .kr-embed-num10000 th,.kr-embed-num10000 td{
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .kr-embed-num10000 th{
+            background-color: #00AC9A;
+        }
+    .kr-embed-num10000 button{
+      background-color: #009999; 
+      color: #000000;
+      padding: 8px 16px; 
+  font-size: 14px; 
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      
+      margin: 0.1px;
+      cursor: pointer;
+    }
+    </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR006</span><div class="game-embed kr-embed-num10000">
+    <h1>numenical reasoning10000</h1>
+    <p></p>
+    <input type="number" id="userGuess" placeholder="number brank" min="1" max="100">
+    <button onclick="guessNumber()">Enter</button>
+
+    <h2>result</h2>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>challenge</th>
+                <th>Number of thoughts
+                </th>
+                <th>true or false</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody">
+            <!-- 結果がここに追加されます -->
+        </tbody>
+    </table>
+
+    <p><a href="#" onclick="showPreviousResults()">check the result in the past</a></p>
+
+    <h2>result in the past</h2>
+    <table id="previousResultsTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>total challenge</th>
+                <th>Number of thoughts</th>
+                <th>guess Number</th>
+                <th>result</th>
+            </tr>
+        </thead>
+        <tbody id="previousResultBody">
+            <!-- 過去のゲーム結果がここに表示されます -->
+        </tbody>
+    </table>
+    <strong>
+    <button onclick="jumpToWebsite1()">数当てゲーム100</button>
+    <button onclick="jumpToWebsite2()">数当てゲーム1000</button>
+    </strong>
+    
+</div></section></div></main></div><script src="../js/common.js"></script><script>
+        let correctNumber = Math.floor(Math.random() * 10000) + 1;
+        let attempts = 0;
+
+        function guessNumber() {
+            const userGuess = document.getElementById('userGuess').value;
+            const resultBody = document.getElementById('resultBody');
+            let result = '';
+
+            attempts++;
+
+            if (userGuess == correctNumber) {
+                result = 'true';
+                alert('congraduation!!');
+            } else if (userGuess > correctNumber) {
+                result = 'too big';
+            } else {
+                result = 'too small';
+            }
+
+            // 結果を表に追加
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${attempts}</td><td>${userGuess}</td><td>${result}</td>`;
+            resultBody.appendChild(row);
+
+            // ローカルストレージに結果を保存
+            saveResult(attempts, userGuess, result);
+
+            // 正解なら新しいゲームを開始
+            if (result === 'true') {
+                correctNumber = Math.floor(Math.random() * 1000) + 1;
+                attempts = 0;
+                alert('start new game!!');
+            }
+
+            // 入力欄をクリア
+            document.getElementById('userGuess').value = '';
+        }
+
+        function saveResult(attempts, guess, result) {
+            const gameResult = { attempts, guess, result };
+            let results = JSON.parse(localStorage.getItem('gameResults')) || [];
+            results.push(gameResult);
+            localStorage.setItem('gameResults', JSON.stringify(results));
+        }
+
+        function showPreviousResults() {
+            const results = JSON.parse(localStorage.getItem('gameResults')) || [];
+            const previousResultBody = document.getElementById('previousResultBody');
+            const previousResultsTable = document.getElementById('previousResultsTable');
+            previousResultBody.innerHTML = ''; // 一度クリア
+
+            let gameCount = 1;
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${gameCount}</td><td>${result.attempts}</td><td>${result.guess}</td><td>${result.result}</td>`;
+                previousResultBody.appendChild(row);
+                gameCount++;
+            });
+
+            // 過去の結果テーブルを表示
+            previousResultsTable.style.display = 'table';
+        }
+        // ... (既存のJavaScriptコード)
+
+function jumpToWebsite1() {
+  window.location.href = "number-guess.html"; // ウェブサイト1のURLに置き換えてください
+}
+
+function jumpToWebsite2() {
+  window.location.href = "number-guess-1000.html"; // ウェブサイト2のURLに置き換えてください
+}
+    
+try{krUnlock('KR006')}catch(e){}</script></body></html>

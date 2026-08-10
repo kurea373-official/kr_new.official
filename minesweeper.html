@@ -1,0 +1,632 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Mine Swiper</title>
+<link rel="stylesheet" href="../css/style.css"><style>
+      
+
+.kr-embed-mine{
+
+    --gold:#d4af37;
+    --gold-light:#f5d36a;
+
+    --bg:#090909;
+    --bg2:#161616;
+
+    --card:#181818;
+
+    --border:rgba(212,175,55,.18);
+
+    --text:#f5f5f5;
+
+    --sub:#c8c8c8;
+
+}
+
+
+
+.kr-embed-mine *{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+}
+
+.kr-embed-mine{
+
+    font-family:"Segoe UI",Arial,sans-serif;
+
+    min-height:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    background:
+    radial-gradient(
+        circle at top,
+        #2d2d2d,
+        #161616 45%,
+        #090909);
+
+    color:var(--text);
+
+    padding:40px 20px;
+
+}
+
+
+
+.kr-embed-mine h1{
+
+    color:var(--gold);
+
+    font-size:40px;
+
+    margin-bottom:12px;
+
+    letter-spacing:.15em;
+
+    text-shadow:
+    0 0 10px rgba(212,175,55,.18);
+
+}
+
+.kr-embed-mine p{
+
+    color:#d0d0d0;
+
+    margin-bottom:20px;
+
+}
+
+
+.kr-embed-mine #minefield{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(10,42px);
+
+    gap:5px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #181818,
+        #090909
+    );
+
+
+    border:
+
+    2px solid rgba(212,175,55,.35);
+
+
+    box-shadow:
+
+    0 0 30px rgba(212,175,55,.15),
+    inset 0 0 20px rgba(0,0,0,.8);
+
+}
+
+
+.kr-embed-mine .cell{
+
+    width:42px;
+
+    height:42px;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #252525,
+        #111
+    );
+
+
+    border:
+
+    1px solid rgba(212,175,55,.35);
+
+
+    border-radius:6px;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    font-size:18px;
+
+    font-weight:bold;
+
+
+    color:#f5f5f5;
+
+
+    cursor:pointer;
+
+
+    transition:.2s;
+
+}
+
+
+.kr-embed-mine .cell:hover{
+
+    background:#333;
+
+    transform:translateY(-2px);
+
+
+    box-shadow:
+
+    0 0 10px rgba(212,175,55,.35);
+
+}
+
+
+
+
+.kr-embed-mine .revealed{
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #444,
+        #222
+    );
+
+
+    color:#d4af37;
+
+}
+
+.kr-embed-mine .mine{
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #8b0000,
+        #300000
+    );
+
+
+    color:white;
+
+
+    border:
+
+    1px solid #d4af37;
+
+
+    box-shadow:
+
+    0 0 12px rgba(255,0,0,.4);
+
+}
+
+
+
+.kr-embed-mine .flagged{
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #f5d36a,
+        #d4af37
+    );
+
+
+    color:#090909;
+
+
+    box-shadow:
+
+    0 0 12px rgba(212,175,55,.6);
+
+}
+
+.kr-embed-mine }
+
+
+
+
+
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+
+.kr-embed-mine::-webkit-scrollbar-thumb{
+
+    background:#6e5314;
+
+    border-radius:20px;
+
+}
+
+
+
+.kr-embed-mine .mine-footer{
+
+    margin-top:auto;
+
+    width:100%;
+
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #18130a,
+        #090909
+    );
+
+
+    color:#f5e3a2;
+
+
+    
+    border-top:
+
+    3px solid #d4af37;
+
+
+    box-shadow:
+
+    0 -8px 25px rgba(212,175,55,.18);
+
+
+    padding:35px 0;
+
+}
+
+
+
+
+.kr-embed-mine .mine-footer h2{
+
+    color:#f5d36a;
+
+}
+
+
+
+.kr-embed-mine .mine-footer .footer-title{
+
+    color:#e8c968;
+
+}
+
+
+
+.kr-embed-mine .mine-footer .footer-message{
+
+    color:#f5e3a2;
+
+}
+
+
+
+.kr-embed-mine .mine-footer small{
+
+    color:#c8b77a;
+
+}
+
+
+
+.kr-embed-mine .mine-footer .footer-divider{
+
+    background:#d4af37;
+
+}
+
+
+
+.kr-embed-mine .mine-footer a{
+
+    color:#f5d36a;
+
+    text-decoration:none;
+
+}
+
+
+
+.kr-embed-mine .mine-footer a:hover{
+
+    color:#fff1a8;
+
+}
+
+    </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR003</span><div class="game-embed kr-embed-mine">
+    <h1>マインスイーパー</h1>
+    <p>マインスイーパーのグリッドをクリックして、地雷を避けてください。</p>
+    <div id="minefield"></div>
+    
+    <div id="controls">
+        <button onclick="restartGame()">リスタート</button>
+        <button onclick="resetGame()">リセット</button>
+        <button onclick="showHint()">ヒント</button>
+        <button onclick="showPreviousResults()">過去の結果を表示</button>
+    </div>
+
+    <h2>過去のゲーム結果</h2>
+    <table id="previousResultsTable">
+        <thead>
+            <tr>
+                <th>ゲーム回数</th>
+                <th>結果</th>
+                <th>試行回数</th>
+            </tr>
+        </thead>
+        <tbody id="previousResultBody">
+            <!-- 過去のゲーム結果がここに表示されます -->
+        </tbody>
+    </table>
+
+    
+
+    <footer class="site-footer mine-footer">
+    <div class="footer-inner">
+
+        <h2>♠ KR OFFICIAL ♣</h2>
+        <p class="footer-title">Mine Swiper </p>
+
+        <div class="footer-divider"></div>
+
+        <p class="footer-message">
+            Luck • Strategy • Victory
+        </p>
+
+        <small>
+            © 2026 kurekure.a1024. ALL Rights Reserved. <br>
+            Designed & Developed by KR サイトID KR003-@kurekure.a1024
+        </small>
+
+    </div>
+</footer>
+</div></section></div></main></div><script src="../js/common.js"></script><script>
+        const rows = 10;
+        const cols = 10;
+        const mineCount = 20;
+        let minefield = [];
+        let gameOver = false;
+        let attempts = 0;
+        let previousResults = JSON.parse(localStorage.getItem('previousResults')) || [];
+
+        // ゲームを初期化
+        function initGame() {
+            minefield = [];
+            gameOver = false;
+            attempts = 0;
+            const minefieldDiv = document.getElementById('minefield');
+            minefieldDiv.innerHTML = '';
+            minefieldDiv.style.gridTemplateColumns = `repeat(${cols}, 40px)`;
+
+            for (let i = 0; i < rows; i++) {
+                minefield[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener('click', revealCell);
+                    cell.addEventListener('contextmenu', flagCell);
+                    minefieldDiv.appendChild(cell);
+                    minefield[i][j] = {
+                        mine: false,
+                        revealed: false,
+                        flagged: false,
+                        adjacentMines: 0
+                    };
+                }
+            }
+
+            placeMines();
+            calculateAdjacentMines();
+        }
+
+        // 地雷を配置
+        function placeMines() {
+            let placedMines = 0;
+            while (placedMines < mineCount) {
+                const row = Math.floor(Math.random() * rows);
+                const col = Math.floor(Math.random() * cols);
+                if (!minefield[row][col].mine) {
+                    minefield[row][col].mine = true;
+                    placedMines++;
+                }
+            }
+        }
+
+        // 隣接する地雷の数を計算
+        function calculateAdjacentMines() {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (!minefield[i][j].mine) {
+                        minefield[i][j].adjacentMines = countAdjacentMines(i, j);
+                    }
+                }
+            }
+        }
+
+        function countAdjacentMines(row, col) {
+            let count = 0;
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    const r = row + i;
+                    const c = col + j;
+                    if (r >= 0 && r < rows && c >= 0 && c < cols && minefield[r][c].mine) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        // セルをクリックして開く
+        function revealCell(e) {
+            if (gameOver) return;
+            const cell = e.target;
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            if (minefield[row][col].revealed || minefield[row][col].flagged) return;
+
+            minefield[row][col].revealed = true;
+            cell.classList.add('revealed');
+            attempts++;
+
+            if (minefield[row][col].mine) {
+                cell.classList.add('mine');
+                alert('ゲームオーバー！地雷を踏みました。');
+                gameOver = true;
+                revealAllMines();
+                saveResult('敗北');
+            } else {
+                cell.textContent = minefield[row][col].adjacentMines || '';
+                if (minefield[row][col].adjacentMines === 0) {
+                    revealAdjacentCells(row, col);
+                }
+                if (checkWin()) {
+                    alert('おめでとうございます！ 全ての地雷を避けました。');
+                    gameOver = true;
+                    saveResult('勝利');
+                }
+            }
+        }
+
+        function revealAdjacentCells(row, col) {
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    const r = row + i;
+                    const c = col + j;
+                    if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                        if (!minefield[r][c].revealed && !minefield[r][c].mine) {
+                            const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                            revealCell({target: cell});
+                        }
+                    }
+                }
+            }
+        }
+
+        // 全ての地雷を明らかにする
+        function revealAllMines() {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (minefield[i][j].mine) {
+                        const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+                        cell.classList.add('mine');
+                    }
+                }
+            }
+        }
+
+        // セルを右クリックして旗を立てる
+        function flagCell(e) {
+            e.preventDefault();
+            if (gameOver) return;
+            const cell = e.target;
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            if (minefield[row][col].revealed) return;
+
+            minefield[row][col].flagged = !minefield[row][col].flagged;
+            cell.classList.toggle('flagged');
+        }
+
+        // ゲームを再スタート
+        function restartGame() {
+            if (confirm('リスタートしますか？ 現在のゲーム結果は失われます。')) {
+                initGame();
+            }
+        }
+
+        // ゲームをリセット
+        function resetGame() {
+            if (confirm('リセットしますか？ 全てのゲーム結果が消去されます。')) {
+                localStorage.clear();
+                previousResults = [];
+                initGame();
+            }
+        }
+
+        // ヒントを表示
+        function showHint() {
+            if (gameOver) return;
+            let hintFound = false;
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (!minefield[i][j].revealed && !minefield[i][j].mine && !minefield[i][j].flagged) {
+                        alert(`ヒント: (${i+1}, ${j+1})のセルを試してみてください。`);
+                        hintFound = true;
+                        return;
+                    }
+                }
+            }
+            if (!hintFound) {
+                alert('ヒントが見つかりません。');
+            }
+        }
+
+        // 勝利条件をチェック
+        function checkWin() {
+            return minefield.flat().every(cell => cell.revealed || cell.mine);
+        }
+
+        // 結果を保存
+        function saveResult(result) {
+            const gameResult = {
+                gameNumber: previousResults.length + 1,
+                result: result,
+                attempts: attempts
+            };
+            previousResults.push(gameResult);
+            localStorage.setItem('previousResults', JSON.stringify(previousResults));
+            showPreviousResults();
+        }
+
+        // 過去の結果を表示
+        function showPreviousResults() {
+            const tableBody = document.getElementById('previousResultBody');
+            tableBody.innerHTML = '';
+            previousResults.forEach(game => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${game.gameNumber}</td>
+                    <td>${game.result}</td>
+                    <td>${game.attempts}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            document.getElementById('previousResultsTable').style.display = 'table';
+        }
+
+        window.onload = function() {
+            initGame();
+            showPreviousResults();
+        };
+    
+try{krUnlock('KR003')}catch(e){}</script></body></html>
