@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ↓↓↓ ここに駅名を追加してください (例: 小和田駅) ↓↓↓ -->
+    <title>【池場】 - 飯田線の秘境駅巡り</title>
+    <!-- ↑↑↑ ここに駅名を追加してください (例: 小和田駅) ↑↑↑ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 全体の初期設定とフォント */
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fce4ec, #e0f2f1);
+            color: #333;
+            text-align: center;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ヘッダー */
+        header {
+            background: linear-gradient(90deg, #ff80ab, #80deea);
+            color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .header-container {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: background-color 0.2s;
+        }
+
+        .back-link:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* メインコンテンツのコンテナ */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* セクション共通スタイル（カード形式） */
+        section {
+            background-color: #ffffff;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: left;
+        }
+
+        /* 飯田線についての情報表示スタイル */
+        /* ↓↓↓ここを修正しました↓↓↓ */
+        .profile-item {
+            border-bottom: 1px dashed #e0e0e0;
+            padding: 12px 0;
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-label {
+            font-weight: 700;
+            color: #ff80ab;
+            display: block; /* ラベルを独立したブロックとして表示 */
+            margin-bottom: 4px; /* ラベルと値の間にスペースを追加 */
+        }
+
+        .profile-value {
+            color: #555;
+            display: block; /* 値を独立したブロックとして表示 */
+        }
+        /* ↑↑↑ここを修正しました↑↑↑ */
+
+        h2 {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff80ab;
+            border-bottom: 3px solid #ff80ab;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #444;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        p {
+            color: #555;
+            margin-bottom: 1em;
+            text-align: left;
+        }
+
+        /* 駅画像の中央寄せ */
+        .station-content {
+            text-align: center;
+        }
+
+        .station-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        /* フッター */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(90deg, #80deea, #ff80ab);
+            color: #ffffff;
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="back-link">ホームへ戻る</a>
+            <div class="text-center">
+                <h1 class="header-title">全国屈指のローカル線！！飯田線の紹介ブログ</h1>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+      
+        <!-- 飯田線について -->
+        <section id="profile">
+            <h2>池場駅</h2>
+            <div class="profile-item">
+                <span class="profile-label">秘境駅ランキング</span>
+                <span class="profile-value">秘境駅ではありませんが個人的にはそのくらいの価値がある駅だと思ったので秘境駅のページで紹介</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">所在地</span>
+                <span class="profile-value">〒441-1602 愛知県新城市池場渡津呂 </span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">停車種別</span>
+                <span class="profile-value">普通列車  </span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">特徴</span>
+                <span class="profile-value">主要道の脇に位置 / 利用者数は少ない!! / 駅の目の前には木や草が茂っている！！</span>
+            </div>
+        </section>
+
+        <!-- 駅紹介セクション (このセクションを編集してください) -->
+        <section>
+            <!-- ↓↓↓ ここに駅名を追加してください (例: 小和田駅) ↓↓↓ -->
+            <h2>駅の外観</h2>
+            <!-- ↑↑↑ ここに駅名を追加してください (例: 小和田駅) ↑↑↑ -->
+            
+            <!-- ↓↓↓ ここに駅の画像URLと説明を追加してください ↓↓↓ -->
+            <div class="station-content">
+                <img src="images/75.jpg" alt="駅の画像" class="station-image">
+                <img src="images/76.jpg" alt="駅の画像" class="station-image">
+                <img src="images/77.jpg" alt="駅の画像" class="station-image">
+                <img src="images/78.jpg" alt="駅の画像" class="station-image">
+                <img src="images/79.jpg" alt="駅の画像" class="station-image">
+               
+            </div>
+            <!-- ↑↑↑ ここに駅の画像URLと説明を追加してください ↑↑↑ -->
+        </section>
+    </div>
+
+     <footer>
+        <p>Copyright© ria373 All Rights Reserved.</p>
+    </footer>
+
+</body>
+
+</html>
