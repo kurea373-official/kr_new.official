@@ -1,0 +1,83 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Omikuji</title><link rel="stylesheet" href="css/style.css"></head>
+<body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="index.html"><span class="nav-icon">⌂</span>Home</a><a href="content.html"><span class="nav-icon">▦</span>Contents</a><a class="active" href="omikuji.html"><span class="nav-icon">✦</span>Omikuji</a><a href="achievements.html"><span class="nav-icon">★</span>Access</a><a href="creator.html"><span class="nav-icon">◎</span>Owner data</a><a href="terms.html"><span class="nav-icon">§</span>Terms</a></nav><div class="sidebar-bottom"><span class="status-dot"></span>SYSTEM ONLINE<br>KR OFFICIAL / 2026</div></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="page"><section class="hero">
+<div class="kicker">KR OFFICIAL / FORTUNE</div>
+<h1>おみくじ</h1>
+<p>占い方法を選んで、今日の運勢をKR OFFICIALのおみくじで占います。</p>
+
+<div class="method-tabs" role="tablist" aria-label="占い方法" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+  <button type="button" class="method-btn active" data-method="classic" style="padding:9px 16px;border:1px solid var(--line-strong);background:#0c2538;color:#dff4ff;border-radius:20px;cursor:pointer;font-size:13px">通常のおみくじ</button>
+  <button type="button" class="method-btn" data-method="tarot" style="padding:9px 16px;border:1px solid var(--line-strong);background:transparent;color:#9fb8c8;border-radius:20px;cursor:pointer;font-size:13px">タロット風一枚引き</button>
+  <button type="button" class="method-btn" data-method="dice" style="padding:9px 16px;border:1px solid var(--line-strong);background:transparent;color:#9fb8c8;border-radius:20px;cursor:pointer;font-size:13px">サイコロ占い</button>
+</div>
+
+<button id="draw" style="margin-top:22px;padding:12px 22px;border:1px solid var(--line-strong);background:#0c2538;color:#dff4ff;border-radius:9px;cursor:pointer">おみくじを引く</button>
+</section>
+<div class="section-head"><h2 id="fortuneTitle">RESULT</h2></div>
+<div class="prose" id="fortune">占い方法を選んでボタンを押すと、運勢を確認できます。</div>
+<footer class="footer">© 2026 kurekure.a1024. ALL Rights Reserved.</footer>
+</div></main></div><script src="js/common.js"></script>
+<script>
+const classicFortunes=[
+  "大吉 — 新しいことを始めるのに良い日です。",
+  "中吉 — 小さな積み重ねが結果につながります。",
+  "吉 — 焦らず自分のペースで進みましょう。",
+  "末吉 — 準備を整えることで運が開けます。",
+  "凶 — 無理をせず、今日は慎重に行動しましょう。"
+];
+
+const tarotCards=[
+  {name:"太陽",meaning:"成功と活力の暗示。今日は積極的に動くほど良い結果につながります。"},
+  {name:"星",meaning:"希望が見える一日。焦らず理想に向かって進みましょう。"},
+  {name:"月",meaning:"物事がはっきり見えにくい暗示。慎重な判断を心がけて。"},
+  {name:"塔",meaning:"予期せぬ変化の暗示。変化を恐れず柔軟に対応しましょう。"},
+  {name:"戦車",meaning:"勢いに乗れる一日。決断力が良い結果を呼びます。"},
+  {name:"隠者",meaning:"一人で見つめ直す時間が力になる暗示です。"},
+  {name:"運命の輪",meaning:"流れが変わる暗示。チャンスを逃さないように。"},
+  {name:"力",meaning:"根気強さが実を結ぶ一日。焦らず続けましょう。"}
+];
+
+const diceFortunes=[
+  "① 出会い運アップ — 新しい人との縁が生まれるかも。",
+  "② 金運まずまず — 無駄遣いに気をつければ安定。",
+  "③ 仕事運好調 — 集中力が高まり作業がはかどります。",
+  "④ 健康運注意 — 睡眠と食事のバランスを意識して。",
+  "⑤ 恋愛運上昇 — 素直な気持ちが良い結果を呼びます。",
+  "⑥ 全体運絶好調 — 何をしても上手くいきやすい日。"
+];
+
+let currentMethod="classic";
+
+document.querySelectorAll(".method-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    currentMethod=btn.dataset.method;
+    document.querySelectorAll(".method-btn").forEach(b=>{
+      const active=b===btn;
+      b.classList.toggle("active",active);
+      b.style.background=active?"#0c2538":"transparent";
+      b.style.color=active?"#dff4ff":"#9fb8c8";
+    });
+    const titles={classic:"通常のおみくじ",tarot:"タロット風一枚引き",dice:"サイコロ占い"};
+    document.getElementById("fortuneTitle").textContent=`RESULT — ${titles[currentMethod]}`;
+    document.getElementById("fortune").textContent="ボタンを押して運勢を確認してください。";
+  };
+});
+
+function drawClassic(){
+  return classicFortunes[Math.floor(Math.random()*classicFortunes.length)];
+}
+function drawTarot(){
+  const card=tarotCards[Math.floor(Math.random()*tarotCards.length)];
+  return `『${card.name}』のカード — ${card.meaning}`;
+}
+function drawDice(){
+  return diceFortunes[Math.floor(Math.random()*diceFortunes.length)];
+}
+
+document.getElementById("draw").onclick=()=>{
+  let result;
+  if(currentMethod==="tarot") result=drawTarot();
+  else if(currentMethod==="dice") result=drawDice();
+  else result=drawClassic();
+  document.getElementById("fortune").textContent=result;
+};
+</script></body></html>
