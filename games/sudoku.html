@@ -467,7 +467,188 @@
 
 
 
-    </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR001</span><div class="game-embed kr-embed-sudoku">
+    
+
+/* ==========================================================
+   KR OFFICIAL — LOGIN THEME
+   login.html と統一したパステル・ガラスUI
+   ========================================================== */
+:root{
+    --login-bg:#fdf3ff;
+    --login-panel:rgba(255,255,255,.72);
+    --login-lavender:#c9a8ff;
+    --login-mint:#8ee6d0;
+    --login-butter:#ffe08a;
+    --login-pink:#ffb3d1;
+    --login-sky:#a6d4ff;
+    --login-purple:#9c6bff;
+    --login-pink-strong:#ff6fa8;
+    --login-sky-strong:#4fa8ff;
+    --login-text:#3a2c50;
+    --login-sub:rgba(58,44,80,.62);
+    --login-line:rgba(120,80,160,.14);
+}
+html,body{
+    background:
+        radial-gradient(circle at 8% 8%,rgba(201,168,255,.42),transparent 28%),
+        radial-gradient(circle at 92% 88%,rgba(142,230,208,.34),transparent 28%),
+        linear-gradient(160deg,#fdf3ff 0%,#f5f2ff 45%,#eefaf6 100%) !important;
+    color:var(--login-text) !important;
+}
+.app,.main,.game{background:transparent !important;color:var(--login-text) !important;}
+.sidebar{
+    background:rgba(255,255,255,.62) !important;
+    border-right:1px solid rgba(120,80,160,.12) !important;
+    box-shadow:8px 0 30px rgba(156,107,255,.08) !important;
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+}
+.brand,.brand-name,.brand-sub,.nav a,.nav-icon{color:var(--login-text) !important;}
+.brand-mark{
+    background:linear-gradient(135deg,var(--login-pink),var(--login-lavender) 55%,var(--login-sky)) !important;
+    color:#fff !important;
+}
+.nav a{border-radius:12px !important;transition:.2s ease !important;}
+.nav a:hover,.nav a.active{
+    background:rgba(201,168,255,.18) !important;
+    color:var(--login-purple) !important;
+}
+.nav a.active .nav-icon,.nav a:hover .nav-icon{color:var(--login-purple) !important;}
+.mobile-toggle{
+    background:rgba(255,255,255,.78) !important;
+    color:var(--login-text) !important;
+    border:1px solid var(--login-line) !important;
+}
+.game-shell{
+    background:rgba(255,255,255,.38) !important;
+    border:1px solid rgba(255,255,255,.72) !important;
+    box-shadow:0 24px 60px rgba(156,107,255,.12) !important;
+    backdrop-filter:blur(18px) saturate(150%);
+}
+.back{color:var(--login-purple) !important;}
+.site-tag{
+    background:rgba(201,168,255,.18) !important;
+    color:var(--login-purple) !important;
+    border:1px solid rgba(156,107,255,.18) !important;
+}
+.kr-embed-mine,.kr-embed-num100,.kr-embed-sudoku{
+    background:
+        radial-gradient(circle at 12% 8%,rgba(201,168,255,.24),transparent 26%),
+        radial-gradient(circle at 90% 90%,rgba(142,230,208,.20),transparent 26%),
+        linear-gradient(160deg,#fdf3ff 0%,#f5f2ff 48%,#eefaf6 100%) !important;
+    color:var(--login-text) !important;
+}
+.kr-embed-mine h1,.kr-embed-num100 h1,.kr-embed-sudoku h1,
+.kr-embed-mine h2,.kr-embed-num100 h2,.kr-embed-sudoku h2{
+    color:var(--login-purple) !important;
+    text-shadow:0 4px 18px rgba(156,107,255,.18) !important;
+}
+.kr-embed-mine p,.kr-embed-num100 p,.kr-embed-sudoku p,
+.kr-embed-mine .subtitle,.kr-embed-num100 .subtitle{color:var(--login-sub) !important;}
+
+.kr-embed-num100 .guess-card,.kr-embed-num100 .result-card,.kr-embed-num100 .history-card{
+    background:rgba(255,255,255,.70) !important;
+    border:1px solid rgba(255,255,255,.78) !important;
+    box-shadow:0 18px 40px rgba(156,107,255,.12) !important;
+    backdrop-filter:blur(18px);
+}
+.kr-embed-mine #minefield{
+    background:rgba(255,255,255,.48) !important;
+    border:2px solid rgba(156,107,255,.28) !important;
+    box-shadow:0 0 30px rgba(156,107,255,.12),inset 0 0 20px rgba(156,107,255,.05) !important;
+}
+.kr-embed-mine .cell{
+    background:linear-gradient(145deg,#fff,#f3edff) !important;
+    border:1px solid rgba(156,107,255,.20) !important;
+    color:var(--login-text) !important;
+}
+.kr-embed-mine .cell:hover{background:#f3ecff !important;box-shadow:0 0 12px rgba(156,107,255,.20) !important;}
+.kr-embed-mine .revealed{
+    background:linear-gradient(145deg,#f0ebff,#fff) !important;
+    color:var(--login-purple) !important;
+}
+.kr-embed-mine .flagged{
+    background:linear-gradient(135deg,var(--login-pink),var(--login-lavender)) !important;
+    color:#fff !important;
+}
+.kr-embed-num100 #userGuess{
+    background:rgba(255,255,255,.78) !important;
+    color:var(--login-text) !important;
+    border:1.5px solid var(--login-line) !important;
+}
+.kr-embed-num100 #userGuess:focus,.kr-embed-num100 #userGuess:hover{
+    border-color:var(--login-purple) !important;
+    box-shadow:0 0 15px rgba(156,107,255,.18) !important;
+}
+.kr-embed-num100 #userGuess::placeholder{color:rgba(58,44,80,.34) !important;}
+
+.kr-embed-sudoku #sudoku{
+    background:rgba(255,255,255,.62) !important;
+    border:3px solid var(--login-purple) !important;
+    box-shadow:0 0 30px rgba(156,107,255,.16) !important;
+}
+.kr-embed-sudoku .cell{
+    background:linear-gradient(145deg,#fff,#f5f0ff) !important;
+    border-color:rgba(156,107,255,.18) !important;
+    color:var(--login-text) !important;
+}
+.kr-embed-sudoku .cell input{color:var(--login-purple) !important;}
+.kr-embed-sudoku .cell input:focus{background:rgba(201,168,255,.12) !important;}
+.kr-embed-sudoku .fixed{
+    background:linear-gradient(145deg,#fff4c9,#fffaf0) !important;
+    color:#8c6b2c !important;
+}
+.kr-embed-sudoku .difficulty-options label{color:var(--login-text) !important;}
+
+.kr-embed-mine button,.kr-embed-num100 button,.kr-embed-sudoku button{
+    background:linear-gradient(120deg,var(--login-pink-strong),var(--login-purple) 55%,var(--login-sky-strong)) !important;
+    color:#fff !important;
+    border:none !important;
+    box-shadow:0 10px 22px -10px rgba(156,107,255,.42) !important;
+}
+.kr-embed-mine button:hover,.kr-embed-num100 button:hover,.kr-embed-sudoku button:hover{
+    filter:brightness(1.05);
+}
+.kr-embed-mine table,.kr-embed-num100 table,.kr-embed-sudoku table{
+    background:rgba(255,255,255,.62) !important;
+    color:var(--login-text) !important;
+    border-color:rgba(156,107,255,.18) !important;
+    box-shadow:0 15px 35px rgba(156,107,255,.08) !important;
+}
+.kr-embed-mine th,.kr-embed-num100 th,.kr-embed-sudoku th{
+    background:linear-gradient(120deg,rgba(255,179,209,.48),rgba(201,168,255,.48),rgba(166,212,255,.42)) !important;
+    color:var(--login-text) !important;
+}
+.kr-embed-mine td,.kr-embed-num100 td,.kr-embed-sudoku td{
+    color:var(--login-text) !important;
+    border-color:rgba(156,107,255,.12) !important;
+}
+.kr-embed-mine tr:hover,.kr-embed-num100 tr:hover{background:rgba(201,168,255,.10) !important;}
+
+.kr-embed-mine .mine-footer,.kr-embed-num100 .site-footer,.kr-embed-sudoku .sudoku-footer{
+    background:rgba(255,255,255,.58) !important;
+    color:var(--login-sub) !important;
+    border-top:2px solid var(--login-lavender) !important;
+    box-shadow:0 -8px 25px rgba(156,107,255,.08) !important;
+    backdrop-filter:blur(18px);
+}
+.kr-embed-mine .mine-footer h2,.kr-embed-num100 .footer-inner h2,.kr-embed-sudoku .sudoku-footer h2{color:var(--login-purple) !important;}
+.kr-embed-mine .mine-footer .footer-title,.kr-embed-num100 .footer-title,.kr-embed-sudoku .sudoku-footer .footer-title{color:var(--login-pink-strong) !important;}
+.kr-embed-mine .mine-footer .footer-message,.kr-embed-num100 .footer-message,.kr-embed-sudoku .sudoku-footer .footer-message{color:var(--login-text) !important;}
+.kr-embed-mine .mine-footer small,.kr-embed-num100 .footer-inner small,.kr-embed-sudoku .sudoku-footer small{color:var(--login-sub) !important;}
+.kr-embed-mine .mine-footer .footer-divider,.kr-embed-num100 .footer-divider,.kr-embed-sudoku .sudoku-footer .footer-divider{
+    background:linear-gradient(90deg,var(--login-pink-strong),var(--login-purple),var(--login-sky-strong)) !important;
+}
+.kr-embed-mine .mine-footer a,.kr-embed-num100 .footer-links a,.kr-embed-sudoku .sudoku-footer a{color:var(--login-purple) !important;}
+.kr-embed-mine .mine-footer a:hover,.kr-embed-num100 .footer-links a:hover,.kr-embed-sudoku .sudoku-footer a:hover{color:var(--login-pink-strong) !important;}
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.45) !important;}
+::-webkit-scrollbar-thumb{
+    background:linear-gradient(180deg,var(--login-pink),var(--login-lavender),var(--login-sky)) !important;
+    border-radius:20px;
+}
+
+</style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR001</span><div class="game-embed kr-embed-sudoku">
     <h1>ナンプレ（数独）</h1>
     <div id="sudoku"></div>
 
