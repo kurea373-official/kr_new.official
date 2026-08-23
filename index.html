@@ -5,444 +5,512 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KR OFFICIAL | ログイン</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-base:#fdf3ff;
-    --bg-panel: rgba(255,255,255,0.72);
-    --pop-1:#c9a8ff;   /* ラベンダー */
-    --pop-2:#8ee6d0;   /* ミント */
-    --pop-3:#ffe08a;   /* バター */
-    --pop-4:#ffb3d1;   /* ピンク */
-    --pop-5:#a6d4ff;   /* スカイ */
-    --pop-1-strong:#9c6bff;
-    --pop-4-strong:#ff6fa8;
-    --pop-5-strong:#4fa8ff;
-    --line: rgba(120, 80, 160, 0.14);
-    --text-main:#3a2c50;
-    --text-sub: rgba(58,44,80,0.56);
-    --danger:#e8577a;
-    --success-c:#28b892;
-    --icon: rgba(58,44,80,0.34);
+    --ink:#0b1220;
+    --ink-2:#121c30;
+    --ink-line: rgba(231,233,238,0.10);
+    --ink-text:#e9ebf1;
+    --ink-text-sub: rgba(233,235,241,0.52);
+    --paper:#f7f7f5;
+    --card:#ffffff;
+    --panel-line:#e3e3e0;
+    --text:#1b2233;
+    --text-sub:#6b7280;
+    --accent:#3457d5;
+    --accent-dark:#2743a8;
+    --accent-soft: rgba(52,87,213,0.08);
+    --danger:#b3392a;
+    --danger-soft: rgba(179,57,42,0.07);
+    --success:#1f8a5f;
+    --success-soft: rgba(31,138,95,0.08);
+    --mono:'IBM Plex Mono', monospace;
+    --display:'Space Grotesk', 'Noto Sans JP', sans-serif;
+    --body:'Noto Sans JP', sans-serif;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html,body{height:100%;}
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
   body{
-    font-family:'Noto Sans JP', sans-serif;
-    background:var(--bg-base);
-    color:var(--text-main);
+    font-family:var(--body);
+    color:var(--text);
+    background:var(--paper);
     min-height:100vh;
-    overflow:hidden;
+  }
+
+  .shell{ display:flex; min-height:100vh; }
+
+  /* ---------------- side panel ---------------- */
+  .side{
+    flex:0 0 44%;
+    max-width:540px;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 82% 8%, rgba(52,87,213,0.24), transparent 42%),
+      var(--ink);
+    color:var(--ink-text);
     position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  /* ---- animated pastel background ---- */
-  .aurora-bg{
-    position:fixed; inset:0;
-    z-index:0;
     overflow:hidden;
-    background: linear-gradient(160deg, #fdf3ff 0%, #f5f2ff 45%, #eefaf6 100%);
+    padding:52px 48px 40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
   }
-  .blob{
-    position:absolute;
-    border-radius:50%;
-    filter:blur(70px);
-    opacity:0.7;
-    will-change: transform;
+  .side::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15) 75%);
+    pointer-events:none;
   }
-  .blob.b1{
-    width:44vw; height:44vw;
-    background:radial-gradient(circle, var(--pop-1), transparent 70%);
-    top:-12%; left:-10%;
-    animation: drift1 24s ease-in-out infinite;
-  }
-  .blob.b2{
-    width:36vw; height:36vw;
-    background:radial-gradient(circle, var(--pop-2), transparent 70%);
-    bottom:-14%; right:-8%;
-    animation: drift2 28s ease-in-out infinite;
-  }
-  .blob.b3{
-    width:26vw; height:26vw;
-    background:radial-gradient(circle, var(--pop-3), transparent 70%);
-    top:30%; right:14%;
-    opacity:0.65;
-    animation: drift3 20s ease-in-out infinite;
-  }
-  .blob.b4{
-    width:26vw; height:26vw;
-    background:radial-gradient(circle, var(--pop-4), transparent 70%);
-    bottom:8%; left:10%;
-    opacity:0.65;
-    animation: drift4 26s ease-in-out infinite;
-  }
-  .blob.b5{
-    width:20vw; height:20vw;
-    background:radial-gradient(circle, var(--pop-5), transparent 70%);
-    top:6%; right:32%;
-    opacity:0.6;
-    animation: drift5 22s ease-in-out infinite;
-  }
-  @keyframes drift1{
-    0%,100%{ transform: translate(0,0) scale(1); }
-    50%{ transform: translate(7vw, 9vh) scale(1.1); }
-  }
-  @keyframes drift2{
-    0%,100%{ transform: translate(0,0) scale(1); }
-    50%{ transform: translate(-6vw, -7vh) scale(1.08); }
-  }
-  @keyframes drift3{
-    0%,100%{ transform: translate(0,0) scale(1); }
-    50%{ transform: translate(-9vw, 5vh) scale(0.92); }
-  }
-  @keyframes drift4{
-    0%,100%{ transform: translate(0,0) scale(1); }
-    50%{ transform: translate(6vw, -7vh) scale(1.14); }
-  }
-  @keyframes drift5{
-    0%,100%{ transform: translate(0,0) scale(1); }
-    50%{ transform: translate(-5vw, 8vh) scale(0.9); }
-  }
+  .side > *{ position:relative; z-index:1; }
 
-  /* ---- shell / brand ---- */
-  .brand{
-    position:fixed; top:34px; left:40px; z-index:3;
-    display:flex; align-items:center; gap:10px;
-    font-family:'Baloo 2', sans-serif;
-    letter-spacing:0.01em;
-  }
+  .brand{ display:flex; align-items:center; gap:11px; }
   .brand-mark{
-    width:32px; height:32px; border-radius:11px;
-    background:linear-gradient(135deg, var(--pop-4), var(--pop-1) 55%, var(--pop-5));
+    width:30px; height:30px; border-radius:8px;
+    background:linear-gradient(135deg, var(--accent), #6a86e6);
     display:flex; align-items:center; justify-content:center;
-    box-shadow: 0 8px 18px -6px rgba(156,107,255,0.45);
+    flex:none;
   }
-  .brand-name{ font-size:17px; font-weight:700; color:var(--text-main); }
+  .brand-name{
+    font-family:var(--display); font-weight:600; font-size:15px;
+    letter-spacing:0.01em; color:var(--ink-text);
+  }
 
-  /* ---- card ---- */
+  .side-main{ margin:auto 0; padding:56px 0; }
+  .eyebrow-dark{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.16em;
+    font-weight:500; text-transform:uppercase; color:#8ea2e8;
+    margin-bottom:18px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow-dark::before{
+    content:""; width:6px; height:6px; border-radius:50%;
+    background:#5ee6a8; box-shadow:0 0 0 3px rgba(94,230,168,0.18);
+  }
+  .side-headline{
+    font-family:var(--display); font-weight:600;
+    font-size:29px; line-height:1.42; letter-spacing:-0.01em;
+    color:#fff; max-width:380px;
+  }
+  .side-copy{
+    margin-top:16px; font-size:13.5px; line-height:1.8;
+    color:var(--ink-text-sub); max-width:360px;
+  }
+
+  .checklist{ margin-top:34px; display:flex; flex-direction:column; gap:13px; }
+  .checklist-item{
+    display:flex; align-items:center; gap:11px;
+    font-size:12.5px; font-family:var(--mono); color:rgba(233,235,241,0.34);
+    opacity:0; transform:translateY(4px);
+    transition: color .25s ease;
+  }
+  .checklist-item.show{ animation: itemIn .45s ease forwards; }
+  @keyframes itemIn{ to{ opacity:1; transform:translateY(0); } }
+  .check-dot{
+    width:16px; height:16px; border-radius:50%;
+    border:1.5px solid rgba(233,235,241,0.24);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .check-dot svg{ opacity:0; transform:scale(.5); transition: opacity .2s ease, transform .2s ease; }
+  .checklist-item.done{ color:rgba(233,235,241,0.82); }
+  .checklist-item.done .check-dot{ border-color:#5ee6a8; background:rgba(94,230,168,0.12); }
+  .checklist-item.done .check-dot svg{ opacity:1; transform:scale(1); }
+
+  .side-foot{
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:22px; border-top:1px solid var(--ink-line);
+    font-family:var(--mono); font-size:11px; color:var(--ink-text-sub);
+  }
+  .side-foot .tls{ display:flex; align-items:center; gap:7px; }
+  .side-foot .tls svg{ opacity:.75; }
+
+  /* ---------------- form stage ---------------- */
   .stage{
-    position:relative; z-index:2;
-    width:100%; max-width:392px;
-    padding:0 20px;
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:40px 24px;
   }
   .card{
-    background:var(--bg-panel);
-    border:1px solid rgba(255,255,255,0.6);
-    border-radius:26px;
-    padding:40px 34px 32px;
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow: 0 30px 70px -24px rgba(156,107,255,0.35), 0 4px 18px -6px rgba(156,107,255,0.15);
-  }
-  .eyebrow{
-    font-family:'Baloo 2', sans-serif;
-    font-size:12px; letter-spacing:0.14em; font-weight:700;
-    text-transform:uppercase;
-    margin-bottom:12px;
-    background: linear-gradient(90deg, var(--pop-4-strong), var(--pop-1-strong));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-    display:inline-block;
-  }
-  h1{
-    font-family:'Baloo 2', sans-serif;
-    font-size:27px; font-weight:700;
-    letter-spacing:-0.01em;
-    margin-bottom:8px;
-  }
-  .sub{
-    font-size:13px; color:var(--text-sub); line-height:1.6; margin-bottom:26px;
+    width:100%; max-width:408px;
+    background:var(--card);
+    border:1px solid var(--panel-line);
+    border-radius:14px;
+    padding:40px 38px 32px;
+    box-shadow: 0 1px 2px rgba(16,24,39,0.04), 0 24px 48px -30px rgba(16,24,39,0.22);
   }
 
-  .field{ margin-bottom:16px; }
+  .step-track{ display:flex; align-items:center; gap:6px; margin-bottom:22px; }
+  .step-track .seg{ height:3px; flex:1; border-radius:99px; background:var(--panel-line); overflow:hidden; }
+  .step-track .seg i{ display:block; height:100%; width:0%; background:var(--accent); transition:width .35s ease; }
+  .step-track .seg.done i{ width:100%; }
+  .step-track .seg.active i{ width:100%; }
+  .step-label{
+    font-family:var(--mono); font-size:11px; color:var(--text-sub);
+    letter-spacing:0.04em; margin-bottom:6px; text-transform:uppercase;
+  }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.14em; font-weight:500;
+    text-transform:uppercase; color:var(--accent); margin-bottom:10px;
+  }
+  h1,h2{ font-family:var(--display); font-weight:600; font-size:24px; letter-spacing:-0.01em; margin-bottom:7px; }
+  .sub{ font-size:13px; color:var(--text-sub); line-height:1.65; margin-bottom:24px; }
+  .sub b{ color:var(--text); font-weight:600; }
+
+  .banner{
+    display:none; align-items:flex-start; gap:9px;
+    padding:11px 13px; border-radius:9px; font-size:12.5px; line-height:1.55;
+    margin-bottom:18px;
+  }
+  .banner.show{ display:flex; }
+  .banner.error{ background:var(--danger-soft); color:var(--danger); }
+  .banner.warn{ background:#fbf2df; color:#8a5a12; }
+  .banner svg{ flex:none; margin-top:1px; }
+
+  .field{ margin-bottom:15px; }
   .field label{
-    display:block; font-size:12px; color:var(--text-sub);
-    margin-bottom:7px; letter-spacing:0.02em; font-weight:500;
+    display:block; font-size:12px; color:var(--text-sub); margin-bottom:6px;
+    letter-spacing:0.01em; font-weight:500;
   }
   .input-wrap{ position:relative; }
   .input-wrap svg.field-icon{
-    position:absolute; left:14px; top:50%; transform:translateY(-50%);
-    color: var(--icon);
-    pointer-events:none;
-    transition: color .18s ease;
+    position:absolute; left:13px; top:50%; transform:translateY(-50%);
+    color:#a2a8b8; pointer-events:none; transition: color .16s ease;
   }
   .field input{
-    width:100%;
-    padding:13px 14px 13px 40px;
-    background: rgba(255,255,255,0.7);
-    border:1.5px solid var(--line);
-    border-radius:13px;
-    color:var(--text-main);
-    font-size:14px;
-    font-family:'Noto Sans JP', sans-serif;
-    outline:none;
-    transition: border-color .18s ease, background .18s ease;
+    width:100%; padding:12px 13px 12px 38px;
+    background:#fbfbfa; border:1.5px solid var(--panel-line); border-radius:9px;
+    color:var(--text); font-size:14px; font-family:var(--body);
+    outline:none; transition: border-color .16s ease, background .16s ease;
   }
-  .field input::placeholder{ color:rgba(58,44,80,0.32); }
-  .field input:focus{
-    border-color: var(--pop-1-strong);
-    background: rgba(255,255,255,0.95);
-  }
-  .field input:focus-visible{
-    outline: 2px solid var(--pop-1-strong);
-    outline-offset: 2px;
-  }
-  .input-wrap:focus-within svg.field-icon{
-    color: var(--pop-1-strong);
-  }
-  #password{ padding-right:42px; }
+  .field input::placeholder{ color:#b3b7c2; }
+  .field input:focus{ border-color:var(--accent); background:#fff; }
+  .field input:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .input-wrap:focus-within svg.field-icon{ color:var(--accent); }
+  .field.invalid input{ border-color:var(--danger); background:var(--danger-soft); }
+  .field-msg{ display:none; font-size:11.5px; color:var(--danger); margin-top:6px; }
+  .field.invalid .field-msg{ display:block; }
+
+  #password{ padding-right:40px; }
   .toggle-pw{
-    position:absolute; right:12px; top:50%; transform:translateY(-50%);
-    background:none; border:none; cursor:pointer;
-    color: var(--icon);
-    display:flex; align-items:center; justify-content:center;
-    padding:4px;
-    transition: color .18s ease;
+    position:absolute; right:11px; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer; color:#a2a8b8;
+    display:flex; align-items:center; justify-content:center; padding:4px;
+    transition: color .16s ease;
   }
-  .toggle-pw:hover{ color: var(--text-main); }
-  .toggle-pw:focus-visible{ outline: 2px solid var(--pop-1-strong); outline-offset:2px; border-radius:6px; }
+  .toggle-pw:hover{ color:var(--text); }
+  .toggle-pw:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
 
   .row-between{
     display:flex; align-items:center; justify-content:space-between;
-    margin: 4px 0 22px;
-    font-size:12.5px;
+    margin:2px 0 22px; font-size:12.5px;
   }
-  .remember{ display:flex; align-items:center; gap:8px; color:var(--text-sub); }
-  .remember input{ accent-color: var(--pop-4-strong); }
+  .remember{ display:flex; align-items:center; gap:7px; color:var(--text-sub); }
+  .remember input{ accent-color:var(--accent); }
   .forgot{ color:var(--text-sub); text-decoration:none; border-bottom:1px solid transparent; }
-  .forgot:hover{ color:var(--text-main); border-color: var(--text-sub); }
+  .forgot:hover{ color:var(--text); border-color:var(--text-sub); }
 
-  .submit{
-    width:100%;
-    padding:13px 14px;
-    border:none; border-radius:13px;
-    background: linear-gradient(120deg, var(--pop-4-strong), var(--pop-1-strong) 55%, var(--pop-5-strong));
-    color:#fff;
-    font-family:'Baloo 2', sans-serif;
-    font-size:15px; font-weight:700;
-    letter-spacing:0.01em;
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
-    box-shadow: 0 14px 26px -10px rgba(156,107,255,0.55);
+  .code-input{
+    width:100%; text-align:center; letter-spacing:0.5em; font-family:var(--mono);
+    font-size:20px; padding:14px 12px 14px 12px !important;
   }
-  .submit:hover{ filter:brightness(1.06); transform: translateY(-1px); }
-  .submit:active{ transform: translateY(0); }
-  .submit:focus-visible{ outline: 2px solid var(--pop-1-strong); outline-offset: 3px; }
-  .submit[disabled]{ opacity:0.65; cursor:progress; filter:none; transform:none; }
 
-  .banner{
-    display:none;
-    align-items:flex-start; gap:9px;
-    font-size:12.5px;
-    padding:10px 12px; border-radius:11px;
-    margin-bottom:16px;
-    line-height:1.5;
+  .btn{
+    width:100%; padding:12px 14px; border:none; border-radius:9px;
+    font-family:var(--display); font-size:14.5px; font-weight:600; letter-spacing:0.01em;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition: background .15s ease, box-shadow .15s ease, opacity .15s ease, transform .1s ease;
   }
-  .banner.show{ display:flex; }
-  .banner svg{ flex-shrink:0; margin-top:1px; }
-  .banner.error{
-    color:var(--danger);
-    background: rgba(232,87,122,0.09);
-    border:1px solid rgba(232,87,122,0.22);
+  .btn-primary{ background:var(--accent); color:#fff; box-shadow:0 10px 20px -10px rgba(52,87,213,0.55); }
+  .btn-primary:hover:not(:disabled){ background:var(--accent-dark); }
+  .btn-primary:active:not(:disabled){ transform:translateY(1px); }
+  .btn-primary:disabled{ opacity:.62; cursor:not-allowed; box-shadow:none; }
+  .btn-primary:focus-visible{ outline:2px solid var(--accent-dark); outline-offset:2px; }
+
+  .btn-ghost{
+    background:none; border:1.5px solid var(--panel-line); color:var(--text-sub);
+    margin-top:10px;
   }
-  .banner.ok{
-    color:var(--success-c);
-    background: rgba(40,184,146,0.10);
-    border:1px solid rgba(40,184,146,0.24);
-  }
+  .btn-ghost:hover{ border-color:#c7c9d1; color:var(--text); }
+
+  .spin{ width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; animation:spin .7s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
 
   .demo-hint{
-    margin-top:22px;
-    padding:12px 14px;
-    border-radius:13px;
-    border:1.5px dashed rgba(255,111,168,0.4);
-    background: rgba(255,179,209,0.12);
-    font-size:12px;
-    color:var(--text-sub);
-    line-height:1.7;
+    margin-top:22px; padding:11px 13px; border-radius:9px;
+    background:#f3f4f7; border:1px dashed #d3d5dc;
+    font-family:var(--mono); font-size:11.5px; line-height:1.9; color:var(--text-sub);
   }
-  .demo-hint b{ color:var(--pop-4-strong); font-weight:700; }
+  .demo-hint b{ color:var(--text); }
+  .foot{ margin-top:18px; font-size:12px; color:var(--text-sub); text-align:center; }
 
-  .foot{
-    margin-top:22px; text-align:center;
-    font-size:12px; color:var(--text-sub);
-  }
+  /* views */
+  .view{ display:none; }
+  .view.active{ display:block; animation: viewIn .3s ease; }
+  @keyframes viewIn{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
 
-  /* success state */
-  .success{
-    display:none;
-    text-align:center;
-    padding:14px 0 4px;
+  /* success */
+  .success-wrap{ text-align:center; }
+  .ring{
+    width:52px; height:52px; border-radius:50%; margin:2px auto 18px;
+    background:var(--success); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 24px -10px rgba(31,138,95,0.55);
   }
-  .success.show{ display:block; }
-  .success .ring{
-    width:56px; height:56px; margin:0 auto 18px;
-    border-radius:50%;
-    background: linear-gradient(135deg, var(--pop-2), var(--pop-1-strong) 60%, var(--pop-4));
-    display:flex; align-items:center; justify-content:center;
-    box-shadow: 0 12px 26px -8px rgba(156,107,255,0.5);
-    animation: pop-in .45s cubic-bezier(.34,1.56,.64,1);
+  .success-wrap h2{ font-size:20px; }
+  .success-wrap .sub{ margin-bottom:20px; }
+  .session-box{
+    text-align:left; background:#fbfbfa; border:1px solid var(--panel-line); border-radius:9px;
+    padding:13px 15px; margin-bottom:20px; font-size:12px; font-family:var(--mono); color:var(--text-sub);
+    display:flex; flex-direction:column; gap:6px;
   }
-  @keyframes pop-in{
-    0%{ transform:scale(0.4); opacity:0; }
-    100%{ transform:scale(1); opacity:1; }
-  }
-  .success h2{ font-family:'Baloo 2', sans-serif; font-size:20px; font-weight:700; margin-bottom:6px; }
-  .success p{ font-size:13px; color:var(--text-sub); margin-bottom:20px; }
-
-  .progress-track{
-    width:100%; height:9px; border-radius:99px;
-    background: rgba(58,44,80,0.09);
-    overflow:hidden;
-    margin-bottom:10px;
-  }
-  .progress-fill{
-    height:100%; width:0%;
-    border-radius:99px;
-    background: linear-gradient(90deg, var(--pop-5-strong), var(--pop-1-strong), var(--pop-4-strong));
-    background-size:200% 100%;
-    transition: width .18s linear;
-  }
-  .progress-label{
-    font-family:'Baloo 2', sans-serif;
-    font-size:13px; font-weight:700;
-    color: var(--pop-1-strong);
-  }
+  .session-box span{ color:var(--text); }
+  .progress-track{ width:100%; height:6px; border-radius:99px; background:#eceef2; overflow:hidden; margin-bottom:9px; }
+  .progress-fill{ height:100%; width:0%; border-radius:99px; background:var(--accent); transition:width .18s linear; }
+  .progress-label{ font-family:var(--mono); font-size:11.5px; color:var(--text-sub); text-align:center; }
 
   @media (prefers-reduced-motion: reduce){
-    .blob{ animation: none !important; }
+    .checklist-item, .view.active{ animation:none !important; }
+    .spin{ animation-duration:1.4s; }
   }
 
-  @media (max-width:480px){
-    .brand{ top:20px; left:20px; }
-    .card{ padding:32px 24px 26px; }
+  @media (max-width:860px){
+    .side{
+      flex:none; max-width:none; width:100%; min-height:auto;
+      padding:26px 24px; flex-direction:row; align-items:center; justify-content:space-between;
+    }
+    .side-main{ display:none; }
+    .side-foot{ display:none; }
+    .stage{ padding:28px 20px 44px; }
+  }
+  @media (max-width:420px){
+    .card{ padding:30px 22px 26px; }
   }
 </style>
 </head>
 <body>
 
-  <div class="aurora-bg">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-    <div class="blob b4"></div>
-    <div class="blob b5"></div>
-  </div>
+  <div class="shell">
 
-  <a class="brand kr-logo" href="index.html" aria-label="KR OFFICIAL">
-    <img src="kr-official-logo.svg" alt="KR OFFICIAL">
-  </a>
-
-  <div class="stage">
-    <div class="card">
-
-      <div id="loginView">
-        <div class="eyebrow">Members Area</div>
-        <h1>おかえりなさい</h1>
-        <p class="sub">ログインID とパスワードを入力してください。</p>
-
-        <div class="banner error" id="errorBox">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span id="errorText">ログインIDまたはパスワードが正しくありません。</span>
-        </div>
-
-        <form id="loginForm" novalidate>
-          <div class="field">
-            <label for="loginId">ログインID</label>
-            <div class="input-wrap">
-              <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M4 20.5c1.4-3.6 4.6-5.5 8-5.5s6.6 1.9 8 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-              <input type="text" id="loginId" name="loginId" placeholder="ログインIDを入力" autocomplete="username" required>
-            </div>
-          </div>
-          <div class="field">
-            <label for="password">パスワード</label>
-            <div class="input-wrap">
-              <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <rect x="5" y="11" width="14" height="9" rx="2.2" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.8"/>
-              </svg>
-              <input type="password" id="password" name="password" placeholder="パスワードを入力" autocomplete="current-password" required>
-              <button type="button" class="toggle-pw" id="togglePw" aria-label="パスワードを表示">
-                <svg id="eyeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none">
-                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.8"/>
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="row-between">
-            <label class="remember">
-              <input type="checkbox" id="remember">
-              ログイン状態を保持
-            </label>
-            <a href="#" class="forgot" id="forgotLink">パスワードをお忘れですか？</a>
-          </div>
-
-          <button type="submit" class="submit" id="submitBtn">
-            <span id="submitLabel">ログイン</span>
-            <svg id="submitIcon" width="15" height="15" viewBox="0 0 24 24" fill="none">
-              <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-        </form>
-
-        <div class="demo-hint">
-          これはデモ用のログイン画面です。全ユーザー共通の認証情報でログインできます。<br>
-          ID: <b>demo</b>　/　パスワード: <b>demo1234</b>
-        </div>
-
-        <div class="foot">アカウントをお持ちでない方は運営にお問い合わせください</div>
-      </div>
-
-      <div class="success" id="successView">
-        <div class="ring">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M4 12.5L9.5 18L20 6.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- ============ side / brand panel ============ -->
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L14.2 9.2L21 12L14.2 14.8L12 22L9.8 14.8L3 12L9.8 9.2L12 2Z" fill="white"/>
           </svg>
         </div>
-        <h2>ログインしました！</h2>
-        <p id="successSub">まもなくページに移動します…</p>
-
-        <div class="progress-track">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-label"><span id="progressPct">0</span>% 読み込み中</div>
+        <div class="brand-name">KR OFFICIAL SITE</div>
       </div>
 
-    </div>
+      <div class="side-main">
+        <div class="eyebrow-dark">Secure Access</div>
+        <div class="side-headline">本人確認をおこない、<br>安全にログインします。</div>
+        <p class="side-copy">通信は暗号化され、アクセス状況を常時確認しています。会員専用エリアへのアクセスには、パスワードに加えて確認コードの入力が必要です。</p>
+
+        <div class="checklist" id="checklist">
+          <div class="checklist-item" data-step="1">
+            <span class="check-dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="#5ee6a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            通信を暗号化（TLS 1.3）
+          </div>
+          <div class="checklist-item" data-step="2">
+            <span class="check-dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="#5ee6a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            端末情報を確認
+          </div>
+          <div class="checklist-item" data-step="3">
+            <span class="check-dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="#5ee6a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            不正アクセスを検知
+          </div>
+          <div class="checklist-item" data-step="4">
+            <span class="check-dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="#5ee6a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            ログイン準備が完了
+          </div>
+        </div>
+      </div>
+
+      <div class="side-foot">
+        <div class="tls">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#8ea2e8" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#8ea2e8" stroke-width="1.8"/></svg>
+          AES-256 / TLS 1.3
+        </div>
+        <div id="clock">--:--:--</div>
+      </div>
+    </aside>
+
+    <!-- ============ form stage ============ -->
+    <main class="stage">
+      <div class="card">
+
+        <div class="step-track" id="stepTrack">
+          <div class="seg active" data-seg="1"><i></i></div>
+          <div class="seg" data-seg="2"><i></i></div>
+        </div>
+
+        <!-- ---- STEP 1: ID / PASSWORD ---- -->
+        <div class="view active" id="view1">
+          <div class="step-label">Step 1 / 2</div>
+          <div class="eyebrow">Members Login</div>
+          <h1>おかえりなさい</h1>
+          <p class="sub">ログインID とパスワードを入力してください。</p>
+
+          <div class="banner error" id="errorBox1">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span id="errorText1">ログインIDまたはパスワードが正しくありません。</span>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <div class="field" id="idField">
+              <label for="loginId">ログインID</label>
+              <div class="input-wrap">
+                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M4 20.5c1.4-3.6 4.6-5.5 8-5.5s6.6 1.9 8 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="loginId" name="loginId" placeholder="ログインIDを入力" autocomplete="username" required>
+              </div>
+              <div class="field-msg" id="idMsg">ログインIDを入力してください。</div>
+            </div>
+
+            <div class="field" id="pwField">
+              <label for="password">パスワード</label>
+              <div class="input-wrap">
+                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <rect x="5" y="11" width="14" height="9" rx="2.2" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+                <input type="password" id="password" name="password" placeholder="パスワードを入力" autocomplete="current-password" required>
+                <button type="button" class="toggle-pw" id="togglePw" aria-label="パスワードを表示">
+                  <svg id="eyeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="field-msg" id="pwMsg">8文字以上のパスワードを入力してください。</div>
+            </div>
+
+            <div class="row-between">
+              <label class="remember"><input type="checkbox" id="remember"> ログイン状態を保持</label>
+              <a href="#" class="forgot" id="forgotLink">パスワードをお忘れですか？</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn1">
+              <span id="submitLabel1">次へ進む</span>
+              <svg id="submitIcon1" width="15" height="15" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </form>
+
+          <div class="demo-hint">
+            DEMO CREDENTIALS<br>
+            ID: <b>demo</b> ／ パスワード: <b>demo1234</b>
+          </div>
+          <div class="foot">アカウントをお持ちでない方は運営にお問い合わせください</div>
+        </div>
+
+        <!-- ---- STEP 2: 2FA ---- -->
+        <div class="view" id="view2">
+          <div class="step-label">Step 2 / 2</div>
+          <div class="eyebrow">Verification</div>
+          <h1>2段階認証</h1>
+          <p class="sub">登録済みの端末に送信した6桁の確認コードを入力してください。<br><span style="color:var(--text-sub);">（デモ用コード：<b>123456</b>）</span></p>
+
+          <div class="banner error" id="errorBox2">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span id="errorText2">確認コードが正しくありません。</span>
+          </div>
+
+          <form id="codeForm" novalidate>
+            <div class="field" id="codeField">
+              <label for="code">確認コード</label>
+              <div class="input-wrap">
+                <input type="text" id="code" name="code" class="code-input" placeholder="000000" inputmode="numeric" maxlength="6" autocomplete="one-time-code" required>
+              </div>
+              <div class="field-msg" id="codeMsg">6桁の確認コードを入力してください。</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn2">
+              <span id="submitLabel2">確認する</span>
+            </button>
+            <button type="button" class="btn btn-ghost" id="backBtn">ログイン情報の入力に戻る</button>
+          </form>
+        </div>
+
+        <!-- ---- SUCCESS ---- -->
+        <div class="view" id="viewSuccess">
+          <div class="success-wrap">
+            <div class="ring">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M4 12.5L9.5 18L20 6.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h2>認証が完了しました</h2>
+            <p class="sub">まもなくページに移動します…</p>
+
+            <div class="session-box">
+              <div>ログインID: <span id="sessIdOut">-</span></div>
+              <div>アクセス日時: <span id="sessTimeOut">-</span></div>
+              <div>接続状態: <span style="color:var(--success);">暗号化済み</span></div>
+            </div>
+
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-label"><span id="progressPct">0</span>% 読み込み中</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
 <script>
   const DEMO_ID = "demo";
   const DEMO_PW = "demo1234";
+  const DEMO_CODE = "123456";
+  const MAX_ATTEMPTS = 3;
+  const LOCKOUT_SEC = 12;
 
   // ログイン成功後にジャンプさせたい自分のサイトのファイル名をここで指定
   const REDIRECT_URL = "top.html";
 
-  const form = document.getElementById('loginForm');
-  const errorBox = document.getElementById('errorBox');
-  const errorText = document.getElementById('errorText');
-  const submitBtn = document.getElementById('submitBtn');
-  const loginView = document.getElementById('loginView');
-  const successView = document.getElementById('successView');
-  const forgotLink = document.getElementById('forgotLink');
+  const view1 = document.getElementById('view1');
+  const view2 = document.getElementById('view2');
+  const viewSuccess = document.getElementById('viewSuccess');
+  const segs = document.querySelectorAll('.seg');
+
+  function showView(el){
+    [view1, view2, viewSuccess].forEach(v => v.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function setStep(n){
+    segs.forEach(seg => {
+      const s = parseInt(seg.dataset.seg, 10);
+      seg.classList.toggle('active', s === n);
+      seg.classList.toggle('done', s < n);
+    });
+  }
+
+  /* ---------- side panel: checklist + clock ---------- */
+  const items = document.querySelectorAll('.checklist-item');
+  items.forEach((item, i) => {
+    setTimeout(() => {
+      item.classList.add('show');
+      setTimeout(() => item.classList.add('done'), 260);
+    }, i * 420 + 200);
+  });
+
+  function tickClock(){
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('ja-JP', { hour12:false });
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  /* ---------- password visibility ---------- */
   const togglePw = document.getElementById('togglePw');
   const pwInput = document.getElementById('password');
   const eyeIcon = document.getElementById('eyeIcon');
-  const submitLabel = document.getElementById('submitLabel');
-  const submitIcon = document.getElementById('submitIcon');
-  const progressFill = document.getElementById('progressFill');
-  const progressPct = document.getElementById('progressPct');
-
   togglePw.addEventListener('click', function(){
     const isText = pwInput.type === 'text';
     pwInput.type = isText ? 'password' : 'text';
@@ -452,76 +520,174 @@
       : '<path d="M3 3l18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.9 5.2A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.2 6.7C3.6 8.4 2 12 2 12s3.6 7 10 7c1.3 0 2.5-.2 3.6-.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.9 14.1a3 3 0 0 0 4.2-4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>';
   });
 
-  function showBanner(kind, message){
-    errorBox.classList.remove('ok', 'error');
-    errorBox.classList.add(kind, 'show');
-    errorText.textContent = message;
+  /* ---------- banners ---------- */
+  function showBanner(box, textEl, message){
+    box.classList.add('show');
+    textEl.textContent = message;
   }
-  function hideBanner(){
-    errorBox.classList.remove('show');
+  function hideBanner(box){ box.classList.remove('show'); }
+
+  /* ---------- STEP 1: id / password ---------- */
+  const loginForm = document.getElementById('loginForm');
+  const errorBox1 = document.getElementById('errorBox1');
+  const errorText1 = document.getElementById('errorText1');
+  const submitBtn1 = document.getElementById('submitBtn1');
+  const submitLabel1 = document.getElementById('submitLabel1');
+  const submitIcon1 = document.getElementById('submitIcon1');
+  const idField = document.getElementById('idField');
+  const pwField = document.getElementById('pwField');
+  const forgotLink = document.getElementById('forgotLink');
+
+  let failedAttempts = 0;
+  let lockedUntil = 0;
+
+  function validateStep1(){
+    const id = document.getElementById('loginId').value.trim();
+    const pw = document.getElementById('password').value;
+    let ok = true;
+
+    idField.classList.toggle('invalid', id.length === 0);
+    if(id.length === 0) ok = false;
+
+    pwField.classList.toggle('invalid', pw.length < 8);
+    if(pw.length < 8) ok = false;
+
+    return ok;
   }
 
-  function runProgressThenRedirect(){
-    let pct = 0;
-    const totalMs = 1400;
-    const stepMs = 30;
-    const steps = totalMs / stepMs;
-    const inc = 100 / steps;
+  ['loginId','password'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function(){
+      idField.classList.remove('invalid');
+      pwField.classList.remove('invalid');
+      hideBanner(errorBox1);
+    });
+  });
 
-    const timer = setInterval(function(){
-      pct = Math.min(100, pct + inc);
-      const rounded = Math.round(pct);
-      progressFill.style.width = rounded + '%';
-      progressPct.textContent = rounded;
-
-      if(pct >= 100){
-        clearInterval(timer);
-        document.getElementById('successSub').textContent = 'ページに移動します…';
-        window.location.href = REDIRECT_URL;
-      }
-    }, stepMs);
-  }
-
-  // 「ログイン状態を保持」が選ばれていた場合は、ログイン画面をスキップ
-  if(localStorage.getItem('krOfficialRemember') === '1'){
-    sessionStorage.setItem('krOfficialLoggedIn', '1');
-    runProgressThenRedirect();
-  }
-
-  form.addEventListener('submit', function(e){
+  loginForm.addEventListener('submit', function(e){
     e.preventDefault();
-    hideBanner();
+
+    const now = Date.now();
+    if(now < lockedUntil){
+      const remain = Math.ceil((lockedUntil - now) / 1000);
+      showBanner(errorBox1, errorText1, `試行回数が上限に達しました。${remain}秒後に再度お試しください。`);
+      return;
+    }
+
+    hideBanner(errorBox1);
+    if(!validateStep1()){
+      showBanner(errorBox1, errorText1, '入力内容をご確認ください。');
+      return;
+    }
 
     const id = document.getElementById('loginId').value.trim();
     const pw = document.getElementById('password').value;
 
-    if(!id || !pw){
-      showBanner('error', 'ログインIDとパスワードの両方を入力してください。');
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitLabel.textContent = "確認中…";
-    submitIcon.style.display = 'none';
+    submitBtn1.disabled = true;
+    submitLabel1.textContent = "確認中…";
+    submitIcon1.style.display = 'none';
 
     setTimeout(function(){
+      submitBtn1.disabled = false;
+      submitLabel1.textContent = "次へ進む";
+      submitIcon1.style.display = '';
+
       if(id === DEMO_ID && pw === DEMO_PW){
-        loginView.style.display = 'none';
-        successView.classList.add('show');
-        runProgressThenRedirect();
+        failedAttempts = 0;
+        window.__pendingId = id;
+        setStep(2);
+        showView(view2);
+        document.getElementById('code').focus();
       } else {
-        submitBtn.disabled = false;
-        submitLabel.textContent = "ログイン";
-        submitIcon.style.display = '';
-        showBanner('error', 'ログインIDまたはパスワードが正しくありません。');
+        failedAttempts++;
+        if(failedAttempts >= MAX_ATTEMPTS){
+          lockedUntil = Date.now() + LOCKOUT_SEC * 1000;
+          showBanner(errorBox1, errorText1, `試行回数が上限に達しました。${LOCKOUT_SEC}秒後に再度お試しください。`);
+        } else {
+          const remain = MAX_ATTEMPTS - failedAttempts;
+          showBanner(errorBox1, errorText1, `ログインIDまたはパスワードが正しくありません。（あと${remain}回で一時ロックされます）`);
+        }
       }
     }, 550);
   });
 
   forgotLink.addEventListener('click', function(e){
     e.preventDefault();
-    showBanner('error', 'デモ画面のため、パスワード再設定機能はありません。上記の共通IDでログインしてください。');
+    showBanner(errorBox1, errorText1, 'デモ画面のため、パスワード再設定機能はありません。上記の共通IDでログインしてください。');
   });
+
+  /* ---------- STEP 2: 2FA code ---------- */
+  const codeForm = document.getElementById('codeForm');
+  const codeField = document.getElementById('codeField');
+  const codeInput = document.getElementById('code');
+  const errorBox2 = document.getElementById('errorBox2');
+  const errorText2 = document.getElementById('errorText2');
+  const submitBtn2 = document.getElementById('submitBtn2');
+  const submitLabel2 = document.getElementById('submitLabel2');
+  const backBtn = document.getElementById('backBtn');
+
+  codeInput.addEventListener('input', function(){
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0,6);
+    codeField.classList.remove('invalid');
+    hideBanner(errorBox2);
+  });
+
+  backBtn.addEventListener('click', function(){
+    setStep(1);
+    showView(view1);
+    hideBanner(errorBox2);
+    codeInput.value = '';
+  });
+
+  codeForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const code = codeInput.value.trim();
+
+    if(code.length !== 6){
+      codeField.classList.add('invalid');
+      showBanner(errorBox2, errorText2, '6桁の確認コードを入力してください。');
+      return;
+    }
+
+    submitBtn2.disabled = true;
+    submitLabel2.textContent = "確認中…";
+
+    setTimeout(function(){
+      submitBtn2.disabled = false;
+      submitLabel2.textContent = "確認する";
+
+      if(code === DEMO_CODE){
+        document.getElementById('sessIdOut').textContent = window.__pendingId || DEMO_ID;
+        document.getElementById('sessTimeOut').textContent =
+          new Date().toLocaleString('ja-JP', { hour12:false });
+        showView(viewSuccess);
+        runProgressThenRedirect();
+      } else {
+        codeField.classList.add('invalid');
+        showBanner(errorBox2, errorText2, '確認コードが正しくありません。もう一度お試しください。');
+      }
+    }, 500);
+  });
+
+  /* ---------- success -> redirect ---------- */
+  function runProgressThenRedirect(){
+    const progressFill = document.getElementById('progressFill');
+    const progressPct = document.getElementById('progressPct');
+    let pct = 0;
+    const totalMs = 1300;
+    const stepMs = 30;
+    const inc = 100 / (totalMs / stepMs);
+
+    const timer = setInterval(function(){
+      pct = Math.min(100, pct + inc);
+      const rounded = Math.round(pct);
+      progressFill.style.width = rounded + '%';
+      progressPct.textContent = rounded;
+      if(pct >= 100){
+        clearInterval(timer);
+        window.location.href = REDIRECT_URL;
+      }
+    }, stepMs);
+  }
 </script>
 
 </body>
