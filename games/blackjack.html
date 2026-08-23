@@ -1,5 +1,321 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Blackjack Collection</title>
-<link rel="stylesheet" href="../css/style.css"><style></style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR002</span><div class="game-embed kr-embed-bj">
+<link rel="stylesheet" href="../css/style.css"><style>
+
+/* ==========================================================
+   KR002 BLACKJACK — style.css カラーテーマ準拠 UI
+   白 / ティール #28a6a5 / ミント / ダークティール
+   ========================================================== */
+
+.kr-embed-bj{
+  --bj-bg:#f9fcfd;
+  --bj-bg2:#eaf7f6;
+  --bj-panel:rgba(255,255,255,.86);
+  --bj-panel2:#fff;
+  --bj-line:rgba(40,166,165,.18);
+  --bj-line-strong:rgba(40,166,165,.38);
+  --bj-accent:#28a6a5;
+  --bj-text:#082627;
+  --bj-muted:rgba(8,38,39,.58);
+  --bj-success:#20b090;
+  --bj-danger:#e8577a;
+
+  padding:34px 28px 10px !important;
+  background:
+    radial-gradient(circle at 92% 8%,rgba(40,166,165,.13),transparent 24%),
+    linear-gradient(180deg,#ffffff 0%,var(--bj-bg) 100%) !important;
+  color:var(--bj-text) !important;
+}
+
+.kr-embed-bj #gameArea{
+  width:min(900px,100%);
+  margin:0 auto;
+  padding:28px 30px 32px;
+  border:1px solid var(--bj-line);
+  border-radius:20px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 24px 60px rgba(40,166,165,.14);
+  position:relative;
+  overflow:hidden;
+}
+
+.kr-embed-bj #gameArea::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;right:0;height:3px;
+  background:var(--bj-accent);
+}
+
+.kr-embed-bj h1{
+  margin:0;
+  text-align:center;
+  color:var(--bj-text) !important;
+  font-size:clamp(28px,4vw,42px);
+  letter-spacing:.08em;
+}
+
+.kr-embed-bj h1::after{
+  content:"♠  ♣  ♥  ♦";
+  display:block;
+  margin-top:8px;
+  color:var(--bj-accent);
+  font-size:13px;
+  letter-spacing:.35em;
+}
+
+.kr-embed-bj #gameStatus{
+  width:fit-content;
+  max-width:100%;
+  margin:16px auto 26px;
+  padding:9px 18px;
+  border:1px solid var(--bj-line-strong);
+  border-radius:999px;
+  background:rgba(40,166,165,.07);
+  color:var(--bj-accent);
+  font-size:13px;
+  font-weight:700;
+  text-align:center;
+}
+
+/* 手札エリア */
+.kr-embed-bj .hand{
+  min-height:174px;
+  margin:14px 0;
+  padding:20px;
+  border:1px solid var(--bj-line);
+  border-radius:16px;
+  background:var(--bj-panel);
+  box-shadow:0 12px 28px rgba(40,166,165,.08);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:0;
+}
+
+.kr-embed-bj .hand::before{
+  content:"";
+  width:100%;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.18em;
+  color:var(--bj-muted);
+  text-align:left;
+  align-self:flex-start;
+}
+
+.kr-embed-bj #dealerHand::before{content:"DEALER";}
+.kr-embed-bj #playerHand::before{content:"PLAYER";}
+
+/* JSで生成するカード */
+.kr-embed-bj .bj-card{
+  width:72px;
+  height:102px;
+  border:1px solid rgba(8,38,39,.13);
+  border-radius:10px;
+  background:linear-gradient(145deg,#fff,#f5fbfb);
+  box-shadow:0 7px 16px rgba(8,38,39,.10);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:8px 9px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:22px;
+  font-weight:700;
+  text-align:left;
+  transition:.18s ease;
+}
+.kr-embed-bj .bj-card:hover{
+  transform:translateY(-4px) rotate(-1deg);
+  box-shadow:0 12px 22px rgba(40,166,165,.17);
+}
+.kr-embed-bj .bj-card .bj-corner{
+  line-height:1;
+}
+.kr-embed-bj .bj-card .bj-suit{
+  align-self:center;
+  font-size:31px;
+  line-height:1;
+}
+.kr-embed-bj .bj-card .bj-corner.bottom{
+  align-self:flex-end;
+  transform:rotate(180deg);
+}
+.kr-embed-bj .bj-card.red{color:#e8577a;}
+.kr-embed-bj .bj-card.black{color:#082627;}
+
+.kr-embed-bj .bj-card.back{
+  background:
+    linear-gradient(135deg,rgba(40,166,165,.92),rgba(32,176,144,.88));
+  border-color:rgba(40,166,165,.5);
+  color:#fff;
+  position:relative;
+}
+.kr-embed-bj .bj-card.back::after{
+  content:"KR";
+  width:46px;height:62px;
+  margin:auto;
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Segoe UI",sans-serif;
+  font-size:12px;
+  letter-spacing:.18em;
+}
+
+.kr-embed-bj .bj-total{
+  width:100%;
+  margin-top:3px;
+  text-align:right;
+  color:var(--bj-text);
+  font-size:13px;
+  font-weight:800;
+}
+.kr-embed-bj .bj-total strong{
+  color:var(--bj-accent);
+  font-size:20px;
+}
+
+/* VS */
+.kr-embed-bj .hand + .hand{
+  margin-top:18px;
+}
+
+/* 操作ボタン */
+.kr-embed-bj #gameArea > div[style*="display: flex"]{
+  display:flex !important;
+  justify-content:center !important;
+  gap:10px;
+  margin:24px 0 12px !important;
+}
+.kr-embed-bj #hitButton,
+.kr-embed-bj #standButton{
+  min-width:125px;
+  padding:12px 24px !important;
+  border:1px solid var(--bj-accent) !important;
+  border-radius:10px !important;
+  background:var(--bj-accent) !important;
+  color:#fff !important;
+  font-weight:800 !important;
+  letter-spacing:.08em;
+}
+.kr-embed-bj #standButton{
+  background:#fff !important;
+  color:var(--bj-accent) !important;
+}
+.kr-embed-bj #hitButton:hover,
+.kr-embed-bj #standButton:hover{
+  transform:translateY(-2px);
+  box-shadow:0 7px 18px rgba(40,166,165,.22) !important;
+}
+.kr-embed-bj button:disabled{
+  opacity:.38;
+  cursor:not-allowed;
+  transform:none !important;
+  box-shadow:none !important;
+}
+
+/* Reset / Restart */
+.kr-embed-bj #resetButton,
+.kr-embed-bj #restartButton{
+  margin:7px auto !important;
+  display:block;
+  min-width:120px;
+  border:1px solid var(--bj-line-strong) !important;
+  background:#fff !important;
+  color:var(--bj-accent) !important;
+}
+
+/* 勝敗カウンター */
+.kr-embed-bj #scoreboard{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin:24px 0;
+}
+.kr-embed-bj #scoreboard p{
+  margin:0;
+  padding:17px;
+  border:1px solid var(--bj-line);
+  border-radius:12px;
+  background:var(--bj-bg);
+  text-align:center;
+  color:var(--bj-muted);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.1em;
+}
+.kr-embed-bj #scoreboard span{
+  display:block;
+  margin-top:5px;
+  color:var(--bj-accent);
+  font-size:27px;
+  letter-spacing:0;
+}
+
+/* 履歴 */
+.kr-embed-bj #resultTable{
+  margin-top:26px !important;
+  overflow:hidden;
+  border:1px solid var(--bj-line) !important;
+  border-radius:13px;
+  background:#fff;
+}
+.kr-embed-bj #resultTable th{
+  background:rgba(40,166,165,.08) !important;
+  color:var(--bj-accent) !important;
+  font-size:11px;
+  letter-spacing:.06em;
+}
+.kr-embed-bj #resultTable td{
+  color:var(--bj-text) !important;
+  font-size:12px;
+}
+.kr-embed-bj #resultTable tr:hover td{
+  background:rgba(40,166,165,.04);
+}
+
+/* フッター */
+.kr-embed-bj .blackjack-footer{
+  margin-top:28px;
+  padding:28px 10px 10px;
+  border-top:1px solid var(--bj-line);
+  background:transparent !important;
+  text-align:center;
+}
+.kr-embed-bj .blackjack-footer h2{
+  color:var(--bj-accent) !important;
+  letter-spacing:.12em;
+}
+.kr-embed-bj .blackjack-footer .footer-title{
+  color:var(--bj-muted) !important;
+}
+.kr-embed-bj .blackjack-footer .footer-divider{
+  width:100%;
+  max-width:260px;
+  height:2px;
+  margin:15px auto;
+  background:var(--bj-accent) !important;
+}
+.kr-embed-bj .blackjack-footer .footer-message,
+.kr-embed-bj .blackjack-footer small{
+  color:var(--bj-muted) !important;
+}
+
+/* モバイル */
+@media(max-width:600px){
+  .kr-embed-bj{padding:20px 10px 5px !important;}
+  .kr-embed-bj #gameArea{padding:22px 14px 24px;}
+  .kr-embed-bj .hand{padding:15px 8px;min-height:145px;}
+  .kr-embed-bj .bj-card{width:56px;height:82px;font-size:17px;padding:6px;}
+  .kr-embed-bj .bj-card .bj-suit{font-size:25px;}
+  .kr-embed-bj #hitButton,.kr-embed-bj #standButton{min-width:105px;}
+  .kr-embed-bj #scoreboard{grid-template-columns:1fr 1fr;}
+}
+
+</style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR002</span><div class="game-embed kr-embed-bj">
  
   <div id="gameArea">
     <h1>ブラックジャック</h1>
@@ -103,11 +419,33 @@
 
     function displayHand(hand, elementId, isDealer = false) {
       const handElement = document.getElementById(elementId);
-      let handText = hand.map(card => `${card.value}${card.suit}`).join(', ');
+      const isRedSuit = suit => suit === 'H' || suit === 'D';
+      const suitSymbol = suit => ({H:'♥',D:'♦',C:'♣',S:'♠'})[suit] || suit;
+
+      let cardsHtml = hand.map(card => {
+        const red = isRedSuit(card.suit) ? 'red' : 'black';
+        return `
+          <div class="bj-card ${red}">
+            <span class="bj-corner">${card.value}${suitSymbol(card.suit)}</span>
+            <span class="bj-suit">${suitSymbol(card.suit)}</span>
+            <span class="bj-corner bottom">${card.value}${suitSymbol(card.suit)}</span>
+          </div>`;
+      }).join('');
+
       if (isDealer && !gameInProgress) {
-        handText = `${hand[0].value}${hand[0].suit}, [裏面のカード]`;
+        const first = hand[0];
+        cardsHtml = `
+          <div class="bj-card ${isRedSuit(first.suit) ? 'red' : 'black'}">
+            <span class="bj-corner">${first.value}${suitSymbol(first.suit)}</span>
+            <span class="bj-suit">${suitSymbol(first.suit)}</span>
+            <span class="bj-corner bottom">${first.value}${suitSymbol(first.suit)}</span>
+          </div>
+          <div class="bj-card back"></div>`;
       }
-      handElement.textContent = `${elementId === 'playerHand' ? 'プレイヤーの手札' : 'ディーラーの手札'}: ${handText} (合計: ${calculateScore(hand)})`;
+
+      handElement.innerHTML =
+        cardsHtml +
+        `<div class="bj-total">TOTAL <strong>${calculateScore(hand)}</strong></div>`;
     }
 
     function startGame() {
