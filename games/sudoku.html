@@ -1,669 +1,213 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Sudoku</title>
 <link rel="stylesheet" href="../css/style.css"><style>
-
-        
 .kr-embed-sudoku{
-
-    --casino-gold:#a855f7;
-    --casino-gold-light:#d9b4fb;
-
-    --bg:#090909;
-    --card:#181818;
-    --card-hover:#222;
-
-    --text:#f5f5f5;
-    --sub:#a6a6a6;
-
-    --border:rgba(168,85,247,.18);
-
+    --casino-gold:#28a6a5;
+    --casino-gold-light:#28a6a5;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --card-hover:#eaf7f6;
+    --text:#082627;
+    --sub:rgba(8,38,39,.6);
+    --border:rgba(40,166,165,.25);
 }
-
-
-
 .kr-embed-sudoku{
-
     margin:0;
-
     min-height:auto;
-
     display:flex;
-
     flex-direction:column;
-
-    background:
-    radial-gradient(circle at top,
-    #2d2d2d,
-    #161616 45%,
-    #090909);
-
+    background:#ffffff;
+    color:var(--text);
 }
-
-
-
 .kr-embed-sudoku h1{
-
     width:100%;
-
     text-align:center;
-
     margin:25px 0 35px;
-
-    color:#a855f7;
-
+    color:var(--casino-gold);
     font-size:42px;
-
     font-weight:700;
-
     letter-spacing:.08em;
-
-    text-shadow:
-        0 0 12px rgba(168,85,247,.3);
-
 }
-
-
-
-
 .kr-embed-sudoku #sudoku{
-
     display:grid;
-
-    grid-template-columns:
-    repeat(9,42px);
-
+    grid-template-columns:repeat(9,42px);
     gap:0;
-
-
     margin:30px auto;
-
-
     width:378px;
-
     padding:0;
-
-
-    background:#090909;
-
-
-    border:
-
-    3px solid #a855f7;
-
-
-    box-shadow:
-
-    0 0 30px rgba(168,85,247,.25);
-
+    background:#ffffff;
+    border:3px solid var(--casino-gold);
+    box-shadow:0 10px 30px rgba(40,166,165,.15);
 }
-
-
 .kr-embed-sudoku .cell{
-
     width:42px;
-
     height:42px;
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        #191919,
-        #090909
-    );
-
-
-    border:
-
-    1px solid rgba(168,85,247,.25);
-
-
+    background:#ffffff;
+    border:1px solid rgba(40,166,165,.25);
     font-size:20px;
-
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
-
-    color:#fff;
-
-
+    color:var(--text);
     box-sizing:border-box;
-
 }
 .kr-embed-sudoku #controls button{
-
-    min-width:180px;
-
+    min-width:0;
 }
-
-
 .kr-embed-sudoku .cell input{
-
     width:100%;
     height:100%;
-
     border:none;
-
     text-align:center;
-
     font-size:20px;
-
     background:transparent;
-
-    color:#d9b4fb;
-
+    color:var(--casino-gold);
 }
 .kr-embed-sudoku .cell:nth-child(3n){
-    border-right:2px solid #a855f7;
+    border-right:2px solid var(--casino-gold);
 }
 .kr-embed-sudoku .cell:nth-child(9n){
     border-right:none;
 }
-
-
 .kr-embed-sudoku .cell input:focus{
-
     outline:none;
-
-    background:rgba(168,85,247,0.08);
-
+    background:rgba(40,166,165,.08);
 }
-
-
-
 .kr-embed-sudoku .fixed{
-
-    background:
-
-    linear-gradient(
-        145deg,
-        #3b2f08,
-        #1a1400
-    );
-
-
-    color:#d9b4fb;
-
-
+    background:var(--card-hover);
+    color:var(--casino-gold);
     font-weight:bold;
-
-
-    box-shadow:
-
-    inset 0 0 10px rgba(168,85,247,.25);
-
+    box-shadow:inset 0 0 8px rgba(40,166,165,.15);
 }
-
-
-
 .kr-embed-sudoku #controls{
-
     width:100%;
-
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
-
-    gap:20px;
-
+    gap:22px;
     margin:35px 0;
-
 }
-
-
-
-.kr-embed-sudoku button{
-
-    margin:5px;
-
-    padding:8px 18px;
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        #d9b4fb,
-        #a855f7
-    );
-
-
-    color:#090909;
-
-
-    border:none;
-
-    border-radius:8px;
-
-
-    font-weight:bold;
-
-
-    cursor:pointer;
-
-
-    transition:.3s;
-
-}
-
-
-.kr-embed-sudoku button:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:
-
-    0 0 18px rgba(168,85,247,.6);
-
-}
-
-
-.kr-embed-sudoku button:hover{
-
-    background:#d9b4fb;
-
-    box-shadow:
-    0 0 15px rgba(168,85,247,0.7);
-
-}
-
-
-
-
-.kr-embed-sudoku #previousResultsTable{
-
-    margin-top:20px;
-
-    display:none;
-
-}
-
-
-
-.kr-embed-sudoku table{
-
-    width:50%;
-
-    margin:20px auto;
-
-    border-collapse:collapse;
-
-    color:#fff;
-
-}
-
-
-
-.kr-embed-sudoku th,.kr-embed-sudoku td{
-
-    padding:10px;
-
-    border:1px solid rgba(168,85,247,0.4);
-
-    text-align:center;
-
-}
-
-
-
-.kr-embed-sudoku th{
-
-    background:#1a1505;
-
-    color:#a855f7;
-
-}
-
-
-
-
-.kr-embed-sudoku .difficulty-options{
-
+.kr-embed-sudoku #controls .button-row{
     display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:30px;
-
+    flex-direction:row;
     flex-wrap:wrap;
-
+    justify-content:center;
+    gap:10px;
 }
-
-
-.kr-embed-sudoku .difficulty-options label{
-
-    margin:0 10px;
-
-    color:#ddd;
-
+.kr-embed-sudoku button{
+    margin:5px;
+    padding:8px 18px;
+    background:var(--casino-gold);
+    color:#ffffff;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
 }
-
-
-
-
-
-.kr-embed-sudoku::-webkit-scrollbar{
-
-    width:10px;
-
+.kr-embed-sudoku button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(40,166,165,.35);
 }
-
-
+.kr-embed-sudoku #previousResultsTable{
+    margin-top:20px;
+    display:none;
+}
+.kr-embed-sudoku table{
+    width:50%;
+    margin:20px auto;
+    border-collapse:collapse;
+    color:var(--text);
+}
+.kr-embed-sudoku th,.kr-embed-sudoku td{
+    padding:10px;
+    border:1px solid rgba(40,166,165,.25);
+    text-align:center;
+}
+.kr-embed-sudoku th{
+    background:var(--bg2,#eaf7f6);
+    color:var(--casino-gold);
+}
+.kr-embed-sudoku .mode-tabs{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+.kr-embed-sudoku .mode-tab{
+    padding:10px 22px;
+    border-radius:999px;
+    border:1px solid rgba(40,166,165,.35);
+    background:#ffffff;
+    color:var(--text);
+    font-weight:bold;
+    font-size:14px;
+    cursor:pointer;
+    transition:.2s;
+}
+.kr-embed-sudoku .mode-tab:hover{
+    border-color:var(--casino-gold);
+    color:var(--casino-gold);
+}
+.kr-embed-sudoku .mode-tab.active{
+    background:var(--casino-gold);
+    color:#ffffff;
+    border-color:var(--casino-gold);
+    box-shadow:0 4px 14px rgba(40,166,165,.35);
+}
 .kr-embed-sudoku::-webkit-scrollbar-thumb{
-
-    background:#6e5314;
-
+    background:var(--casino-gold);
     border-radius:20px;
-
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer{
-
     margin-top:auto;
-
     width:100%;
-
-
-    background:
-
-    linear-gradient(
-        180deg,
-        #140a20,
-        #090909
-    );
-
-
-    color:#f5e3a2;
-
-
-    
-    border-top:
-
-    3px solid #a855f7;
-
-
-    box-shadow:
-
-    0 -8px 25px rgba(168,85,247,.18);
-
-
+    background:#ffffff;
+    color:var(--text);
+    border-top:2px solid var(--casino-gold);
     padding:35px 0;
-
 }
-
-
-
-
 .kr-embed-sudoku .sudoku-footer h2{
-
-    color:#d9b4fb;
-
+    color:var(--casino-gold);
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer .footer-title{
-
-    color:#e8c968;
-
+    color:var(--casino-gold);
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer .footer-message{
-
-    color:#f5e3a2;
-
+    color:var(--text);
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer small{
-
-    color:#c8b77a;
-
+    color:var(--sub);
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer .footer-divider{
-
-    background:#a855f7;
-
+    height:2px;
+    background:rgba(40,166,165,.25);
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer a{
-
-    color:#d9b4fb;
-
+    color:var(--casino-gold);
     text-decoration:none;
-
 }
-
-
-
 .kr-embed-sudoku .sudoku-footer a:hover{
-
-    color:#fff1a8;
-
+    color:#1c7f7e;
 }
-
-
-
-  
-   
-
-
-
-    
-
-/* ==========================================================
-   KR OFFICIAL — LOGIN THEME
-   login.html と統一したパステル・ガラスUI
-   ========================================================== */
-:root{
-    --login-bg:#fdf3ff;
-    --login-panel:rgba(255,255,255,.72);
-    --login-lavender:#c9a8ff;
-    --login-mint:#8ee6d0;
-    --login-butter:#ffe08a;
-    --login-pink:#ffb3d1;
-    --login-sky:#a6d4ff;
-    --login-purple:#9c6bff;
-    --login-pink-strong:#ff6fa8;
-    --login-sky-strong:#4fa8ff;
-    --login-text:#3a2c50;
-    --login-sub:rgba(58,44,80,.62);
-    --login-line:rgba(120,80,160,.14);
-}
-html,body{
-    background:
-        radial-gradient(circle at 8% 8%,rgba(201,168,255,.42),transparent 28%),
-        radial-gradient(circle at 92% 88%,rgba(142,230,208,.34),transparent 28%),
-        linear-gradient(160deg,#fdf3ff 0%,#f5f2ff 45%,#eefaf6 100%) !important;
-    color:var(--login-text) !important;
-}
-.app,.main,.game{background:transparent !important;color:var(--login-text) !important;}
-.sidebar{
-    background:rgba(255,255,255,.62) !important;
-    border-right:1px solid rgba(120,80,160,.12) !important;
-    box-shadow:8px 0 30px rgba(156,107,255,.08) !important;
-    backdrop-filter:blur(20px) saturate(160%);
-    -webkit-backdrop-filter:blur(20px) saturate(160%);
-}
-.brand,.brand-name,.brand-sub,.nav a,.nav-icon{color:var(--login-text) !important;}
-.brand-mark{
-    background:linear-gradient(135deg,var(--login-pink),var(--login-lavender) 55%,var(--login-sky)) !important;
-    color:#fff !important;
-}
-.nav a{border-radius:12px !important;transition:.2s ease !important;}
-.nav a:hover,.nav a.active{
-    background:rgba(201,168,255,.18) !important;
-    color:var(--login-purple) !important;
-}
-.nav a.active .nav-icon,.nav a:hover .nav-icon{color:var(--login-purple) !important;}
-.mobile-toggle{
-    background:rgba(255,255,255,.78) !important;
-    color:var(--login-text) !important;
-    border:1px solid var(--login-line) !important;
-}
-.game-shell{
-    background:rgba(255,255,255,.38) !important;
-    border:1px solid rgba(255,255,255,.72) !important;
-    box-shadow:0 24px 60px rgba(156,107,255,.12) !important;
-    backdrop-filter:blur(18px) saturate(150%);
-}
-.back{color:var(--login-purple) !important;}
-.site-tag{
-    background:rgba(201,168,255,.18) !important;
-    color:var(--login-purple) !important;
-    border:1px solid rgba(156,107,255,.18) !important;
-}
-.kr-embed-mine,.kr-embed-num100,.kr-embed-sudoku{
-    background:
-        radial-gradient(circle at 12% 8%,rgba(201,168,255,.24),transparent 26%),
-        radial-gradient(circle at 90% 90%,rgba(142,230,208,.20),transparent 26%),
-        linear-gradient(160deg,#fdf3ff 0%,#f5f2ff 48%,#eefaf6 100%) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-mine h1,.kr-embed-num100 h1,.kr-embed-sudoku h1,
-.kr-embed-mine h2,.kr-embed-num100 h2,.kr-embed-sudoku h2{
-    color:var(--login-purple) !important;
-    text-shadow:0 4px 18px rgba(156,107,255,.18) !important;
-}
-.kr-embed-mine p,.kr-embed-num100 p,.kr-embed-sudoku p,
-.kr-embed-mine .subtitle,.kr-embed-num100 .subtitle{color:var(--login-sub) !important;}
-
-.kr-embed-num100 .guess-card,.kr-embed-num100 .result-card,.kr-embed-num100 .history-card{
-    background:rgba(255,255,255,.70) !important;
-    border:1px solid rgba(255,255,255,.78) !important;
-    box-shadow:0 18px 40px rgba(156,107,255,.12) !important;
-    backdrop-filter:blur(18px);
-}
-.kr-embed-mine #minefield{
-    background:rgba(255,255,255,.48) !important;
-    border:2px solid rgba(156,107,255,.28) !important;
-    box-shadow:0 0 30px rgba(156,107,255,.12),inset 0 0 20px rgba(156,107,255,.05) !important;
-}
-.kr-embed-mine .cell{
-    background:linear-gradient(145deg,#fff,#f3edff) !important;
-    border:1px solid rgba(156,107,255,.20) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-mine .cell:hover{background:#f3ecff !important;box-shadow:0 0 12px rgba(156,107,255,.20) !important;}
-.kr-embed-mine .revealed{
-    background:linear-gradient(145deg,#f0ebff,#fff) !important;
-    color:var(--login-purple) !important;
-}
-.kr-embed-mine .flagged{
-    background:linear-gradient(135deg,var(--login-pink),var(--login-lavender)) !important;
-    color:#fff !important;
-}
-.kr-embed-num100 #userGuess{
-    background:rgba(255,255,255,.78) !important;
-    color:var(--login-text) !important;
-    border:1.5px solid var(--login-line) !important;
-}
-.kr-embed-num100 #userGuess:focus,.kr-embed-num100 #userGuess:hover{
-    border-color:var(--login-purple) !important;
-    box-shadow:0 0 15px rgba(156,107,255,.18) !important;
-}
-.kr-embed-num100 #userGuess::placeholder{color:rgba(58,44,80,.34) !important;}
-
-.kr-embed-sudoku #sudoku{
-    background:rgba(255,255,255,.62) !important;
-    border:3px solid var(--login-purple) !important;
-    box-shadow:0 0 30px rgba(156,107,255,.16) !important;
-}
-.kr-embed-sudoku .cell{
-    background:linear-gradient(145deg,#fff,#f5f0ff) !important;
-    border-color:rgba(156,107,255,.18) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-sudoku .cell input{color:var(--login-purple) !important;}
-.kr-embed-sudoku .cell input:focus{background:rgba(201,168,255,.12) !important;}
-.kr-embed-sudoku .fixed{
-    background:linear-gradient(145deg,#fff4c9,#fffaf0) !important;
-    color:#8c6b2c !important;
-}
-.kr-embed-sudoku .difficulty-options label{color:var(--login-text) !important;}
-
-.kr-embed-mine button,.kr-embed-num100 button,.kr-embed-sudoku button{
-    background:linear-gradient(120deg,var(--login-pink-strong),var(--login-purple) 55%,var(--login-sky-strong)) !important;
-    color:#fff !important;
-    border:none !important;
-    box-shadow:0 10px 22px -10px rgba(156,107,255,.42) !important;
-}
-.kr-embed-mine button:hover,.kr-embed-num100 button:hover,.kr-embed-sudoku button:hover{
-    filter:brightness(1.05);
-}
-.kr-embed-mine table,.kr-embed-num100 table,.kr-embed-sudoku table{
-    background:rgba(255,255,255,.62) !important;
-    color:var(--login-text) !important;
-    border-color:rgba(156,107,255,.18) !important;
-    box-shadow:0 15px 35px rgba(156,107,255,.08) !important;
-}
-.kr-embed-mine th,.kr-embed-num100 th,.kr-embed-sudoku th{
-    background:linear-gradient(120deg,rgba(255,179,209,.48),rgba(201,168,255,.48),rgba(166,212,255,.42)) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-mine td,.kr-embed-num100 td,.kr-embed-sudoku td{
-    color:var(--login-text) !important;
-    border-color:rgba(156,107,255,.12) !important;
-}
-.kr-embed-mine tr:hover,.kr-embed-num100 tr:hover{background:rgba(201,168,255,.10) !important;}
-
-.kr-embed-mine .mine-footer,.kr-embed-num100 .site-footer,.kr-embed-sudoku .sudoku-footer{
-    background:rgba(255,255,255,.58) !important;
-    color:var(--login-sub) !important;
-    border-top:2px solid var(--login-lavender) !important;
-    box-shadow:0 -8px 25px rgba(156,107,255,.08) !important;
-    backdrop-filter:blur(18px);
-}
-.kr-embed-mine .mine-footer h2,.kr-embed-num100 .footer-inner h2,.kr-embed-sudoku .sudoku-footer h2{color:var(--login-purple) !important;}
-.kr-embed-mine .mine-footer .footer-title,.kr-embed-num100 .footer-title,.kr-embed-sudoku .sudoku-footer .footer-title{color:var(--login-pink-strong) !important;}
-.kr-embed-mine .mine-footer .footer-message,.kr-embed-num100 .footer-message,.kr-embed-sudoku .sudoku-footer .footer-message{color:var(--login-text) !important;}
-.kr-embed-mine .mine-footer small,.kr-embed-num100 .footer-inner small,.kr-embed-sudoku .sudoku-footer small{color:var(--login-sub) !important;}
-.kr-embed-mine .mine-footer .footer-divider,.kr-embed-num100 .footer-divider,.kr-embed-sudoku .sudoku-footer .footer-divider{
-    background:linear-gradient(90deg,var(--login-pink-strong),var(--login-purple),var(--login-sky-strong)) !important;
-}
-.kr-embed-mine .mine-footer a,.kr-embed-num100 .footer-links a,.kr-embed-sudoku .sudoku-footer a{color:var(--login-purple) !important;}
-.kr-embed-mine .mine-footer a:hover,.kr-embed-num100 .footer-links a:hover,.kr-embed-sudoku .sudoku-footer a:hover{color:var(--login-pink-strong) !important;}
-::-webkit-scrollbar{width:10px;}
-::-webkit-scrollbar-track{background:rgba(255,255,255,.45) !important;}
-::-webkit-scrollbar-thumb{
-    background:linear-gradient(180deg,var(--login-pink),var(--login-lavender),var(--login-sky)) !important;
-    border-radius:20px;
-}
-
 </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR001</span><div class="game-embed kr-embed-sudoku">
     <h1>ナンプレ（数独）</h1>
     <div id="sudoku"></div>
 
     <div id="controls">
-        <div class="difficulty-options">
-            <label><input type="radio" name="difficulty" value="easy" checked>下級</label>
-            <label><input type="radio" name="difficulty" value="medium">中級</label>
-            <label><input type="radio" name="difficulty" value="hard">上級</label>
+        <div class="mode-tabs" id="modeTabs">
+            <button class="mode-tab active" data-mode="easy" onclick="setDifficulty('easy')">下級</button>
+            <button class="mode-tab" data-mode="medium" onclick="setDifficulty('medium')">中級</button>
+            <button class="mode-tab" data-mode="hard" onclick="setDifficulty('hard')">上級</button>
         </div>
-        <button onclick="resetGame()">リセット</button>
-        <button onclick="restartGame()">リスタート</button>
-        <button onclick="showHint()">ヒント</button>
-        <button onclick="showSolution()">模範解答表示</button>
-        <button onclick="saveProgress()">作業保存</button>
-        <button onclick="showPreviousResults()">過去の結果を表示</button>
+        <div class="button-row">
+            <button onclick="resetGame()">リセット</button>
+            <button onclick="restartGame()">リスタート</button>
+            <button onclick="showHint()">ヒント</button>
+            <button onclick="showSolution()">模範解答表示</button>
+            <button onclick="saveProgress()">作業保存</button>
+            <button onclick="showPreviousResults()">過去の結果を表示</button>
+        </div>
     </div>
 
     <h2>過去のゲーム結果</h2>
@@ -704,7 +248,7 @@ html,body{
         let solutionBoard = [];
         let previousResults = JSON.parse(localStorage.getItem('sudokuResults')) || [];
         let currentGameNumber = previousResults.length + 1;
-        let difficulty = 'easy'; // デフォルトの難易度
+        let difficulty = localStorage.getItem('sudokuDifficulty') || 'easy'; // デフォルトの難易度
 
         function createBoard() {
             const sudokuDiv = document.getElementById('sudoku');
@@ -733,11 +277,21 @@ html,body{
                 }
             }
 
-            // 難易度を取得
-            difficulty = document.querySelector('input[name="difficulty"]:checked').value;
-
             // 一部のセルに初期値を設定（固定セル）
             setInitialValues();
+        }
+
+        // 難易度モードを切り替える
+        function setDifficulty(mode) {
+            if (mode === difficulty) return;
+            if (!confirm('難易度を変更しますか？進行中のゲームが失われます。')) return;
+
+            difficulty = mode;
+            localStorage.setItem('sudokuDifficulty', mode);
+            document.querySelectorAll('.mode-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+            createBoard();
         }
 
         function generateSolvedBoard() {
@@ -984,6 +538,10 @@ html,body{
     }
 
     window.onload = function() {
+        document.querySelectorAll('.mode-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === difficulty);
+        });
+
         const savedProgress = localStorage.getItem('sudokuProgress');
         if (savedProgress) {
             sudokuBoard = JSON.parse(savedProgress);

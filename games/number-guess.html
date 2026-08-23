@@ -1,845 +1,325 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Numerical Reasoning 100</title>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Numerical Reasoning</title>
 <link rel="stylesheet" href="../css/style.css"><style>
-
-
-
-
-
 .kr-embed-num100{
-
-    --gold:#a855f7;
-    --gold-light:#d9b4fb;
-
-    --bg:#090909;
-    --bg2:#161616;
-    --card:#181818;
-    --card-hover:#232323;
-
-    --text:#f5f5f5;
-    --sub:#a8a8a8;
-
-    --border:rgba(168,85,247,.18);
-
+    --gold:#28a6a5;
+    --gold-light:#28a6a5;
+    --bg:#ffffff;
+    --bg2:#eaf7f6;
+    --card:#ffffff;
+    --card-hover:#eaf7f6;
+    --text:#082627;
+    --sub:rgba(8,38,39,.6);
+    --border:rgba(40,166,165,.25);
 }
-
-
-
 .kr-embed-num100 *{
-
     margin:0;
-
     padding:0;
-
     box-sizing:border-box;
-
 }
-
-
-
 .kr-embed-num100{
-
     font-family:"Segoe UI",Arial,sans-serif;
-
     min-height:auto;
-
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
-
-    background:
-
-    radial-gradient(
-        circle at top,
-        #2d2d2d,
-        #161616 45%,
-        #090909
-    );
-
+    background:#ffffff;
     color:var(--text);
-
     padding:40px 20px;
-
 }
-
-
-
 .kr-embed-num100 h1{
-
     color:var(--gold);
-
     font-size:42px;
-
     letter-spacing:.12em;
-
     margin-bottom:10px;
-
-    text-shadow:
-
-    0 0 15px rgba(168,85,247,.25);
-
 }
-
-
-
 .kr-embed-num100 body>p:first-of-type{
-
     color:var(--sub);
-
     font-size:16px;
-
     margin-bottom:35px;
-
 }
-
-
-
 .kr-embed-num100 #userGuess{
-
     width:240px;
-
     height:55px;
-
-    background:#111;
-
-    border:
-
-    1px solid rgba(168,85,247,.35);
-
+    background:#ffffff;
+    border:1px solid rgba(40,166,165,.35);
     border-radius:12px;
-
-    color:white;
-
+    color:var(--text);
     font-size:22px;
-
     text-align:center;
-
     outline:none;
-
     transition:.3s;
-
     margin-right:12px;
-
 }
-
 .kr-embed-num100 #userGuess:focus{
-
     border-color:var(--gold);
-
-    box-shadow:
-
-    0 0 15px rgba(168,85,247,.35);
-
+    box-shadow:0 0 10px rgba(40,166,165,.25);
 }
-
-
-
 .kr-embed-num100 button{
-
-    background:
-
-    linear-gradient(
-        180deg,
-        var(--gold-light),
-        var(--gold)
-    );
-
-    color:#111;
-
+    background:var(--gold);
+    color:#ffffff;
     border:none;
-
     border-radius:10px;
-
     padding:13px 24px;
-
     font-size:15px;
-
     font-weight:bold;
-
     cursor:pointer;
-
     transition:.25s;
-
 }
-
 .kr-embed-num100 button:hover{
-
-    transform:
-
-    translateY(-2px);
-
-    box-shadow:
-
-    0 8px 20px rgba(168,85,247,.35);
-
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(40,166,165,.3);
 }
-
-
-
 .kr-embed-num100 a{
-
-    color:var(--gold-light);
-
+    color:var(--gold);
     text-decoration:none;
-
     transition:.25s;
-
 }
-
 .kr-embed-num100 a:hover{
-
-    color:white;
-
+    color:#1c7f7e;
 }
-
-
-
 .kr-embed-num100 h2{
-
     color:var(--gold);
-
     margin-top:45px;
-
     margin-bottom:15px;
-
 }
-
-
-
 .kr-embed-num100 table{
-
     width:min(900px,90%);
-
     border-collapse:collapse;
-
-    background:
-
-    rgba(20,20,20,.82);
-
-    backdrop-filter:blur(18px);
-
-    border:
-
-    1px solid rgba(168,85,247,.2);
-
+    background:#ffffff;
+    border:1px solid rgba(40,166,165,.2);
     border-radius:18px;
-
     overflow:hidden;
-
-    box-shadow:
-
-    0 15px 35px rgba(0,0,0,.35);
-
+    box-shadow:0 10px 25px rgba(40,166,165,.1);
 }
-
 .kr-embed-num100 th{
-
-    background:
-
-    linear-gradient(
-        180deg,
-        #241238,
-        #120a1e
-    );
-
+    background:var(--bg2);
     color:var(--gold);
-
     padding:16px;
-
     font-size:15px;
-
 }
-
 .kr-embed-num100 td{
-
     padding:15px;
-
     text-align:center;
-
-    color:white;
-
-    border-top:
-
-    1px solid rgba(168,85,247,.08);
-
+    color:var(--text);
+    border-top:1px solid rgba(40,166,165,.12);
 }
-
 .kr-embed-num100 tr:hover{
-
-    background:
-
-    rgba(168,85,247,.05);
-
+    background:rgba(40,166,165,.05);
 }
-
-
-
-
 .kr-embed-num100 #previousResultsTable{
-
     margin-top:30px;
-
     display:none;
-
 }
-
-
-
 .kr-embed-num100 #userGuess::placeholder{
-
-    color:#777;
-
+    color:rgba(8,38,39,.35);
 }
-
 .kr-embed-num100 #userGuess:hover{
-
     border-color:var(--gold);
-
 }
-
-
-
 .kr-embed-num100 strong{
-
     display:flex;
-
     justify-content:center;
-
     gap:18px;
-
     margin-top:30px;
-
     flex-wrap:wrap;
-
 }
-
 .kr-embed-num100 strong button{
-
     min-width:220px;
-
 }
-
-
-
 .kr-embed-num100 tbody tr{
-
     transition:.25s;
-
 }
-
 .kr-embed-num100 tbody tr:hover{
-
     transform:scale(1.01);
-
 }
-
-
-
 .kr-embed-num100::-webkit-scrollbar{
-
     width:10px;
-
 }
-
 .kr-embed-num100::-webkit-scrollbar-track{
-
-    background:#111;
-
+    background:#eaf7f6;
 }
-
 .kr-embed-num100::-webkit-scrollbar-thumb{
-
-    background:linear-gradient(
-        180deg,
-        var(--gold-light),
-        var(--gold)
-    );
-
+    background:var(--gold);
     border-radius:20px;
-
 }
-
-
-
 .kr-embed-num100 .site-footer{
-
     margin-top:70px;
-
     width:100%;
-
     padding:40px 20px;
-
     text-align:center;
-
-    background:
-
-    linear-gradient(
-        180deg,
-        #1a1408,
-        #090909
-    );
-
+    background:#ffffff;
     border-top:2px solid var(--gold);
-
-    box-shadow:
-
-        0 -10px 25px rgba(0,0,0,.45);
-
 }
-
 .kr-embed-num100 .footer-inner{
-
     max-width:1100px;
-
     margin:auto;
-
 }
-
 .kr-embed-num100 .footer-inner h2{
-
     color:var(--gold);
-
     font-size:30px;
-
     letter-spacing:.08em;
-
     margin-bottom:8px;
-
 }
-
 .kr-embed-num100 .footer-title{
-
-    color:#d7c68d;
-
+    color:var(--gold);
     margin-bottom:18px;
-
 }
-
 .kr-embed-num100 .footer-divider{
-
     width:90px;
-
     height:2px;
-
-    background:#a855f7;
-
+    background:var(--gold);
     margin:20px 0;
-
 }
-
 .kr-embed-num100 .footer-message{
-
-    color:#f5f5f5;
-
+    color:var(--text);
     margin-bottom:20px;
-
 }
-
 .kr-embed-num100 .footer-links{
-
     display:flex;
-
     justify-content:center;
-
     gap:30px;
-
     flex-wrap:wrap;
-
     margin-bottom:25px;
-
 }
-
 .kr-embed-num100 .footer-links a{
-
-    color:var(--gold-light);
-
+    color:var(--gold);
     font-weight:bold;
-
     transition:.25s;
-
 }
-
 .kr-embed-num100 .footer-links a:hover{
-
-    color:white;
-
-    text-shadow:
-
-        0 0 10px rgba(168,85,247,.5);
-
+    color:#1c7f7e;
 }
-
 .kr-embed-num100 .footer-inner small{
-
-    color:#9f9f9f;
-
+    color:var(--sub);
     line-height:1.8;
-
 }
-
-
-
 @media(max-width:768px){
-
     .kr-embed-num100 h1{
-
         font-size:32px;
-
     }
-
     .kr-embed-num100 #userGuess{
-
         width:100%;
-
         margin:0 0 15px 0;
-
     }
-
     .kr-embed-num100 button{
-
         width:100%;
-
     }
-
     .kr-embed-num100 strong{
-
         flex-direction:column;
-
     }
-
     .kr-embed-num100 strong button{
-
         width:100%;
-
     }
-
     .kr-embed-num100 table{
-
         width:100%;
-
         font-size:14px;
-
     }
-
 }
-
-
-.kr-embed-num100 .guess-card{
-
-    width:min(450px,90%);
-
-    margin:30px auto;
-
-    padding:35px;
-
+.kr-embed-num100 .mode-tabs{
     display:flex;
-
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:10px;
+}
+.kr-embed-num100 .mode-tab{
+    padding:10px 22px;
+    border-radius:999px;
+    border:1px solid rgba(40,166,165,.35);
+    background:#ffffff;
+    color:var(--text);
+    font-weight:bold;
+    font-size:14px;
+    cursor:pointer;
+    transition:.2s;
+}
+.kr-embed-num100 .mode-tab:hover{
+    border-color:var(--gold);
+    color:var(--gold);
+}
+.kr-embed-num100 .mode-tab.active{
+    background:var(--gold);
+    color:#ffffff;
+    border-color:var(--gold);
+    box-shadow:0 4px 14px rgba(40,166,165,.35);
+}
+.kr-embed-num100 .guess-card{
+    width:min(450px,90%);
+    margin:30px auto;
+    padding:35px;
+    display:flex;
     flex-direction:column;
-
     align-items:center;
-
     gap:20px;
-
-    background:rgba(20,20,20,.82);
-
-    backdrop-filter:blur(18px);
-
-    border:1px solid rgba(168,85,247,.2);
-
+    background:var(--bg2);
+    border:1px solid rgba(40,166,165,.2);
     border-radius:22px;
-
-    box-shadow:
-
-        0 20px 40px rgba(0,0,0,.45);
-
 }
-
-
-
 .kr-embed-num100 .result-card,.kr-embed-num100 .history-card{
-
     width:min(950px,95%);
-
     margin:40px auto;
-
     padding:30px;
-
-    background:rgba(20,20,20,.82);
-
-    backdrop-filter:blur(18px);
-
-    border:1px solid rgba(168,85,247,.2);
-
+    background:#ffffff;
+    border:1px solid rgba(40,166,165,.2);
     border-radius:22px;
-
-    box-shadow:
-
-        0 15px 35px rgba(0,0,0,.4);
-
+    box-shadow:0 10px 25px rgba(40,166,165,.08);
 }
-        .kr-embed-num100 .footer-inner{
-
+.kr-embed-num100 .footer-inner{
     max-width:1100px;
-
     margin:auto;
-
     text-align:left;
-
 }
 .kr-embed-num100 .footer-inner h2{
-
-    color:#a855f7;
-
+    color:var(--gold);
     font-size:30px;
-
     font-weight:700;
-
     letter-spacing:.08em;
-
     margin:0;
-
-    text-shadow:
-
-        0 0 10px rgba(168,85,247,.4);
-
 }
 .kr-embed-num100 .footer-title{
-
     margin-top:8px;
-
-    color:#e5cb73;
-
+    color:var(--gold);
     text-align:left;
-
 }
 .kr-embed-num100 .footer-message{
-
-    color:#f5f5f5;
-
+    color:var(--text);
     text-align:left;
-
 }
 .kr-embed-num100 .footer-inner small{
-
     display:block;
-
-    color:#9f9f9f;
-
+    color:var(--sub);
     line-height:1.8;
-
     text-align:left;
-
 }
 .kr-embed-num100 .number-footer,.kr-embed-num100 .number-footer *{
-
-    color:#a855f7 !important;
-
+    color:var(--gold) !important;
 }
-
+.kr-embed-num100 .number-footer .footer-message{
+    color:var(--text) !important;
+}
+.kr-embed-num100 .number-footer small{
+    color:var(--sub) !important;
+}
 .kr-embed-num100 .number-footer a:hover{
-
-    color:#fff1a8 !important;
-
+    color:#1c7f7e !important;
 }
-
 .kr-embed-num100 .number-footer .footer-divider{
-
-    background:#a855f7;
-
+    background:var(--gold);
 }
-
-    
-
-/* ==========================================================
-   KR OFFICIAL — LOGIN THEME
-   login.html と統一したパステル・ガラスUI
-   ========================================================== */
-:root{
-    --login-bg:#fdf3ff;
-    --login-panel:rgba(255,255,255,.72);
-    --login-lavender:#c9a8ff;
-    --login-mint:#8ee6d0;
-    --login-butter:#ffe08a;
-    --login-pink:#ffb3d1;
-    --login-sky:#a6d4ff;
-    --login-purple:#9c6bff;
-    --login-pink-strong:#ff6fa8;
-    --login-sky-strong:#4fa8ff;
-    --login-text:#3a2c50;
-    --login-sub:rgba(58,44,80,.62);
-    --login-line:rgba(120,80,160,.14);
-}
-html,body{
-    background:
-        radial-gradient(circle at 8% 8%,rgba(201,168,255,.42),transparent 28%),
-        radial-gradient(circle at 92% 88%,rgba(142,230,208,.34),transparent 28%),
-        linear-gradient(160deg,#fdf3ff 0%,#f5f2ff 45%,#eefaf6 100%) !important;
-    color:var(--login-text) !important;
-}
-.app,.main,.game{background:transparent !important;color:var(--login-text) !important;}
-.sidebar{
-    background:rgba(255,255,255,.62) !important;
-    border-right:1px solid rgba(120,80,160,.12) !important;
-    box-shadow:8px 0 30px rgba(156,107,255,.08) !important;
-    backdrop-filter:blur(20px) saturate(160%);
-    -webkit-backdrop-filter:blur(20px) saturate(160%);
-}
-.brand,.brand-name,.brand-sub,.nav a,.nav-icon{color:var(--login-text) !important;}
-.brand-mark{
-    background:linear-gradient(135deg,var(--login-pink),var(--login-lavender) 55%,var(--login-sky)) !important;
-    color:#fff !important;
-}
-.nav a{border-radius:12px !important;transition:.2s ease !important;}
-.nav a:hover,.nav a.active{
-    background:rgba(201,168,255,.18) !important;
-    color:var(--login-purple) !important;
-}
-.nav a.active .nav-icon,.nav a:hover .nav-icon{color:var(--login-purple) !important;}
-.mobile-toggle{
-    background:rgba(255,255,255,.78) !important;
-    color:var(--login-text) !important;
-    border:1px solid var(--login-line) !important;
-}
-.game-shell{
-    background:rgba(255,255,255,.38) !important;
-    border:1px solid rgba(255,255,255,.72) !important;
-    box-shadow:0 24px 60px rgba(156,107,255,.12) !important;
-    backdrop-filter:blur(18px) saturate(150%);
-}
-.back{color:var(--login-purple) !important;}
-.site-tag{
-    background:rgba(201,168,255,.18) !important;
-    color:var(--login-purple) !important;
-    border:1px solid rgba(156,107,255,.18) !important;
-}
-.kr-embed-mine,.kr-embed-num100,.kr-embed-sudoku{
-    background:
-        radial-gradient(circle at 12% 8%,rgba(201,168,255,.24),transparent 26%),
-        radial-gradient(circle at 90% 90%,rgba(142,230,208,.20),transparent 26%),
-        linear-gradient(160deg,#fdf3ff 0%,#f5f2ff 48%,#eefaf6 100%) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-mine h1,.kr-embed-num100 h1,.kr-embed-sudoku h1,
-.kr-embed-mine h2,.kr-embed-num100 h2,.kr-embed-sudoku h2{
-    color:var(--login-purple) !important;
-    text-shadow:0 4px 18px rgba(156,107,255,.18) !important;
-}
-.kr-embed-mine p,.kr-embed-num100 p,.kr-embed-sudoku p,
-.kr-embed-mine .subtitle,.kr-embed-num100 .subtitle{color:var(--login-sub) !important;}
-
-.kr-embed-num100 .guess-card,.kr-embed-num100 .result-card,.kr-embed-num100 .history-card{
-    background:rgba(255,255,255,.70) !important;
-    border:1px solid rgba(255,255,255,.78) !important;
-    box-shadow:0 18px 40px rgba(156,107,255,.12) !important;
-    backdrop-filter:blur(18px);
-}
-.kr-embed-mine #minefield{
-    background:rgba(255,255,255,.48) !important;
-    border:2px solid rgba(156,107,255,.28) !important;
-    box-shadow:0 0 30px rgba(156,107,255,.12),inset 0 0 20px rgba(156,107,255,.05) !important;
-}
-.kr-embed-mine .cell{
-    background:linear-gradient(145deg,#fff,#f3edff) !important;
-    border:1px solid rgba(156,107,255,.20) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-mine .cell:hover{background:#f3ecff !important;box-shadow:0 0 12px rgba(156,107,255,.20) !important;}
-.kr-embed-mine .revealed{
-    background:linear-gradient(145deg,#f0ebff,#fff) !important;
-    color:var(--login-purple) !important;
-}
-.kr-embed-mine .flagged{
-    background:linear-gradient(135deg,var(--login-pink),var(--login-lavender)) !important;
-    color:#fff !important;
-}
-.kr-embed-num100 #userGuess{
-    background:rgba(255,255,255,.78) !important;
-    color:var(--login-text) !important;
-    border:1.5px solid var(--login-line) !important;
-}
-.kr-embed-num100 #userGuess:focus,.kr-embed-num100 #userGuess:hover{
-    border-color:var(--login-purple) !important;
-    box-shadow:0 0 15px rgba(156,107,255,.18) !important;
-}
-.kr-embed-num100 #userGuess::placeholder{color:rgba(58,44,80,.34) !important;}
-
-.kr-embed-sudoku #sudoku{
-    background:rgba(255,255,255,.62) !important;
-    border:3px solid var(--login-purple) !important;
-    box-shadow:0 0 30px rgba(156,107,255,.16) !important;
-}
-.kr-embed-sudoku .cell{
-    background:linear-gradient(145deg,#fff,#f5f0ff) !important;
-    border-color:rgba(156,107,255,.18) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-sudoku .cell input{color:var(--login-purple) !important;}
-.kr-embed-sudoku .cell input:focus{background:rgba(201,168,255,.12) !important;}
-.kr-embed-sudoku .fixed{
-    background:linear-gradient(145deg,#fff4c9,#fffaf0) !important;
-    color:#8c6b2c !important;
-}
-.kr-embed-sudoku .difficulty-options label{color:var(--login-text) !important;}
-
-.kr-embed-mine button,.kr-embed-num100 button,.kr-embed-sudoku button{
-    background:linear-gradient(120deg,var(--login-pink-strong),var(--login-purple) 55%,var(--login-sky-strong)) !important;
-    color:#fff !important;
-    border:none !important;
-    box-shadow:0 10px 22px -10px rgba(156,107,255,.42) !important;
-}
-.kr-embed-mine button:hover,.kr-embed-num100 button:hover,.kr-embed-sudoku button:hover{
-    filter:brightness(1.05);
-}
-.kr-embed-mine table,.kr-embed-num100 table,.kr-embed-sudoku table{
-    background:rgba(255,255,255,.62) !important;
-    color:var(--login-text) !important;
-    border-color:rgba(156,107,255,.18) !important;
-    box-shadow:0 15px 35px rgba(156,107,255,.08) !important;
-}
-.kr-embed-mine th,.kr-embed-num100 th,.kr-embed-sudoku th{
-    background:linear-gradient(120deg,rgba(255,179,209,.48),rgba(201,168,255,.48),rgba(166,212,255,.42)) !important;
-    color:var(--login-text) !important;
-}
-.kr-embed-mine td,.kr-embed-num100 td,.kr-embed-sudoku td{
-    color:var(--login-text) !important;
-    border-color:rgba(156,107,255,.12) !important;
-}
-.kr-embed-mine tr:hover,.kr-embed-num100 tr:hover{background:rgba(201,168,255,.10) !important;}
-
-.kr-embed-mine .mine-footer,.kr-embed-num100 .site-footer,.kr-embed-sudoku .sudoku-footer{
-    background:rgba(255,255,255,.58) !important;
-    color:var(--login-sub) !important;
-    border-top:2px solid var(--login-lavender) !important;
-    box-shadow:0 -8px 25px rgba(156,107,255,.08) !important;
-    backdrop-filter:blur(18px);
-}
-.kr-embed-mine .mine-footer h2,.kr-embed-num100 .footer-inner h2,.kr-embed-sudoku .sudoku-footer h2{color:var(--login-purple) !important;}
-.kr-embed-mine .mine-footer .footer-title,.kr-embed-num100 .footer-title,.kr-embed-sudoku .sudoku-footer .footer-title{color:var(--login-pink-strong) !important;}
-.kr-embed-mine .mine-footer .footer-message,.kr-embed-num100 .footer-message,.kr-embed-sudoku .sudoku-footer .footer-message{color:var(--login-text) !important;}
-.kr-embed-mine .mine-footer small,.kr-embed-num100 .footer-inner small,.kr-embed-sudoku .sudoku-footer small{color:var(--login-sub) !important;}
-.kr-embed-mine .mine-footer .footer-divider,.kr-embed-num100 .footer-divider,.kr-embed-sudoku .sudoku-footer .footer-divider{
-    background:linear-gradient(90deg,var(--login-pink-strong),var(--login-purple),var(--login-sky-strong)) !important;
-}
-.kr-embed-mine .mine-footer a,.kr-embed-num100 .footer-links a,.kr-embed-sudoku .sudoku-footer a{color:var(--login-purple) !important;}
-.kr-embed-mine .mine-footer a:hover,.kr-embed-num100 .footer-links a:hover,.kr-embed-sudoku .sudoku-footer a:hover{color:var(--login-pink-strong) !important;}
-::-webkit-scrollbar{width:10px;}
-::-webkit-scrollbar-track{background:rgba(255,255,255,.45) !important;}
-::-webkit-scrollbar-thumb{
-    background:linear-gradient(180deg,var(--login-pink),var(--login-lavender),var(--login-sky)) !important;
-    border-radius:20px;
-}
-
 </style></head><body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="../index.html"><span class="nav-icon">⌂</span>ホーム</a><a class="active" href="../content.html"><span class="nav-icon">▦</span>コンテンツ</a><a href="../omikuji.html"><span class="nav-icon">✦</span>おみくじ</a><a href="../achievements.html"><span class="nav-icon">★</span>実績</a><a href="../creator.html"><span class="nav-icon">◎</span>作成者情報</a><a href="../terms.html"><span class="nav-icon">§</span>利用規約</a></nav></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="game"><a class="back" href="../content.html">← CONTENT</a><section class="game-shell"><span class="site-tag">KR006</span><div class="game-embed kr-embed-num100">
     <div class="number-game">
 
-    <h1>🎯 Numerical Reasoning 100</h1>
+    <h1>🎯 Numerical Reasoning</h1>
 
-    <p class="subtitle">
+    <p class="subtitle" id="modeSubtitle">
         Guess the hidden number between 1 and 100
     </p>
 
-
+    <div class="mode-tabs" id="modeTabs">
+        <button class="mode-tab" data-mode="100" onclick="setMode(100)">100まで</button>
+        <button class="mode-tab" data-mode="1000" onclick="setMode(1000)">1000まで</button>
+        <button class="mode-tab" data-mode="10000" onclick="setMode(10000)">10000まで</button>
+    </div>
 
        <div class="guess-card">
 
@@ -904,10 +384,6 @@ CHECK HISTORY
         </tbody>
     </table>
        </div>
-    <strong>
-    <button onclick="jumpToWebsite1()">数当てゲーム1000</button>
-    <button onclick="jumpToWebsite2()">数当てゲーム10000</button>
-    </strong>
     
 
   <footer class="site-footer number-footer">
@@ -930,8 +406,32 @@ CHECK HISTORY
     </div>
 </footer>
 </div></section></div></main></div><script src="../js/common.js"></script><script>
-        let correctNumber = Math.floor(Math.random() * 100) + 1;
+        let currentMax = parseInt(localStorage.getItem('numGuessMode')) || 100;
+        let correctNumber = Math.floor(Math.random() * currentMax) + 1;
         let attempts = 0;
+
+        // モード（範囲）を切り替える
+        function setMode(max) {
+            currentMax = max;
+            localStorage.setItem('numGuessMode', max);
+            updateModeTabs();
+
+            correctNumber = Math.floor(Math.random() * currentMax) + 1;
+            attempts = 0;
+            document.getElementById('resultBody').innerHTML = '';
+            document.getElementById('userGuess').value = '';
+            showPreviousResults();
+        }
+
+        function updateModeTabs() {
+            document.querySelectorAll('.mode-tab').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.mode) === currentMax);
+            });
+            document.getElementById('modeSubtitle').textContent = `Guess the hidden number between 1 and ${currentMax}`;
+            const input = document.getElementById('userGuess');
+            input.placeholder = `Enter a number (1-${currentMax})`;
+            input.max = currentMax;
+        }
 
         function guessNumber() {
             const userGuess = document.getElementById('userGuess').value;
@@ -959,7 +459,7 @@ CHECK HISTORY
 
             // 正解なら新しいゲームを開始
             if (result === 'true') {
-                correctNumber = Math.floor(Math.random() * 100) + 1;
+                correctNumber = Math.floor(Math.random() * currentMax) + 1;
                 attempts = 0;
                 alert('start new game!!');
             }
@@ -969,14 +469,15 @@ CHECK HISTORY
         }
 
         function saveResult(attempts, guess, result) {
-            const gameResult = { attempts, guess, result };
+            const gameResult = { attempts, guess, result, mode: currentMax };
             let results = JSON.parse(localStorage.getItem('gameResults')) || [];
             results.push(gameResult);
             localStorage.setItem('gameResults', JSON.stringify(results));
         }
 
         function showPreviousResults() {
-            const results = JSON.parse(localStorage.getItem('gameResults')) || [];
+            const results = (JSON.parse(localStorage.getItem('gameResults')) || [])
+                .filter(r => (r.mode || 100) === currentMax);
             const previousResultBody = document.getElementById('previousResultBody');
             const previousResultsTable = document.getElementById('previousResultsTable');
             previousResultBody.innerHTML = ''; // 一度クリア
@@ -992,14 +493,6 @@ CHECK HISTORY
             // 過去の結果テーブルを表示
             previousResultsTable.style.display = 'table';
         }
-        // ... (既存のJavaScriptコード)
-
-function jumpToWebsite1() {
-  window.location.href = "number-guess-1000.html"; // ウェブサイト1のURLに置き換えてください
-}
-
-function jumpToWebsite2() {
-  window.location.href = "number-guess-10000.html"; // ウェブサイト2のURLに置き換えてください
-}
     
+        updateModeTabs();
 try{krUnlock('KR006')}catch(e){}</script></body></html>
