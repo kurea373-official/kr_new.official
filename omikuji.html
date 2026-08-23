@@ -1,83 +1,276 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KR OFFICIAL | Omikuji</title><link rel="stylesheet" href="css/style.css"></head>
-<body><div class="app"><aside class="sidebar" id="sidebar"><div class="brand"><div class="brand-mark">KR OFFICIAL</div><div class="brand-sub">DIGITAL CONTENT PLATFORM</div></div><nav class="nav"><a href="top.html"><span class="nav-icon">⌂</span>Home</a><a href="content.html"><span class="nav-icon">▦</span>Contents</a><a class="active" href="omikuji.html"><span class="nav-icon">✦</span>Omikuji</a><a href="achievements.html"><span class="nav-icon">★</span>Access</a><a href="creator.html"><span class="nav-icon">◎</span>Owner data</a><a href="terms.html"><span class="nav-icon">§</span>Terms</a></nav><div class="sidebar-bottom"><span class="status-dot"></span>SYSTEM ONLINE<br>KR OFFICIAL / 2026</div></aside><button class="mobile-toggle" onclick="toggleMenu()">☰</button><main class="main"><div class="page"><section class="hero">
-<div class="kicker">KR OFFICIAL / FORTUNE</div>
-<h1>おみくじ</h1>
-<p>占い方法を選んで、今日の運勢をKR OFFICIALのおみくじで占います。</p>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KR OFFICIAL | Omikuji</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .fortune-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .method-btn,.sub-btn{
+    padding:9px 16px;border:1px solid var(--line-strong);border-radius:20px;
+    background:transparent;color:var(--muted);cursor:pointer;transition:.2s
+  }
+  .method-btn.active,.method-btn:hover,.sub-btn:hover{background:rgba(40,166,165,.10);color:var(--text)}
+  .fortune-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .draw-main{
+    padding:13px 24px;border:0;border-radius:11px;background:var(--gold);
+    color:#fff;font-weight:800;cursor:pointer;box-shadow:0 10px 25px rgba(40,166,165,.22)
+  }
+  .draw-main:hover{transform:translateY(-2px)}
+  .result-card{margin-top:16px;padding:28px;border:1px solid var(--line);
+    border-radius:18px;background:var(--panel);box-shadow:0 18px 45px rgba(40,166,165,.12)}
+  .result-top{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;flex-wrap:wrap}
+  .result-rank{font-size:38px;font-weight:900;color:var(--gold)}
+  .result-date{font:11px ui-monospace,monospace;color:var(--muted)}
+  .result-message{margin-top:8px;font-size:14px;line-height:1.9}
+  .fortune-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+  .fortune-item{padding:15px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .fortune-item span{display:block;font-size:10px;color:var(--gold);font-weight:800;letter-spacing:.08em;margin-bottom:6px}
+  .fortune-item strong{font-size:13px}
+  .history{margin-top:18px}
+  .history-row{display:grid;grid-template-columns:90px 90px 1fr auto;gap:10px;align-items:center;
+    padding:11px 0;border-bottom:1px solid rgba(40,166,165,.10);font-size:12px}
+  .history-row:last-child{border-bottom:0}
+  .history-rank{font-weight:800;color:var(--gold)}
+  .empty{color:var(--muted);font-size:12px}
+  .mini-note{font-size:11px;color:var(--muted);line-height:1.7;margin-top:12px}
+  @media(max-width:700px){
+    .fortune-grid{grid-template-columns:1fr 1fr}
+    .history-row{grid-template-columns:70px 75px 1fr}
+    .history-row button{grid-column:1/-1}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand kr-logo">
+    <img src="kr-official-logo.svg" alt="KR OFFICIAL">
+  </div>
+  <nav class="nav">
+    <a href="top.html"><span class="nav-icon">⌂</span>Home</a>
+    <a href="content.html"><span class="nav-icon">▦</span>Contents</a>
+    <a class="active" href="omikuji.html"><span class="nav-icon">✦</span>Omikuji</a>
+    <a href="achievements.html"><span class="nav-icon">★</span>Access</a>
+    <a href="creator.html"><span class="nav-icon">◎</span>Owner data</a>
+    <a href="terms.html"><span class="nav-icon">§</span>Terms</a>
+  </nav>
+  <div class="sidebar-bottom"><span class="status-dot"></span>SYSTEM ONLINE<br>KR OFFICIAL / 2026</div>
+</aside>
 
-<div class="method-tabs" role="tablist" aria-label="占い方法" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
-  <button type="button" class="method-btn active" data-method="classic" style="padding:9px 16px;border:1px solid var(--line-strong);background:#0c2538;color:#dff4ff;border-radius:20px;cursor:pointer;font-size:13px">通常のおみくじ</button>
-  <button type="button" class="method-btn" data-method="tarot" style="padding:9px 16px;border:1px solid var(--line-strong);background:transparent;color:#9fb8c8;border-radius:20px;cursor:pointer;font-size:13px">タロット風一枚引き</button>
-  <button type="button" class="method-btn" data-method="dice" style="padding:9px 16px;border:1px solid var(--line-strong);background:transparent;color:#9fb8c8;border-radius:20px;cursor:pointer;font-size:13px">サイコロ占い</button>
+<button class="mobile-toggle" onclick="toggleMenu()">☰</button>
+
+<main class="main">
+<div class="page">
+<section class="hero">
+  <div class="kicker">KR OFFICIAL / FORTUNE SYSTEM</div>
+  <h1>おみくじ</h1>
+  <p>今日の運勢を、通常・タロット風・サイコロの3方式から選べます。結果は端末に保存され、過去の結果も確認できます。</p>
+
+  <div class="fortune-tools" role="tablist" aria-label="占い方法">
+    <button class="method-btn active" data-method="classic">通常のおみくじ</button>
+    <button class="method-btn" data-method="tarot">タロット風一枚引き</button>
+    <button class="method-btn" data-method="dice">サイコロ占い</button>
+  </div>
+
+  <div class="fortune-actions">
+    <button id="draw" class="draw-main">今日の運勢を占う</button>
+    <button id="share" class="sub-btn">結果をコピー</button>
+    <button id="clearHistory" class="sub-btn">履歴を削除</button>
+  </div>
+  <div class="mini-note">※占いはエンターテインメントとしてお楽しみください。</div>
+</section>
+
+<div class="section-head"><h2 id="fortuneTitle">RESULT — 通常のおみくじ</h2></div>
+
+<div class="result-card" id="resultCard">
+  <div class="result-top">
+    <div>
+      <div class="result-rank" id="resultRank">—</div>
+      <div class="result-message" id="resultMessage">「今日の運勢を占う」を押してください。</div>
+    </div>
+    <div class="result-date" id="resultDate">NO RESULT</div>
+  </div>
+  <div class="fortune-grid" id="fortuneGrid">
+    <div class="fortune-item"><span>総合運</span><strong>—</strong></div>
+    <div class="fortune-item"><span>仕事・学業</span><strong>—</strong></div>
+    <div class="fortune-item"><span>対人運</span><strong>—</strong></div>
+    <div class="fortune-item"><span>金運</span><strong>—</strong></div>
+    <div class="fortune-item"><span>恋愛運</span><strong>—</strong></div>
+    <div class="fortune-item"><span>ラッキー</span><strong>—</strong></div>
+  </div>
 </div>
 
-<button id="draw" style="margin-top:22px;padding:12px 22px;border:1px solid var(--line-strong);background:#0c2538;color:#dff4ff;border-radius:9px;cursor:pointer">おみくじを引く</button>
-</section>
-<div class="section-head"><h2 id="fortuneTitle">RESULT</h2></div>
-<div class="prose" id="fortune">占い方法を選んでボタンを押すと、運勢を確認できます。</div>
+<div class="section-head"><h2>HISTORY</h2><span>最新10件</span></div>
+<div class="prose history" id="history"><div class="empty">まだ占い結果がありません。</div></div>
+
 <footer class="footer">© 2026 kurekure.a1024. ALL Rights Reserved.</footer>
-</div></main></div><script src="js/common.js"></script>
+</div>
+</main>
+</div>
+
+<script src="js/common.js"></script>
 <script>
-const classicFortunes=[
-  "大吉 — 新しいことを始めるのに良い日です。",
-  "中吉 — 小さな積み重ねが結果につながります。",
-  "吉 — 焦らず自分のペースで進みましょう。",
-  "末吉 — 準備を整えることで運が開けます。",
-  "凶 — 無理をせず、今日は慎重に行動しましょう。"
-];
+const methods = {
+  classic: {
+    title:"通常のおみくじ",
+    data:[
+      ["大吉","運気が大きく上向く日。迷っていることは、小さな一歩から始めると流れが変わります。"],
+      ["中吉","努力が結果につながりやすい日。焦らず丁寧に進めるほど好機をつかめます。"],
+      ["吉","安定した運勢。周囲との協力を大切にすると、思わぬ助けを得られそうです。"],
+      ["小吉","派手さはなくても着実に前進できる日。準備と確認を丁寧に。"],
+      ["末吉","今は土台づくりの時期。急いで答えを出さず、情報を集めましょう。"],
+      ["凶","慎重さが味方になる日。無理な決断は避け、余裕を持って行動しましょう。"]
+    ]
+  },
+  tarot: {
+    title:"タロット風一枚引き",
+    data:[
+      ["太陽","成功・明るさ。自分から動くことで、周囲にも良い流れが広がります。"],
+      ["星","希望・回復。すぐに結果が出なくても、理想を諦めないことが大切です。"],
+      ["月","不確実性。思い込みだけで判断せず、事実を確認してから動きましょう。"],
+      ["塔","変化。予定外の出来事があっても、柔軟に切り替えることで好転します。"],
+      ["戦車","前進・決断。優先順位を一つに絞ると、強い行動力を発揮できます。"],
+      ["隠者","内省。静かな時間をつくると、本当に必要な答えが見えてきます。"],
+      ["運命の輪","転機。偶然の話や誘いの中に、新しいチャンスが隠れているかもしれません。"],
+      ["力","忍耐・継続。感情に振り回されず、落ち着いた対応が良い結果を生みます。"]
+    ]
+  },
+  dice: {
+    title:"サイコロ占い",
+    data:[
+      ["1","出会い運。新しい人・情報との接点を大切に。"],
+      ["2","金運。必要なものを優先すると、無駄遣いを防げます。"],
+      ["3","仕事・学業運。短時間の集中を繰り返すと効率アップ。"],
+      ["4","コンディション運。休憩・睡眠・食事をいつもより意識して。"],
+      ["5","恋愛運。素直な言葉が良いコミュニケーションにつながります。"],
+      ["6","全体運。思い切った行動が良い刺激に。まずは一つ動いてみましょう。"]
+    ]
+  }
+};
 
-const tarotCards=[
-  {name:"太陽",meaning:"成功と活力の暗示。今日は積極的に動くほど良い結果につながります。"},
-  {name:"星",meaning:"希望が見える一日。焦らず理想に向かって進みましょう。"},
-  {name:"月",meaning:"物事がはっきり見えにくい暗示。慎重な判断を心がけて。"},
-  {name:"塔",meaning:"予期せぬ変化の暗示。変化を恐れず柔軟に対応しましょう。"},
-  {name:"戦車",meaning:"勢いに乗れる一日。決断力が良い結果を呼びます。"},
-  {name:"隠者",meaning:"一人で見つめ直す時間が力になる暗示です。"},
-  {name:"運命の輪",meaning:"流れが変わる暗示。チャンスを逃さないように。"},
-  {name:"力",meaning:"根気強さが実を結ぶ一日。焦らず続けましょう。"}
-];
+const values = ["絶好調","好調","順調","まずまず","要注意"];
+const colors = ["ラベンダー","ミント","スカイブルー","ピンク","イエロー","ホワイト"];
+const items = ["スマートフォンの整理","お気に入りの飲み物","イヤホン","メモ帳","腕時計","小さなアクセサリー"];
+const times = ["朝 7:00〜9:00","昼 12:00〜13:00","夕方 16:00〜18:00","夜 20:00〜22:00"];
 
-const diceFortunes=[
-  "① 出会い運アップ — 新しい人との縁が生まれるかも。",
-  "② 金運まずまず — 無駄遣いに気をつければ安定。",
-  "③ 仕事運好調 — 集中力が高まり作業がはかどります。",
-  "④ 健康運注意 — 睡眠と食事のバランスを意識して。",
-  "⑤ 恋愛運上昇 — 素直な気持ちが良い結果を呼びます。",
-  "⑥ 全体運絶好調 — 何をしても上手くいきやすい日。"
-];
+let currentMethod = "classic";
+let lastResult = null;
+const historyKey = "krOfficialOmikujiHistory";
 
-let currentMethod="classic";
+const $ = id => document.getElementById(id);
+const today = () => new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit"});
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function drawResult(){
+  const method = methods[currentMethod];
+  const fortune = pick(method.data);
+  const result = {
+    date: today(),
+    method: method.title,
+    rank: fortune[0],
+    message: fortune[1],
+    overall: pick(values),
+    study: pick(values),
+    people: pick(values),
+    money: pick(values),
+    love: pick(values),
+    luckyColor: pick(colors),
+    luckyItem: pick(items),
+    luckyTime: pick(times)
+  };
+  lastResult = result;
+  renderResult(result);
+  saveHistory(result);
+  renderHistory();
+}
+
+function renderResult(r){
+  $("fortuneTitle").textContent = "RESULT — " + r.method;
+  $("resultRank").textContent = r.rank;
+  $("resultMessage").textContent = r.message;
+  $("resultDate").textContent = r.date;
+  $("fortuneGrid").innerHTML = `
+    <div class="fortune-item"><span>総合運</span><strong>${r.overall}</strong></div>
+    <div class="fortune-item"><span>仕事・学業</span><strong>${r.study}</strong></div>
+    <div class="fortune-item"><span>対人運</span><strong>${r.people}</strong></div>
+    <div class="fortune-item"><span>金運</span><strong>${r.money}</strong></div>
+    <div class="fortune-item"><span>恋愛運</span><strong>${r.love}</strong></div>
+    <div class="fortune-item"><span>ラッキーカラー</span><strong>${r.luckyColor}</strong></div>
+    <div class="fortune-item"><span>ラッキーアイテム</span><strong>${r.luckyItem}</strong></div>
+    <div class="fortune-item"><span>ラッキータイム</span><strong>${r.luckyTime}</strong></div>
+  `;
+}
+
+function getHistory(){
+  try { return JSON.parse(localStorage.getItem(historyKey) || "[]"); }
+  catch(e){ return []; }
+}
+
+function saveHistory(r){
+  const history = getHistory();
+  history.unshift(r);
+  localStorage.setItem(historyKey, JSON.stringify(history.slice(0,10)));
+}
+
+function renderHistory(){
+  const history = getHistory();
+  if(!history.length){
+    $("history").innerHTML = '<div class="empty">まだ占い結果がありません。</div>';
+    return;
+  }
+  $("history").innerHTML = history.map((r,i)=>`
+    <div class="history-row">
+      <span>${r.date}</span>
+      <span>${r.method}</span>
+      <span class="history-rank">${r.rank}</span>
+      <button class="sub-btn" onclick="showHistory(${i})">詳細</button>
+    </div>
+  `).join("");
+}
+
+function showHistory(i){
+  const r = getHistory()[i];
+  if(r){ lastResult = r; renderResult(r); window.scrollTo({top:0,behavior:"smooth"}); }
+}
 
 document.querySelectorAll(".method-btn").forEach(btn=>{
-  btn.onclick=()=>{
-    currentMethod=btn.dataset.method;
-    document.querySelectorAll(".method-btn").forEach(b=>{
-      const active=b===btn;
-      b.classList.toggle("active",active);
-      b.style.background=active?"#0c2538":"transparent";
-      b.style.color=active?"#dff4ff":"#9fb8c8";
-    });
-    const titles={classic:"通常のおみくじ",tarot:"タロット風一枚引き",dice:"サイコロ占い"};
-    document.getElementById("fortuneTitle").textContent=`RESULT — ${titles[currentMethod]}`;
-    document.getElementById("fortune").textContent="ボタンを押して運勢を確認してください。";
-  };
+  btn.addEventListener("click",()=>{
+    currentMethod = btn.dataset.method;
+    document.querySelectorAll(".method-btn").forEach(b=>b.classList.toggle("active",b===btn));
+    $("fortuneTitle").textContent = "RESULT — " + methods[currentMethod].title;
+  });
 });
 
-function drawClassic(){
-  return classicFortunes[Math.floor(Math.random()*classicFortunes.length)];
-}
-function drawTarot(){
-  const card=tarotCards[Math.floor(Math.random()*tarotCards.length)];
-  return `『${card.name}』のカード — ${card.meaning}`;
-}
-function drawDice(){
-  return diceFortunes[Math.floor(Math.random()*diceFortunes.length)];
-}
+$("draw").addEventListener("click", drawResult);
 
-document.getElementById("draw").onclick=()=>{
-  let result;
-  if(currentMethod==="tarot") result=drawTarot();
-  else if(currentMethod==="dice") result=drawDice();
-  else result=drawClassic();
-  document.getElementById("fortune").textContent=result;
-};
-</script></body></html>
+$("share").addEventListener("click", async ()=>{
+  if(!lastResult){ alert("先におみくじを引いてください。"); return; }
+  const text = `KR OFFICIAL おみくじ
+${lastResult.date} / ${lastResult.method}
+${lastResult.rank}
+${lastResult.message}
+総合運：${lastResult.overall}
+ラッキーカラー：${lastResult.luckyColor}
+ラッキーアイテム：${lastResult.luckyItem}
+ラッキータイム：${lastResult.luckyTime}`;
+  try{
+    await navigator.clipboard.writeText(text);
+    $("share").textContent = "コピーしました";
+    setTimeout(()=>$("share").textContent="結果をコピー",1200);
+  }catch(e){ alert(text); }
+});
+
+$("clearHistory").addEventListener("click",()=>{
+  if(confirm("おみくじ履歴をすべて削除しますか？")){
+    localStorage.removeItem(historyKey);
+    renderHistory();
+  }
+});
+
+renderHistory();
+</script>
+</body>
+</html>

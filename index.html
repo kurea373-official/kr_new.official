@@ -334,14 +334,9 @@
     <div class="blob b5"></div>
   </div>
 
-  <div class="brand">
-    <div class="brand-mark">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L14.2 9.2L21 12L14.2 14.8L12 22L9.8 14.8L3 12L9.8 9.2L12 2Z" fill="white"/>
-      </svg>
-    </div>
-    <div class="brand-name">KR OFFICIAL SITE</div>
-  </div>
+  <a class="brand kr-logo" href="index.html" aria-label="KR OFFICIAL">
+    <img src="kr-official-logo.svg" alt="KR OFFICIAL">
+  </a>
 
   <div class="stage">
     <div class="card">
@@ -485,6 +480,12 @@
         window.location.href = REDIRECT_URL;
       }
     }, stepMs);
+  }
+
+  // 「ログイン状態を保持」が選ばれていた場合は、ログイン画面をスキップ
+  if(localStorage.getItem('krOfficialRemember') === '1'){
+    sessionStorage.setItem('krOfficialLoggedIn', '1');
+    runProgressThenRedirect();
   }
 
   form.addEventListener('submit', function(e){

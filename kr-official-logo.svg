@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" role="img" aria-label="KR OFFICIAL">
+  <defs>
+    <linearGradient id="krg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff6fa8"/>
+      <stop offset=".48" stop-color="#9c6bff"/>
+      <stop offset="1" stop-color="#4fa8ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="134" height="134" rx="38" fill="url(#krg)"/>
+  <path d="M42 106V44h17v24l24-24h23L78 75l30 31H84L59 80v26H42Z" fill="white"/>
+  <path d="M111 44h17v62h-17z" fill="white" opacity=".9"/>
+  <text x="165" y="77" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="800" letter-spacing="7" fill="#3a2c50">KR OFFICIAL</text>
+  <text x="168" y="108" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600" letter-spacing="4" fill="#8b7b9f">DIGITAL CONTENT PLATFORM</text>
+</svg>
