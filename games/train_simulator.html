@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>飯田線 運転シミュレーター — SAVE / CROSSING / STOP ALERT</title>
+<title>飯田線 運転シミュレーター — FINAL TUNE V5</title>
 
 <style id="service-mode-css">
 #serviceModeBox{
@@ -504,6 +504,8 @@
 
 </head>
 <body>
+<!-- FINAL TUNE V5: straight overhead contact wire + final visual polish -->
+
 <style>
 /* Single-file build: no external font dependency. */
 
@@ -903,7 +905,7 @@
     <div class="driverInfoCell">
       <div class="driverInfoLabel">PLATFORM / ROUTE</div>
       <div class="driverInfoValue" id="drvPlatform">--</div>
-      <div id="drvViewMode" style="font-size:8px;color:#6f7880;margin-top:2px;">CAB EYE / TERRAIN V4</div>
+      <div id="drvViewMode" style="font-size:8px;color:#6f7880;margin-top:2px;">CAB EYE / FINAL TUNE V5</div>
     </div>
     <div class="driverInfoCell">
       <div class="driverInfoLabel">LANDMARK</div>
@@ -1007,7 +1009,7 @@
         <div class="cast-progressbar"><div id="castProgressFill"></div></div>
         <div class="cast-footer-row">
           <span id="castCrewState">車掌乗務</span>
-          <span id="castTerrainMode">TERRAIN V4</span><span id="castNextDistance">---</span>
+          <span id="castTerrainMode">FINAL TUNE V5</span><span id="castNextDistance">---</span>
         </div>
       </div>
     </aside>
@@ -3065,22 +3067,25 @@
       }
     }
 
-    // Hiraoka dam lake: broad dark water with shoreline lights.
+    // Hiraoka dam lake is already rendered by the world-anchored river/lake
+    // system in drawDecor(). Only fixed-world shoreline lights are added here
+    // so the night overlay cannot create a second camera-attached water band.
     if(g.landmark?.type==='hiraokaLake'){
-      const d=g.landmark.at*segLen-position;
-      if(d>-60&&d<520){
-        ctx.save();
-        const side=g.landmark.side||-1;
-        for(let dd=Math.max(3,d-160);dd<Math.min(500,d+260);dd+=14){
-          const p=project(dd),tcx=cx+trackCurveOffset(dd);
-          const inner=tcx+side*155*p.scale;
-          const outer=tcx+side*330*p.scale;
-          ctx.strokeStyle='rgba(35,87,115,.55)';
-          ctx.lineWidth=Math.max(2,18*p.scale);
-          ctx.beginPath();ctx.moveTo(inner,p.y+5*p.scale);ctx.lineTo(outer,p.y+5*p.scale);ctx.stroke();
-        }
-        ctx.restore();
+      const centerM=g.landmark.at*segLen;
+      const side=g.landmark.side||-1;
+      ctx.save();
+      const lampStart=Math.max(0,Math.ceil((centerM-150)/55)*55);
+      const lampEnd=Math.min(segLen,centerM+240);
+      for(let worldM=lampStart;worldM<=lampEnd;worldM+=55){
+        const d=worldM-position;if(d<4||d>500)continue;
+        if(inTunnelAtDistance(d))continue;
+        const p=project(d),tcx=cx+trackCurveOffset(d);
+        const x=tcx+side*(360+Math.sin(worldM/137)*18)*p.scale;
+        const y=projectWorldY(d,-1.1,horizonY,bottomY);
+        ctx.fillStyle='rgba(255,218,126,.82)';
+        ctx.beginPath();ctx.arc(x,y,Math.max(.65,2.2*p.scale),0,Math.PI*2);ctx.fill();
       }
+      ctx.restore();
     }
 
     // Iida valley / town lights after Tenryukyo.
@@ -3139,7 +3144,7 @@
   // 同じ家・同じ杉を繰り返すのではなく、駅ごとに固有の景観シグネチャを持たせる。
   // =========================================================
   const stationSceneProfiles={
-    '天竜峡':{zone:'gorgeTown',signature:'tenryukyo',houses:7,station:'glass',side:-1,road:true,river:true},
+    '天竜峡':{zone:'gorgeTown',signature:'tenryukyo',houses:7,station:'glass',side:-1,road:true,river:true,stationScale:1.32,platformScale:1.12},
     '千代':{zone:'rural',signature:'chiyo',houses:3,station:'shelter',side:1,fields:true},
     '金野':{zone:'ravine',signature:'kinno',houses:0,station:'shelter',side:1},
     '唐笠':{zone:'lake',signature:'karakasa',houses:2,station:'small',side:-1,river:true},
@@ -3147,18 +3152,18 @@
     '田本':{zone:'cliffStation',signature:'tamoto',houses:0,station:'shelter',side:-1},
     '温田':{zone:'retroTown',signature:'nukuta',houses:9,station:'wood',side:1,road:true},
     '為栗':{zone:'riverStation',signature:'shiteguri',houses:1,station:'shelter',side:-1,river:true},
-    '平岡':{zone:'mountainTown',signature:'hiraoka',houses:11,station:'large',side:-1,road:true},
+    '平岡':{zone:'mountainTown',signature:'hiraoka',houses:11,station:'large',side:-1,road:true,stationScale:1.28,platformScale:1.10},
     '鶯巣':{zone:'rural',signature:'ugusu',houses:3,station:'small',side:1,fields:true},
     '伊那小沢':{zone:'riverVillage',signature:'inakozawa',houses:4,station:'small',side:-1,fields:true,river:true},
     '中井侍':{zone:'teaSlope',signature:'nakaisamurai',houses:4,station:'shelter',side:1},
     '小和田':{zone:'abandoned',signature:'kowada',houses:0,station:'old',side:-1},
     '大嵐':{zone:'tunnelStation',signature:'ozore',houses:0,station:'small',side:1},
-    '水窪':{zone:'riverTown',signature:'misakubo',houses:13,station:'wood',side:-1,road:true,river:true,acrossRiver:true},
+    '水窪':{zone:'riverTown',signature:'misakubo',houses:13,station:'wood',side:-1,road:true,river:true,acrossRiver:true,stationScale:1.22,platformScale:1.10},
     '向市場':{zone:'riverTown',signature:'mukaichiba',houses:8,station:'small',side:-1,road:true,river:true},
     '城西':{zone:'village',signature:'shironishi',houses:7,station:'wood',side:1,road:true},
     '相月':{zone:'hamlet',signature:'aizuki',houses:4,station:'small',side:-1},
     '佐久間':{zone:'village',signature:'sakuma',houses:6,station:'modern',side:1,road:true},
-    '中部天竜':{zone:'railTown',signature:'chubutenryu',houses:8,station:'jr',side:-1,road:true},
+    '中部天竜':{zone:'railTown',signature:'chubutenryu',houses:8,station:'jr',side:-1,road:true,stationScale:1.30,platformScale:1.12},
     '川路':{zone:'field',signature:'kawaji',houses:6,station:'small',side:1,fields:true,road:true},
     '時又':{zone:'fieldTown',signature:'tokimata',houses:8,station:'small',side:-1,fields:true,road:true},
     '駄科':{zone:'field',signature:'dashina',houses:8,station:'small',side:1,fields:true},
@@ -3167,13 +3172,13 @@
     '下山村':{zone:'suburban',signature:'shimoyama',houses:11,station:'small',side:-1,road:true},
     '鼎':{zone:'urban',signature:'kanae',houses:13,station:'small',side:1,road:true},
     '切石':{zone:'urban',signature:'kiriishi',houses:15,station:'small',side:-1,road:true},
-    '飯田':{zone:'urbanCore',signature:'iida',houses:18,station:'city',side:1,road:true},
-    '豊橋':{zone:'urbanCore',signature:'toyohashi',houses:20,station:'city',side:-1,road:true},
+    '飯田':{zone:'urbanCore',signature:'iida',houses:18,station:'city',side:1,road:true,stationScale:1.45,platformScale:1.16},
+    '豊橋':{zone:'urbanCore',signature:'toyohashi',houses:20,station:'city',side:-1,road:true,stationScale:1.55,platformScale:1.20},
     '船町':{zone:'urban',signature:'funamachi',houses:13,station:'small',side:1,road:true},
     '下地':{zone:'riverTown',signature:'shimoji',houses:7,station:'small',side:-1,road:true,river:true},
     '小坂井':{zone:'suburban',signature:'kozakai',houses:12,station:'small',side:1,road:true},
     '牛久保':{zone:'fieldTown',signature:'ushikubo',houses:12,station:'small',side:-1,road:true,fields:true},
-    '豊川':{zone:'urbanCore',signature:'toyokawa',houses:19,station:'city',side:1,road:true}
+    '豊川':{zone:'urbanCore',signature:'toyokawa',houses:19,station:'city',side:1,road:true,stationScale:1.50,platformScale:1.18}
   };
 
   function inTunnelAtDistance(d=0){
@@ -3405,45 +3410,109 @@
     }
     drawTerrainMesh();
 
-    // ---------- river / lake carved into the valley ----------
+    // ---------- river / lake: WORLD-ANCHORED valley system ----------
+    // The old ribbon was built from camera-relative d=3..500 samples and was
+    // only ~142px from the track centre, while the terrain valley floor sits
+    // around lateral=180..260 (x = 155+lateral). That made the water look as
+    // though the train was dragging it along the track. Water is now sampled
+    // at fixed segment-world metres and occupies the actual carved valley.
     function drawWaterRibbon(side,widthMul=1,calm=false){
-      const near=[],far=[];
-      for(let d=3;d<=500;d+=14){
-        if(inTunnelAtDistance(d))continue;
-        const p=project(d),tcx=cx+trackCurveOffset(d);
-        const groundDrop=Math.min(-2.2,terrainElevation(d,side,190)-1.0);
-        const waterY=projectWorldY(d,groundDrop,horizonY,groundBottom);
-        const meander=Math.sin((position+d)/115+stationIdx*.61)*(calm?18:34)*p.scale;
-        const inner=(142+10*(1-widthMul))*p.scale;
-        near.push({x:tcx+side*(inner+meander),y:waterY});
-        far.push({x:tcx+side*((142+112*widthMul)*p.scale+meander),y:waterY-2*p.scale});
+      const worldStep=calm?20:16;
+      const segWorldStart=Math.max(0,Math.floor(Math.max(0,position-24)/worldStep)*worldStep);
+      let segWorldEnd=Math.min(segLen,position+520);
+
+      // A tunnel portal is an occluder. Do not draw a river segment through
+      // the mountain or reconnect the polygon to water beyond the tunnel.
+      let firstTunnelStart=Infinity;
+      for(const t of (g.tunnels||[])){
+        const ts=t[0]*segLen,te=t[1]*segLen;
+        if(position>=ts&&position<=te)return;
+        if(ts>position+2)firstTunnelStart=Math.min(firstTunnelStart,ts);
       }
-      if(near.length<3)return;
+      if(Number.isFinite(firstTunnelStart))segWorldEnd=Math.min(segWorldEnd,firstTunnelStart-2);
+      if(segWorldEnd-segWorldStart<worldStep*2)return;
+
+      // Fixed world-space river centreline. The phase depends only on the
+      // segment and absolute metre position, never on the camera position.
+      function riverMeander(worldM){
+        const a=Math.sin(worldM/103 + stationIdx*1.731);
+        const b=Math.sin(worldM/241 + stationIdx*.417 + 1.9);
+        return (a*.72+b*.28)*(calm?18:34);
+      }
+      function waterHeightAt(worldM){
+        const d=worldM-position;
+        // Valley bed near lateral 220 is normally about -5.5m. The water
+        // surface sits above the bed but below both banks. Because terrain
+        // noise uses position+d (= worldM), this value is also world-fixed.
+        const bed=terrainElevation(d,side,220);
+        const base=calm?-4.35:-4.85;
+        return Math.max(-5.35,Math.min(-3.35,Math.max(base,bed+.52)));
+      }
+
+      const innerPts=[],outerPts=[];
+      for(let worldM=segWorldStart;worldM<=segWorldEnd+.01;worldM+=worldStep){
+        const d=worldM-position;
+        if(d<2||d>520)continue;
+        const fWorld=worldM/Math.max(1,segLen);
+        if(activeRange(g.tunnels||[],fWorld))continue;
+        const p=project(d),tcx=cx+trackCurveOffset(d);
+        const meander=riverMeander(worldM);
+
+        // pointAt() uses x = track + (155+lateral)*scale. Put water in the
+        // low part of that same valley instead of in the railway clearance.
+        const innerLateral=calm?128:142;
+        const channelWidth=(calm?172:118)*Math.max(.62,widthMul);
+        const innerScene=155 + innerLateral + meander;
+        const outerScene=innerScene + channelWidth;
+        const waterH=waterHeightAt(worldM);
+        const waterY=projectWorldY(d,waterH,horizonY,groundBottom);
+        innerPts.push({worldM,d,p,x:tcx+side*innerScene*p.scale,y:waterY});
+        outerPts.push({worldM,d,p,x:tcx+side*outerScene*p.scale,y:waterY-1.2*p.scale});
+      }
+      if(innerPts.length<3)return;
+
       const wg=ctx.createLinearGradient(0,horizonY,0,groundBottom);
-      wg.addColorStop(0,calm?'rgba(75,131,151,.48)':'rgba(70,145,172,.46)');
-      wg.addColorStop(.58,calm?'rgba(43,102,126,.74)':'rgba(40,116,150,.72)');
-      wg.addColorStop(1,'rgba(21,67,99,.90)');
-      ctx.fillStyle=wg;ctx.beginPath();
-      near.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));
-      for(let i=far.length-1;i>=0;i--)ctx.lineTo(far[i].x,far[i].y);
+      wg.addColorStop(0,calm?'rgba(72,126,148,.46)':'rgba(64,137,164,.45)');
+      wg.addColorStop(.55,calm?'rgba(40,99,125,.76)':'rgba(35,108,141,.74)');
+      wg.addColorStop(1,calm?'rgba(18,58,88,.92)':'rgba(15,62,94,.92)');
+      ctx.fillStyle=wg;
+      ctx.beginPath();
+      innerPts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));
+      for(let i=outerPts.length-1;i>=0;i--)ctx.lineTo(outerPts[i].x,outerPts[i].y);
       ctx.closePath();ctx.fill();
 
-      let world=Math.ceil(position/44)*44;
-      for(;world<position+460;world+=44){
-        const d=world-position;if(d<3||inTunnelAtDistance(d))continue;
+      // Dark bank seams make it obvious that the water is below the railway
+      // shelf instead of painted over the ground surface.
+      ctx.strokeStyle=calm?'rgba(29,52,49,.68)':'rgba(25,49,43,.76)';
+      ctx.lineWidth=1.2;
+      ctx.beginPath();innerPts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.stroke();
+      ctx.beginPath();outerPts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.stroke();
+
+      // Surface highlights are also anchored to absolute world metres.
+      let world=Math.ceil(segWorldStart/48)*48;
+      for(;world<segWorldEnd;world+=48){
+        const d=world-position;if(d<3||d>480)continue;
+        const fWorld=world/Math.max(1,segLen);
+        if(activeRange(g.tunnels||[],fWorld))continue;
         const p=project(d),tcx=cx+trackCurveOffset(d);
-        const groundDrop=Math.min(-2.2,terrainElevation(d,side,190)-1.0);
-        const yy=projectWorldY(d,groundDrop,horizonY,groundBottom);
-        const x=tcx+side*(190+Math.sin(world/115)*24)*p.scale;
-        ctx.strokeStyle=calm?'rgba(219,231,232,.18)':'rgba(225,239,242,.28)';
-        ctx.lineWidth=Math.max(.5,1.1*p.scale);
-        ctx.beginPath();ctx.moveTo(x-30*p.scale,yy-1*p.scale);ctx.lineTo(x+34*p.scale,yy-1*p.scale);ctx.stroke();
+        const meander=riverMeander(world);
+        const centerLateral=155+(calm?128:142)+meander+(calm?86:59)*Math.max(.62,widthMul);
+        const yy=projectWorldY(d,waterHeightAt(world),horizonY,groundBottom);
+        const x=tcx+side*centerLateral*p.scale;
+        ctx.strokeStyle=calm?'rgba(221,234,236,.20)':'rgba(226,240,243,.27)';
+        ctx.lineWidth=Math.max(.5,1.05*p.scale);
+        const half=(calm?42:31)*p.scale;
+        ctx.beginPath();ctx.moveTo(x-half,yy-.8*p.scale);ctx.lineTo(x+half,yy-.8*p.scale);ctx.stroke();
       }
     }
 
     if(g.scenery==='river'||g.scenery==='bridge'||profile.river){
       const calm=['lake','damVillage','riverStation'].includes(profile.zone);
-      drawWaterRibbon(riverSide,g.riverWidth??1,calm);
+      let worldRiverWidth=g.riverWidth??1;
+      if(profile.signature==='karakasa')worldRiverWidth=1.18;
+      else if(profile.signature==='misakubo')worldRiverWidth=.85;
+      else if(profile.signature==='shimoji')worldRiverWidth=1.05;
+      drawWaterRibbon(riverSide,worldRiverWidth,calm);
     }
 
     // ---------- vegetation, now grounded on terrain ----------
@@ -3536,23 +3605,130 @@
 
     function drawStationBuilding(d,side,type){
       if(d<7||d>480||structureObjectBlocked(d))return;
-      // station building sits on a railway-level shelf
-      const q=pointAt(d,side,108,0),p=q.p;if(p.scale<.032)return;
-      const big=['large','city','jr'].includes(type);
-      const bh=big?6.8:4.9,bw=(big?100:64)*p.scale;
-      const top=projectWorldY(d,bh,horizonY,groundBottom),hh=Math.max(8,q.y-top);
-      const x=q.x-bw/2,y=q.y-hh*.72;
-      let wall='#c8c6bd',roof='#53595d';
-      if(type==='wood'){wall='#bcae94';roof='#51473d';}
-      if(type==='old'){wall='#a89d88';roof='#463e36';}
-      if(type==='glass'){wall='#bdcdd0';roof='#586268';}
-      if(type==='city'){wall='#d0d2d0';roof='#62676b';}
-      ctx.fillStyle=wall;ctx.fillRect(x,y,bw,hh*.72);
-      ctx.fillStyle=roof;ctx.beginPath();ctx.moveTo(x-bw*.06,y);ctx.lineTo(x+bw*.50,y-hh*.23);ctx.lineTo(x+bw*1.06,y);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#d87521';ctx.fillRect(x,y+hh*.49,bw,Math.max(1,3*p.scale));
-      for(let i=0;i<(big?6:3);i++){
-        ctx.fillStyle='rgba(61,96,112,.82)';
-        ctx.fillRect(x+bw*(.06+i*(big?.15:.29)),y+hh*.17,bw*(big?.09:.15),hh*.19);
+      const profileScale=profile.stationScale||1.18;
+      const q=pointAt(d,side,118,0),p=q.p;if(p.scale<.030)return;
+
+      const spec={
+        shelter:{w:150,h:5.4,levels:1}, small:{w:180,h:6.4,levels:1},
+        wood:{w:215,h:7.0,levels:1}, old:{w:205,h:6.7,levels:1},
+        glass:{w:235,h:8.0,levels:1}, modern:{w:240,h:8.3,levels:1},
+        large:{w:280,h:9.6,levels:2}, jr:{w:300,h:10.0,levels:2},
+        city:{w:350,h:12.4,levels:2}
+      }[type]||{w:96,h:5.8,levels:1};
+
+      const scale=profileScale;
+      const bw=spec.w*scale*p.scale;
+      const top=projectWorldY(d,spec.h*scale,horizonY,groundBottom);
+      // Perspective height is capped against facade width so station buildings
+      // read as wide railway buildings, not narrow towers near the camera.
+      const hh=Math.max(12,Math.min(q.y-top,bw*(spec.levels>1?.66:.58)));
+      const x=q.x-bw/2,y=q.y-hh*.77;
+
+      let wall='#c9c8c0',wall2='#b9bbb6',roof='#4f565a',trim='#d87521';
+      if(type==='wood'){wall='#b7a487';wall2='#9c896d';roof='#4b4037';trim='#6f604f';}
+      if(type==='old'){wall='#9f947f';wall2='#867b68';roof='#403831';trim='#715943';}
+      if(type==='glass'){wall='#b9cbd0';wall2='#92aeb7';roof='#566168';trim='#d57b25';}
+      if(type==='city'){wall='#d5d7d5';wall2='#bfc3c3';roof='#555c61';trim='#dd7b22';}
+      if(type==='jr'||type==='large'||type==='modern'){wall='#d0d0c8';wall2='#b9bbb6';roof='#565c60';trim='#d87721';}
+
+      // forecourt shelf makes the building feel attached to an actual station site.
+      ctx.fillStyle='rgba(112,112,106,.78)';
+      ctx.fillRect(x-bw*.10,q.y-3*p.scale,bw*1.20,5*p.scale);
+
+      // main block + shallow side wing
+      ctx.fillStyle=wall;ctx.fillRect(x,y,bw,hh*.74);
+      if(spec.levels>1){
+        ctx.fillStyle=wall2;ctx.fillRect(x+bw*.08,y-hh*.31,bw*.72,hh*.34);
+      }
+      ctx.fillStyle=roof;
+      ctx.beginPath();
+      ctx.moveTo(x-bw*.07,y);ctx.lineTo(x+bw*.50,y-hh*.22);
+      ctx.lineTo(x+bw*1.07,y);ctx.lineTo(x+bw*1.01,y+hh*.05);
+      ctx.lineTo(x-bw*.01,y+hh*.05);ctx.closePath();ctx.fill();
+
+      // fascia / JR Tokai orange-ish band
+      ctx.fillStyle=trim;ctx.fillRect(x,y+hh*.48,bw,Math.max(1.2,3.6*p.scale));
+
+      // windows
+      const cols=spec.levels>1?7:5;
+      for(let i=0;i<cols;i++){
+        ctx.fillStyle='rgba(48,83,98,.86)';
+        ctx.fillRect(x+bw*(.055+i*(.88/cols)),y+hh*.14,bw*(.55/cols),hh*.20);
+      }
+      if(spec.levels>1){
+        for(let i=0;i<5;i++){
+          ctx.fillStyle='rgba(54,88,103,.78)';
+          ctx.fillRect(x+bw*(.13+i*.135),y-hh*.21,bw*.08,hh*.13);
+        }
+      }
+
+      // entrance canopy and doors
+      const doorX=x+bw*.45;
+      ctx.fillStyle='rgba(50,61,66,.88)';ctx.fillRect(doorX,y+hh*.52,bw*.13,hh*.22);
+      ctx.fillStyle='rgba(91,104,107,.96)';ctx.fillRect(doorX-bw*.04,y+hh*.47,bw*.21,3.5*p.scale);
+      ctx.strokeStyle='rgba(230,231,224,.70)';ctx.lineWidth=Math.max(.6,1*p.scale);
+      ctx.beginPath();ctx.moveTo(doorX+bw*.065,y+hh*.52);ctx.lineTo(doorX+bw*.065,y+hh*.74);ctx.stroke();
+
+      // station name fascia - readable only when close enough.
+      if(p.scale>.075){
+        const name=nextStation||'';
+        ctx.fillStyle='rgba(244,244,239,.94)';
+        const sw=Math.min(bw*.56,110*p.scale);const sh=Math.max(8,16*p.scale);
+        ctx.fillRect(q.x-sw/2,y+hh*.04,sw,sh);
+        ctx.fillStyle='#28323a';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.font='700 '+Math.max(6,9*p.scale)+'px sans-serif';
+        ctx.fillText(name,q.x,y+hh*.04+sh*.53);
+        ctx.textBaseline='alphabetic';
+      }
+
+      // vending machines / platform-side equipment for scale.
+      if(p.scale>.11){
+        const vmW=8*p.scale,vmH=15*p.scale;
+        ctx.fillStyle='#f0eee6';ctx.fillRect(x+bw*.13,q.y-vmH,vmW,vmH);
+        ctx.fillStyle='#bd3f3f';ctx.fillRect(x+bw*.13+vmW*1.25,q.y-vmH,vmW,vmH);
+      }
+    }
+
+    function drawStationForecourt(d,side){
+      if(d<15||d>465||structureObjectBlocked(d))return;
+      const zone=profile.zone||'';
+      const urban=/urban|suburban|Town|railTown|city/i.test(zone);
+      const q=pointAt(d,side,170),p=q.p;if(p.scale<.025)return;
+      // paved station plaza / access road
+      const q2=pointAt(Math.min(480,d+110),side,170);
+      ctx.fillStyle=urban?'rgba(90,92,91,.84)':'rgba(126,124,111,.72)';
+      const w0=(urban?74:52)*p.scale,w1=(urban?62:45)*q2.p.scale;
+      ctx.beginPath();ctx.moveTo(q.x-w0,q.y);ctx.lineTo(q2.x-w1,q2.y);ctx.lineTo(q2.x+w1,q2.y);ctx.lineTo(q.x+w0,q.y);ctx.closePath();ctx.fill();
+      if(urban){
+        // station-front street lights, utility poles, parked-car silhouettes
+        for(let k=0;k<3;k++){
+          const dd=d+20+k*34;if(dd>475)break;
+          const z=pointAt(dd,side,205+k*8),pp=z.p;
+          const top=projectWorldY(dd,z.groundH+6.2,horizonY,groundBottom);
+          ctx.strokeStyle='rgba(70,74,75,.85)';ctx.lineWidth=Math.max(.7,1.7*pp.scale);
+          ctx.beginPath();ctx.moveTo(z.x,z.y);ctx.lineTo(z.x,top);ctx.stroke();
+          ctx.fillStyle='rgba(232,221,175,.82)';ctx.fillRect(z.x-4*pp.scale,top,8*pp.scale,2.5*pp.scale);
+        }
+        for(let k=0;k<3;k++){
+          const dd=d+30+k*42;const z=pointAt(dd,-side,145+k*18),pp=z.p;
+          if(dd>470||structureObjectBlocked(dd))continue;
+          ctx.fillStyle=k%2?'#666c70':'#7d5d52';
+          ctx.fillRect(z.x-15*pp.scale,z.y-7*pp.scale,30*pp.scale,7*pp.scale);
+          ctx.fillStyle='rgba(42,50,55,.9)';
+          ctx.fillRect(z.x-9*pp.scale,z.y-11*pp.scale,18*pp.scale,5*pp.scale);
+        }
+      }else{
+        drawRoadUtilityPole(d+42,side,185);
+        drawRoadUtilityPole(d+118,side,190);
+        // bicycle/maintenance shed and a few station-neighbour houses for rural stops.
+        const shed=pointAt(Math.min(470,d+72),side,155),sp=shed.p;
+        ctx.fillStyle='rgba(113,108,96,.90)';ctx.fillRect(shed.x-22*sp.scale,shed.y-14*sp.scale,44*sp.scale,14*sp.scale);
+        ctx.fillStyle='rgba(67,65,60,.94)';
+        ctx.beginPath();ctx.moveTo(shed.x-25*sp.scale,shed.y-14*sp.scale);ctx.lineTo(shed.x,shed.y-25*sp.scale);ctx.lineTo(shed.x+25*sp.scale,shed.y-14*sp.scale);ctx.closePath();ctx.fill();
+        if((profile.houses||0)>0){
+          drawHouse(Math.min(450,d+125),side,7,215,.88,false);
+          if((profile.houses||0)>5)drawHouse(Math.min(455,d+175),-side,9,235,.80,false);
+        }
       }
     }
 
@@ -3703,6 +3879,7 @@
     // ---------- route signature scenes ----------
     if(remaining<650&&remaining>-80){
       const side=profile.side||-1;
+      drawStationForecourt(Math.max(20,remaining+38),side);
       switch(profile.signature){
         case 'tenryukyo':
           drawRetainingWall(remaining-120,remaining+55,-side,55,5.6);
@@ -3718,7 +3895,6 @@
           drawRetainingWall(remaining-100,remaining+100,side,45,6.5);
           drawShrubBank(remaining-55,-side,65);break;
         case 'karakasa':
-          drawWaterRibbon(riverSide,1.18,true);
           drawRoad(remaining-180,remaining+120,-side,145,17);
           drawHouse(remaining+95,-side,1,180,.86);break;
         case 'kadoshima':
@@ -3761,7 +3937,6 @@
           drawRetainingWall(remaining-120,remaining+120,side,48,5.4);
           drawStationBuilding(remaining+12,side,'small');break;
         case 'misakubo':
-          drawWaterRibbon(riverSide,.85,false);
           drawRoad(remaining-260,remaining+180,-side,300,23);
           drawTownOnSlope(remaining-220,-side,11,true);
           drawApartment(remaining+130,-side,335,3);
@@ -3809,7 +3984,6 @@
           drawTownOnSlope(remaining-170,side,8,false);
           drawApartment(remaining+135,-side,210,3);drawStationBuilding(remaining+14,side,'small');break;
         case 'shimoji':
-          drawWaterRibbon(riverSide,1.05,true);
           drawRoad(remaining-170,remaining+160,-side,245,20);
           drawTownOnSlope(remaining+35,side,5,false);
           drawStationBuilding(remaining+12,side,'small');break;
@@ -3833,6 +4007,17 @@
           drawTownOnSlope(remaining-230,side,12,false);
           drawApartment(remaining+20,-side,170,4);drawApartment(remaining+105,side,215,5);drawApartment(remaining+210,-side,260,4);
           drawStationBuilding(remaining+14,side,'city');break;
+      }
+
+      // Every station now receives an actual station structure or shelter.
+      // Route-specific cases above keep their bespoke building; the rest use the profile type.
+      const bespokeBuilding=new Set([
+        'tenryukyo','kadoshima','tamoto','nukuta','shiteguri','hiraoka','nakaisamurai',
+        'kowada','ozore','misakubo','shironishi','sakuma','chubutenryu','toyohashi',
+        'funamachi','shimoji','kozakai','ushikubo','toyokawa','iida'
+      ]);
+      if(profile.station && !bespokeBuilding.has(profile.signature)){
+        drawStationBuilding(remaining+14,side,profile.station);
       }
     }
 
@@ -3972,6 +4157,31 @@
         ctx.beginPath();ctx.arc(x,y,Math.max(.7,2.2*p.scale),0,Math.PI*2);ctx.fill();
       }
 
+      // side drainage gutters / cable troughs fixed to world coordinates
+      for(const side of [-1,1]){
+        ctx.beginPath();let first=true;
+        for(let d=1.5;d<Math.min(360,remain);d+=9){
+          const p=project(d),tcx=cx+trackCurveOffset(d);
+          const x=tcx+side*(railGauge0*p.scale+25*p.scale);
+          const y=projectWorldY(d,.18,horizonY,bottomY);
+          if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);
+        }
+        ctx.strokeStyle='rgba(132,132,126,.28)';ctx.lineWidth=1.1;ctx.stroke();
+      }
+
+      // emergency/service recesses every 90m, fixed in tunnel world coordinates
+      let nicheWorld=Math.ceil(Math.max(position,startM)/90)*90;
+      for(;nicheWorld<Math.min(endM,position+340);nicheWorld+=90){
+        const d=nicheWorld-position;if(d<6)continue;
+        const p=project(d),tcx=cx+trackCurveOffset(d),side=(Math.round(nicheWorld/90)%2)?1:-1;
+        const x=tcx+side*(railGauge0*p.scale+37*p.scale);
+        const yTop=projectWorldY(d,2.5,horizonY,bottomY);
+        const yBot=projectWorldY(d,.25,horizonY,bottomY);
+        const ww=8*p.scale;
+        ctx.fillStyle='rgba(20,22,21,.90)';ctx.fillRect(x-(side>0?0:ww),yTop,ww,Math.max(3,yBot-yTop));
+        ctx.strokeStyle='rgba(166,164,154,.22)';ctx.lineWidth=.7;ctx.strokeRect(x-(side>0?0:ww),yTop,ww,Math.max(3,yBot-yTop));
+      }
+
       // 出口光
       if(remain<520&&remain>2){
         const p=project(remain),tcx=cx+trackCurveOffset(remain);
@@ -4024,6 +4234,21 @@
       ctx.moveTo(tcx-half*.87,p.y);ctx.lineTo(tcx-half*.78,shoulder+3*p.scale);
       ctx.quadraticCurveTo(tcx,roof+7*p.scale,tcx+half*.78,shoulder+3*p.scale);
       ctx.lineTo(tcx+half*.87,p.y);ctx.closePath();ctx.fill();
+
+      // wing retaining walls around the portal mouth
+      const wing=34*p.scale;
+      ctx.fillStyle='rgba(120,121,115,.90)';
+      ctx.beginPath();ctx.moveTo(tcx-half-13*p.scale,p.y+6*p.scale);ctx.lineTo(tcx-half-wing,p.y+22*p.scale);ctx.lineTo(tcx-half-wing,shoulder+8*p.scale);ctx.lineTo(tcx-half-12*p.scale,shoulder-8*p.scale);ctx.closePath();ctx.fill();
+      ctx.beginPath();ctx.moveTo(tcx+half+13*p.scale,p.y+6*p.scale);ctx.lineTo(tcx+half+wing,p.y+22*p.scale);ctx.lineTo(tcx+half+wing,shoulder+8*p.scale);ctx.lineTo(tcx+half+12*p.scale,shoulder-8*p.scale);ctx.closePath();ctx.fill();
+
+      if(p.scale>.09){
+        const plateW=42*p.scale,plateH=11*p.scale,plateY=roof-17*p.scale;
+        ctx.fillStyle='rgba(225,224,214,.94)';ctx.fillRect(tcx-plateW/2,plateY,plateW,plateH);
+        ctx.fillStyle='#343635';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.font='700 '+Math.max(5,7*p.scale)+'px sans-serif';
+        ctx.fillText((portal.t.no?('T'+portal.t.no+' '):'')+(portal.t.name||'トンネル'),tcx,plateY+plateH*.55);
+        ctx.textBaseline='alphabetic';
+      }
       ctx.restore();
     }
 
@@ -4492,163 +4717,237 @@
   }
 
   function drawCatenarySystem(project,cx,railGauge0,maxDraw,horizonY,bottomY){
-    // Fixed-world catenary.
-    // The wire has actual vertical height relative to the driver's eye,
-    // so near wire exits ABOVE the cab rather than being dragged by the train.
-    const spacing=48;
+    // =========================================================
+    // FINAL TUNE V5
+    // Every route uses the same fixed-world catenary geometry.
+    // Supports, contact wire, droppers and feeder conductors are anchored
+    // to absolute metres in the current section, never to the cab.
+    // FINAL TUNE V5: lateral contact-wire stagger is intentionally disabled.
+    // The user's visual target is a calm, straight wire over track centre.
+    // =========================================================
+    const SUPPORT_SPACING=50;
+    const DROPPER_SPACING=10;
+    const CONTACT_H=5.05;
+    const MESSENGER_H=6.18;
+    const FEEDER_H=6.92;
+    const MAX=Math.min(maxDraw,560);
     const nextStation=lineStations[stationIdx+1]||'';
-    const layout=getPlatformLayout(nextStation);
+    const prevStation=lineStations[stationIdx]||'';
+    const nextLayout=getPlatformLayout(nextStation);
+    const prevLayout=getPlatformLayout(prevStation);
     const remaining=segLen-position;
-    const inStationArea=remaining<360||position<230;
-    const multiTrackArea=inStationArea&&layout&&layout.tracks>=2;
 
-    function geometryAt(d){
-      const p=project(Math.max(.35,d));
-      const tcx=cx+trackCurveOffset(Math.max(.35,d));
-      const world=position+d;
-      const stagger=Math.sin(world/38)*4.2*p.scale;
+    const stationComplexAhead=remaining<430 && nextLayout && nextLayout.tracks>=2;
+    const stationComplexBehind=position<300 && prevLayout && prevLayout.tracks>=2;
+
+    function qAtWorld(worldM){
+      const d=worldM-position;
+      const dd=Math.max(.22,d);
+      const p=project(dd);
+      const tcx=cx+trackCurveOffset(dd);
+      return {world:worldM,d,p,tcx};
+    }
+
+    function supportStagger(worldM){
+      // FINAL TUNE V5: straight contact wire over the running-track centreline.
+      // Keep the contact wire exactly above the running-track centreline.
+      // worldM is kept in the signature so all support/dropper code can use
+      // one shared fixed-world geometry without camera-relative exceptions.
+      void worldM;
+      return 0;
+    }
+
+    function projectedWirePoint(worldM,wireHeight,staggerM=0,sagM=0){
+      const q=qAtWorld(worldM);
+      const pxPerM=Math.max(1,17*q.p.scale);
       return {
-        p,tcx,world,
-        contactX:tcx+stagger,
-        contactY:projectWorldY(d,5.05,horizonY,bottomY),
-        messengerX:tcx+stagger*.55,
-        messengerY:projectWorldY(d,6.15,horizonY,bottomY)
+        ...q,
+        x:q.tcx + staggerM*pxPerM,
+        y:projectWorldY(q.d,wireHeight-sagM,horizonY,bottomY)
       };
     }
 
-    // ---------------------------------------------------------
-    // Fixed poles: compute world position first, then distance to train.
-    // They run toward the cab and disappear only AFTER passing it.
-    // ---------------------------------------------------------
-    let poleWorld=Math.ceil(position/spacing)*spacing;
-    for(;poleWorld<position+maxDraw;poleWorld+=spacing){
-      const d=poleWorld-position;
-      if(d<.45)continue;
-
-      const q=geometryAt(d);
-      const p=q.p;
-      if(p.scale<.018)continue;
-      // In tunnels the contact wire is roof-supported: no lineside masts.
-      if(inTunnelAtDistance(d))continue;
-      const worldIndex=Math.round(poleWorld/spacing);
-
-      if(multiTrackArea&&d<330){
-        // Portal mast in multi-track station areas.
-        const leftX=q.tcx-(railGauge0+112)*p.scale;
-        const rightX=q.tcx+(railGauge0+112)*p.scale;
-        const mastTopY=projectWorldY(d,7.35,horizonY,bottomY);
-        const beamY=projectWorldY(d,6.65,horizonY,bottomY);
-
-        ctx.save();
-        for(const x of [leftX,rightX]){
-          ctx.strokeStyle='rgba(37,41,42,.96)';
-          ctx.lineWidth=Math.max(1.4,4.5*p.scale);
-          ctx.beginPath();ctx.moveTo(x,p.y);ctx.lineTo(x,mastTopY);ctx.stroke();
-          ctx.strokeStyle='rgba(137,143,142,.70)';
-          ctx.lineWidth=Math.max(.7,1.3*p.scale);
-          ctx.beginPath();ctx.moveTo(x-1*p.scale,p.y);ctx.lineTo(x-1*p.scale,mastTopY);ctx.stroke();
-        }
-        ctx.strokeStyle='rgba(49,53,54,.96)';
-        ctx.lineWidth=Math.max(1.2,3.6*p.scale);
-        ctx.beginPath();ctx.moveTo(leftX,beamY);ctx.lineTo(rightX,beamY);ctx.stroke();
-
-        // hanger from beam to messenger/contact system
-        ctx.strokeStyle='rgba(195,183,150,.92)';
-        ctx.lineWidth=Math.max(.7,1.3*p.scale);
-        ctx.beginPath();ctx.moveTo(q.contactX,beamY);ctx.lineTo(q.contactX,q.contactY-3*p.scale);ctx.stroke();
-        ctx.restore();
-      }else{
-        // Single side cantilever.
-        const side=(worldIndex%4<2)?1:-1;
-        const mastX=q.tcx+side*(railGauge0+78)*p.scale;
-        const mastTopY=projectWorldY(d,7.45,horizonY,bottomY);
-        const bracketBaseY=projectWorldY(d,6.55,horizonY,bottomY);
-
-        ctx.save();
-
-        ctx.strokeStyle='rgba(36,40,41,.97)';
-        ctx.lineWidth=Math.max(1.4,4.6*p.scale);
-        ctx.beginPath();ctx.moveTo(mastX,p.y);ctx.lineTo(mastX,mastTopY);ctx.stroke();
-
-        ctx.strokeStyle='rgba(139,145,143,.67)';
-        ctx.lineWidth=Math.max(.7,1.3*p.scale);
-        ctx.beginPath();ctx.moveTo(mastX-side*1.4*p.scale,p.y);ctx.lineTo(mastX-side*1.4*p.scale,mastTopY);ctx.stroke();
-
-        // cantilever reaches from side mast to overhead line
-        ctx.strokeStyle='rgba(58,63,63,.96)';
-        ctx.lineWidth=Math.max(.9,2.2*p.scale);
-        ctx.beginPath();ctx.moveTo(mastX,bracketBaseY);ctx.lineTo(q.contactX,q.contactY-4*p.scale);ctx.stroke();
-        ctx.beginPath();ctx.moveTo(mastX,mastTopY+5*p.scale);ctx.lineTo(q.messengerX,q.messengerY);ctx.stroke();
-
-        // steady arm
-        ctx.strokeStyle='rgba(82,88,86,.92)';
-        ctx.lineWidth=Math.max(.7,1.4*p.scale);
-        ctx.beginPath();
-        ctx.moveTo(q.contactX-side*10*p.scale,q.contactY-3*p.scale);
-        ctx.lineTo(q.contactX+side*3*p.scale,q.contactY);
-        ctx.stroke();
-
-        // footing
-        ctx.fillStyle='rgba(91,94,89,.86)';
-        ctx.fillRect(mastX-6*p.scale,p.y-3*p.scale,12*p.scale,5*p.scale);
-
-        ctx.restore();
-      }
+    function complexAreaAt(worldM){
+      const d=worldM-position;
+      return (stationComplexAhead && d>remaining-360 && d<remaining+90) ||
+             (stationComplexBehind && worldM<310);
     }
 
-    // ---------------------------------------------------------
-    // Contact / messenger wires all the way to the cab.
-    // Near points can project above screen, which is correct:
-    // the wire is physically over the driver's head.
-    // ---------------------------------------------------------
-    const samples=[];
-    for(let d=.55;d<=maxDraw;d+=(renderQuality<.8?8.5:6.2)){
-      const q=geometryAt(d);
-      if(q.p.scale<.016)continue;
-      samples.push(q);
-    }
-
-    if(samples.length>1){
+    function drawInsulator(x,y,side,scale){
       ctx.save();
-
-      // messenger wire
-      ctx.strokeStyle='rgba(50,54,53,.80)';
-      ctx.lineWidth=1.0;
-      ctx.beginPath();
-      samples.forEach((q,i)=>i?ctx.lineTo(q.messengerX,q.messengerY):ctx.moveTo(q.messengerX,q.messengerY));
-      ctx.stroke();
-
-      // contact wire
-      ctx.strokeStyle='rgba(22,25,24,.97)';
-      ctx.lineWidth=1.35;
-      ctx.beginPath();
-      samples.forEach((q,i)=>i?ctx.lineTo(q.contactX,q.contactY):ctx.moveTo(q.contactX,q.contactY));
-      ctx.stroke();
-
-      // droppers at fixed world spacing
-      const dropSpacing=24;
-      let dropWorld=Math.ceil(position/dropSpacing)*dropSpacing;
-      for(;dropWorld<position+maxDraw;dropWorld+=dropSpacing){
-        const d=dropWorld-position;
-        if(d<.7)continue;
-        const q=geometryAt(d);
-        const inTun=inTunnelAtDistance(d);
-        ctx.strokeStyle=inTun?'rgba(154,151,140,.46)':'rgba(73,77,75,.62)';
-        ctx.lineWidth=inTun?1.0:.72;
+      ctx.strokeStyle='rgba(209,211,199,.95)';
+      ctx.lineWidth=Math.max(.65,1.15*scale);
+      for(let k=0;k<3;k++){
+        const ox=side*(k*3.2)*scale;
         ctx.beginPath();
-        if(inTun){
-          const roofY=projectWorldY(d,5.65,horizonY,bottomY);
-          ctx.moveTo(q.contactX,roofY);
-          ctx.lineTo(q.contactX,q.contactY);
-        }else{
-          ctx.moveTo(q.messengerX,q.messengerY);
-          ctx.lineTo(q.contactX,q.contactY);
-        }
+        ctx.arc(x+ox,y+k*.55*scale,Math.max(.55,1.35*scale),0,Math.PI*2);
         ctx.stroke();
       }
-
       ctx.restore();
     }
+
+    // ---------------------------------------------------------
+    // Fixed supports. Start one support BEHIND the cab so the span
+    // crossing the cab remains geometrically continuous.
+    // ---------------------------------------------------------
+    let firstSupport=Math.floor(position/SUPPORT_SPACING)*SUPPORT_SPACING;
+    for(let supportWorld=firstSupport;supportWorld<=position+MAX+SUPPORT_SPACING;supportWorld+=SUPPORT_SPACING){
+      const d=supportWorld-position;
+      if(d<1.0 || d>MAX)continue;
+      if(inTunnelAtDistance(d))continue;
+      const q=qAtWorld(supportWorld);
+      if(q.p.scale<.016)continue;
+      const scale=q.p.scale;
+      const idx=Math.round(supportWorld/SUPPORT_SPACING);
+      const st=supportStagger(supportWorld);
+      const wire=projectedWirePoint(supportWorld,CONTACT_H,st,0);
+      const messenger=projectedWirePoint(supportWorld,MESSENGER_H,st*.55,0);
+      const complex=complexAreaAt(supportWorld);
+
+      ctx.save();
+      if(complex){
+        // Station approaches: portal/gantry catenary used on every route.
+        const span=(railGauge0+118)*scale;
+        const leftX=q.tcx-span;
+        const rightX=q.tcx+span;
+        const mastTopY=projectWorldY(d,7.55,horizonY,bottomY);
+        const beamY=projectWorldY(d,6.72,horizonY,bottomY);
+
+        for(const x of [leftX,rightX]){
+          ctx.strokeStyle='rgba(35,39,40,.98)';
+          ctx.lineWidth=Math.max(1.5,4.8*scale);
+          ctx.beginPath();ctx.moveTo(x,q.p.y);ctx.lineTo(x,mastTopY);ctx.stroke();
+          ctx.strokeStyle='rgba(149,153,149,.70)';
+          ctx.lineWidth=Math.max(.7,1.2*scale);
+          ctx.beginPath();ctx.moveTo(x-1.2*scale,q.p.y);ctx.lineTo(x-1.2*scale,mastTopY);ctx.stroke();
+          ctx.fillStyle='rgba(89,92,87,.90)';
+          ctx.fillRect(x-6*scale,q.p.y-3*scale,12*scale,5*scale);
+        }
+        ctx.strokeStyle='rgba(50,55,55,.98)';
+        ctx.lineWidth=Math.max(1.25,3.7*scale);
+        ctx.beginPath();ctx.moveTo(leftX,beamY);ctx.lineTo(rightX,beamY);ctx.stroke();
+
+        // suspension fitting centered over main line
+        ctx.strokeStyle='rgba(71,76,75,.95)';
+        ctx.lineWidth=Math.max(.8,1.7*scale);
+        ctx.beginPath();ctx.moveTo(wire.x,beamY);ctx.lineTo(messenger.x,messenger.y);ctx.stroke();
+        drawInsulator(wire.x,beamY+2*scale,1,scale);
+      }else{
+        // Open line: keep mast side stable through the section.
+        // Alternating every 50 m made the whole overhead system look as if it
+        // were weaving left/right even after the contact wire was corrected.
+        const side=(stationIdx&1)?1:-1;
+        const mastX=q.tcx+side*(railGauge0+82)*scale;
+        const mastTopY=projectWorldY(d,7.55,horizonY,bottomY);
+        const armY=projectWorldY(d,6.58,horizonY,bottomY);
+        ctx.strokeStyle='rgba(35,39,40,.98)';
+        ctx.lineWidth=Math.max(1.45,4.7*scale);
+        ctx.beginPath();ctx.moveTo(mastX,q.p.y);ctx.lineTo(mastX,mastTopY);ctx.stroke();
+        ctx.strokeStyle='rgba(148,153,149,.67)';
+        ctx.lineWidth=Math.max(.7,1.2*scale);
+        ctx.beginPath();ctx.moveTo(mastX-side*1.3*scale,q.p.y);ctx.lineTo(mastX-side*1.3*scale,mastTopY);ctx.stroke();
+
+        // cantilever + diagonal brace
+        ctx.strokeStyle='rgba(57,62,62,.98)';
+        ctx.lineWidth=Math.max(.9,2.15*scale);
+        ctx.beginPath();ctx.moveTo(mastX,armY);ctx.lineTo(wire.x,wire.y-4*scale);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(mastX,mastTopY+5*scale);ctx.lineTo(messenger.x,messenger.y);ctx.stroke();
+        drawInsulator(mastX-side*9*scale,armY+1*scale,-side,scale);
+
+        // steady arm to contact wire
+        ctx.strokeStyle='rgba(83,88,86,.95)';
+        ctx.lineWidth=Math.max(.7,1.35*scale);
+        ctx.beginPath();ctx.moveTo(wire.x-side*10*scale,wire.y-3*scale);ctx.lineTo(wire.x,wire.y);ctx.stroke();
+
+        ctx.fillStyle='rgba(89,92,87,.90)';
+        ctx.fillRect(mastX-6*scale,q.p.y-3*scale,12*scale,5*scale);
+      }
+      ctx.restore();
+    }
+
+    // ---------------------------------------------------------
+    // Wire spans are built SUPPORT-TO-SUPPORT in world coordinates.
+    // This is the key fix: the cab can move inside a span without the
+    // wire geometry being regenerated as if attached to the train.
+    // ---------------------------------------------------------
+    const spanStart=Math.floor(position/SUPPORT_SPACING)*SUPPORT_SPACING;
+    const spanEnd=position+MAX+SUPPORT_SPACING;
+    ctx.save();
+
+    function drawWire(kind){
+      const isContact=kind==='contact';
+      ctx.strokeStyle=isContact?'rgba(18,21,20,.98)':'rgba(49,53,52,.82)';
+      ctx.lineWidth=isContact?1.20:1.00;
+      let started=false;
+      ctx.beginPath();
+
+      for(let a=spanStart;a<spanEnd;a+=SUPPORT_SPACING){
+        const b=a+SUPPORT_SPACING;
+        const sta=supportStagger(a), stb=supportStagger(b);
+        const steps=8;
+        for(let i=0;i<=steps;i++){
+          const t=i/steps;
+          const world=a+(b-a)*t;
+          const d=world-position;
+          if(d<.18 || d>MAX)continue;
+          const tunnel=inTunnelAtDistance(d);
+          // contact wire remains in tunnels; messenger becomes roof-supported.
+          const stagger=sta+(stb-sta)*t;
+          let h=isContact?CONTACT_H:MESSENGER_H;
+          let sag=0;
+          if(!isContact && !tunnel){
+            // Messenger sag is deliberately subtle; contact wire stays straight.
+            sag=.08*(4*t*(1-t));
+          }
+          if(!isContact && tunnel){
+            h=5.62;
+          }
+          const pt=projectedWirePoint(world,h,isContact?stagger:stagger*.55,sag);
+          if(!started){ctx.moveTo(pt.x,pt.y);started=true;}else ctx.lineTo(pt.x,pt.y);
+        }
+      }
+      if(started)ctx.stroke();
+    }
+
+    drawWire('messenger');
+    drawWire('contact');
+
+    // Droppers/roof hangers fixed every 10 m in world coordinates.
+    let dropWorld=Math.ceil(position/DROPPER_SPACING)*DROPPER_SPACING;
+    for(;dropWorld<position+MAX;dropWorld+=DROPPER_SPACING){
+      const d=dropWorld-position;
+      if(d<.6)continue;
+      const spanA=Math.floor(dropWorld/SUPPORT_SPACING)*SUPPORT_SPACING;
+      const t=(dropWorld-spanA)/SUPPORT_SPACING;
+      const sta=supportStagger(spanA),stb=supportStagger(spanA+SUPPORT_SPACING);
+      const st=sta+(stb-sta)*t;
+      const contact=projectedWirePoint(dropWorld,CONTACT_H,st,0);
+      const tunnel=inTunnelAtDistance(d);
+      const top=tunnel
+        ? projectedWirePoint(dropWorld,5.64,st*.65,0)
+        : projectedWirePoint(dropWorld,MESSENGER_H,st*.55,.08*(4*t*(1-t)));
+      ctx.strokeStyle=tunnel?'rgba(166,162,149,.58)':'rgba(78,82,80,.66)';
+      ctx.lineWidth=tunnel?1.0:.75;
+      ctx.beginPath();ctx.moveTo(top.x,top.y);ctx.lineTo(contact.x,contact.y);ctx.stroke();
+    }
+
+    // One visible feeder/return conductor per side. It is also fixed-world
+    // and follows the same track curvature on all routes.
+    for(const side of [-1,1]){
+      let started=false;
+      ctx.beginPath();
+      for(let world=Math.max(position+.4,spanStart);world<position+MAX;world+=8){
+        const d=world-position;
+        if(inTunnelAtDistance(d))continue;
+        const q=qAtWorld(world);
+        const x=q.tcx+side*(railGauge0+94)*q.p.scale;
+        const y=projectWorldY(d,FEEDER_H,horizonY,bottomY);
+        if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);
+      }
+      if(started){ctx.strokeStyle='rgba(43,47,46,.76)';ctx.lineWidth=.95;ctx.stroke();}
+    }
+
+    ctx.restore();
   }
 
 
@@ -4924,106 +5223,152 @@
       }
     }
 
-    // ---------- station platform renderer ----------
-    if(remaining < maxDraw + 120 && !insideTunnelNow){
+    // ---------- station / platform world renderer ----------
+    if(remaining < maxDraw + 180 && !insideTunnelNow){
       const stationName = lineStations[stationIdx+1];
       const layout = getPlatformLayout(stationName);
-      const nearD = remaining - 118;
-      const farD = remaining + 38;
-      const pNear = project(Math.max(0.5,nearD));
-      const pFar = project(Math.max(0.5,farD));
-      const cxNear = cx + trackCurveOffset(Math.max(0.5,nearD));
-      const cxFar = cx + trackCurveOffset(Math.max(0.5,farD));
+      const profile = stationSceneProfiles[stationName]||{};
+      const platformScale=profile.platformScale||1;
+      const stationCenter=remaining;
+      // platform extends well beyond the stop marker; older short platforms remain visibly substantial.
+      const nearD = stationCenter - 150*platformScale;
+      const farD  = stationCenter + 92*platformScale;
 
-      function platformPolygon(side, outerMul=64, innerMul=12){
-        const sgn=side;
-        ctx.beginPath();
-        ctx.moveTo(cxFar + sgn*(railGauge0*pFar.scale + outerMul*pFar.scale), pFar.y);
-        ctx.lineTo(cxNear + sgn*(railGauge0*pNear.scale + outerMul*pNear.scale), pNear.y);
-        ctx.lineTo(cxNear + sgn*(railGauge0*pNear.scale + innerMul*pNear.scale), pNear.y);
-        ctx.lineTo(cxFar + sgn*(railGauge0*pFar.scale + innerMul*pFar.scale), pFar.y);
-        ctx.closePath();
-      }
+      function clampD(d){return Math.max(.55,d)}
+      function trackCenter(d){return cx+trackCurveOffset(clampD(d))}
+      function platformY(d){return projectWorldY(clampD(d),.62,horizonY,bottomY)}
+      function groundY(d){return project(clampD(d)).y}
 
-      function drawSidePlatform(side, canopy=false){
+      function drawPlatformBody(side, innerOffset=15, outerOffset=76, canopy=false){
+        const dn=clampD(nearD),df=clampD(farD);
+        if(df<.6||dn>maxDraw+80)return;
+        const pn=project(dn),pf=project(df),cn=trackCenter(dn),cf=trackCenter(df);
+        const yn=platformY(dn),yf=platformY(df),gn=groundY(dn),gf=groundY(df);
+        const inN=cn+side*(railGauge0+innerOffset)*pn.scale;
+        const outN=cn+side*(railGauge0+outerOffset)*pn.scale;
+        const inF=cf+side*(railGauge0+innerOffset)*pf.scale;
+        const outF=cf+side*(railGauge0+outerOffset)*pf.scale;
+
         ctx.save();
-        ctx.fillStyle = layout.historic ? '#b7aa88' : '#cbb98f';
-        platformPolygon(side); ctx.fill();
+        // vertical platform wall first
+        ctx.fillStyle=layout.historic?'rgba(125,112,87,.96)':'rgba(126,128,124,.97)';
+        ctx.beginPath();ctx.moveTo(inF,gf);ctx.lineTo(inN,gn);ctx.lineTo(inN,yn);ctx.lineTo(inF,yf);ctx.closePath();ctx.fill();
+        // top slab
+        ctx.fillStyle=layout.historic?'#b9aa86':'#c9c6b9';
+        ctx.beginPath();ctx.moveTo(inF,yf);ctx.lineTo(inN,yn);ctx.lineTo(outN,yn);ctx.lineTo(outF,yf);ctx.closePath();ctx.fill();
+        // white coping + tactile strip along train edge
+        ctx.strokeStyle='rgba(239,238,229,.95)';ctx.lineWidth=Math.max(1,2.7*pn.scale);
+        ctx.beginPath();ctx.moveTo(inF,yf);ctx.lineTo(inN,yn);ctx.stroke();
+        ctx.strokeStyle='#e4bd45';ctx.lineWidth=Math.max(1.1,3.5*pn.scale);
+        const tactileN=cn+side*(railGauge0+22)*pn.scale;
+        const tactileF=cf+side*(railGauge0+22)*pf.scale;
+        ctx.beginPath();ctx.moveTo(tactileF,yf-1);ctx.lineTo(tactileN,yn-1);ctx.stroke();
 
-        // yellow tactile edge
-        ctx.strokeStyle='#e3bc45';
-        ctx.lineWidth=Math.max(1.2,3.2*pNear.scale);
-        ctx.beginPath();
-        ctx.moveTo(cxFar + side*(railGauge0*pFar.scale + 13*pFar.scale), pFar.y-1);
-        ctx.lineTo(cxNear + side*(railGauge0*pNear.scale + 13*pNear.scale), pNear.y-1);
-        ctx.stroke();
+        // platform columns / retaining joints
+        const spacing=32;
+        let world=Math.ceil((position+Math.max(0,nearD))/spacing)*spacing;
+        for(;world<position+farD;world+=spacing){
+          const d=world-position;if(d<1||d>maxDraw+80)continue;
+          const pp=project(d),cc=trackCenter(d),yy=platformY(d),gg=groundY(d);
+          const ix=cc+side*(railGauge0+innerOffset)*pp.scale;
+          ctx.strokeStyle='rgba(79,81,79,.42)';ctx.lineWidth=Math.max(.5,1*pp.scale);
+          ctx.beginPath();ctx.moveTo(ix,gg);ctx.lineTo(ix,yy);ctx.stroke();
+        }
 
-        if(canopy && pFar.scale>.11){
-          const roofFarY=pFar.y-54*pFar.scale;
-          const roofNearY=pNear.y-54*pNear.scale;
-          ctx.globalAlpha=.88;
-          ctx.fillStyle=layout.historic?'#7a6b52':theme.accent;
-          ctx.beginPath();
-          ctx.moveTo(cxFar + side*(railGauge0*pFar.scale + 58*pFar.scale), roofFarY);
-          ctx.lineTo(cxNear + side*(railGauge0*pNear.scale + 58*pNear.scale), roofNearY);
-          ctx.lineTo(cxNear + side*(railGauge0*pNear.scale + 20*pNear.scale), roofNearY+15*pNear.scale);
-          ctx.lineTo(cxFar + side*(railGauge0*pFar.scale + 20*pFar.scale), roofFarY+15*pFar.scale);
-          ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+        // fence on outer edge
+        ctx.strokeStyle='rgba(92,97,98,.82)';ctx.lineWidth=Math.max(.7,1.25*pn.scale);
+        ctx.beginPath();ctx.moveTo(outF,yf-12*pf.scale);ctx.lineTo(outN,yn-12*pn.scale);ctx.stroke();
+        for(let t=0;t<=1;t+=.16){
+          const d=df+(dn-df)*t,pp=project(d),cc=trackCenter(d),yy=platformY(d);
+          const x=cc+side*(railGauge0+outerOffset)*pp.scale;
+          ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x,yy-13*pp.scale);ctx.stroke();
+        }
+
+        // platform lamps, benches and station signs are world-positioned.
+        for(let k=0;k<4;k++){
+          const d=farD-(k+1)*(farD-nearD)/5;if(d<3||d>maxDraw+60)continue;
+          const pp=project(d),cc=trackCenter(d),yy=platformY(d);
+          const x=cc+side*(railGauge0+55)*pp.scale;
+          const top=projectWorldY(d,4.25,horizonY,bottomY);
+          ctx.strokeStyle='rgba(73,77,78,.90)';ctx.lineWidth=Math.max(.7,1.5*pp.scale);
+          ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x,top);ctx.stroke();
+          ctx.fillStyle='rgba(241,230,184,.90)';ctx.fillRect(x-6*pp.scale,top,12*pp.scale,2.8*pp.scale);
+        }
+        if(project(clampD(stationCenter+20)).scale>.07){
+          const d=clampD(stationCenter+18),pp=project(d),cc=trackCenter(d),yy=platformY(d);
+          const x=cc+side*(railGauge0+48)*pp.scale;
+          const signW=70*pp.scale,signH=22*pp.scale;
+          ctx.fillStyle='#f7f7f1';ctx.fillRect(x-signW/2,yy-54*pp.scale,signW,signH);
+          ctx.strokeStyle='#55636a';ctx.strokeRect(x-signW/2,yy-54*pp.scale,signW,signH);
+          ctx.fillStyle='#24313a';ctx.textAlign='center';ctx.font='700 '+Math.max(6,10*pp.scale)+'px sans-serif';
+          ctx.fillText(stationName,x,yy-39*pp.scale);
+        }
+
+        if(canopy){
+          // roof + repeated columns, not a floating polygon.
+          const roofOut=outerOffset-8,roofIn=innerOffset+8;
+          const ryN=projectWorldY(dn,4.55,horizonY,bottomY),ryF=projectWorldY(df,4.55,horizonY,bottomY);
+          const rinN=cn+side*(railGauge0+roofIn)*pn.scale,routN=cn+side*(railGauge0+roofOut)*pn.scale;
+          const rinF=cf+side*(railGauge0+roofIn)*pf.scale,routF=cf+side*(railGauge0+roofOut)*pf.scale;
+          ctx.fillStyle=layout.historic?'rgba(95,84,66,.94)':'rgba(79,89,94,.94)';
+          ctx.beginPath();ctx.moveTo(rinF,ryF);ctx.lineTo(rinN,ryN);ctx.lineTo(routN,ryN-5*pn.scale);ctx.lineTo(routF,ryF-5*pf.scale);ctx.closePath();ctx.fill();
+          for(let t=.12;t<.93;t+=.18){
+            const d=df+(dn-df)*t;if(d<2||d>maxDraw+60)continue;
+            const pp=project(d),cc=trackCenter(d),yy=platformY(d),top=projectWorldY(d,4.3,horizonY,bottomY);
+            const x=cc+side*(railGauge0+52)*pp.scale;
+            ctx.strokeStyle='rgba(65,69,70,.94)';ctx.lineWidth=Math.max(.8,1.8*pp.scale);
+            ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x,top);ctx.stroke();
+          }
         }
         ctx.restore();
       }
 
-      function drawIslandPlatform(){
+      function drawIslandPlatform(side=1,canopy=false){
+        // Train runs on the main track; the island sits beside it, between main and loop track.
+        const dn=clampD(nearD),df=clampD(farD),pn=project(dn),pf=project(df);
+        const cn=trackCenter(dn),cf=trackCenter(df);
+        const centerOffset=side*72;
+        const half=31;
+        const yn=platformY(dn),yf=platformY(df),gn=groundY(dn),gf=groundY(df);
+        const cN=cn+centerOffset*pn.scale,cF=cf+centerOffset*pf.scale;
         ctx.save();
-        // island platform is centered between two route tracks
-        const islandFar = cxFar;
-        const islandNear = cxNear;
-        const halfFar = 37*pFar.scale;
-        const halfNear = 37*pNear.scale;
-        ctx.fillStyle=layout.historic?'#b7aa88':'#cbb98f';
-        ctx.beginPath();
-        ctx.moveTo(islandFar-halfFar,pFar.y);
-        ctx.lineTo(islandNear-halfNear,pNear.y);
-        ctx.lineTo(islandNear+halfNear,pNear.y);
-        ctx.lineTo(islandFar+halfFar,pFar.y);
-        ctx.closePath();ctx.fill();
-
-        ctx.strokeStyle='#e3bc45';
-        ctx.lineWidth=Math.max(1.1,2.8*pNear.scale);
-        for(const edge of [-1,1]){
-          ctx.beginPath();
-          ctx.moveTo(islandFar+edge*(halfFar-3*pFar.scale),pFar.y-1);
-          ctx.lineTo(islandNear+edge*(halfNear-3*pNear.scale),pNear.y-1);
-          ctx.stroke();
+        ctx.fillStyle=layout.historic?'rgba(125,112,87,.96)':'rgba(126,128,124,.97)';
+        ctx.beginPath();ctx.moveTo(cF-half*pf.scale,gf);ctx.lineTo(cN-half*pn.scale,gn);ctx.lineTo(cN-half*pn.scale,yn);ctx.lineTo(cF-half*pf.scale,yf);ctx.closePath();ctx.fill();
+        ctx.fillStyle=layout.historic?'#b9aa86':'#c9c6b9';
+        ctx.beginPath();ctx.moveTo(cF-half*pf.scale,yf);ctx.lineTo(cN-half*pn.scale,yn);ctx.lineTo(cN+half*pn.scale,yn);ctx.lineTo(cF+half*pf.scale,yf);ctx.closePath();ctx.fill();
+        ctx.strokeStyle='#e4bd45';ctx.lineWidth=Math.max(1.1,3.1*pn.scale);
+        for(const edge of [-1,1]){ctx.beginPath();ctx.moveTo(cF+edge*(half-5)*pf.scale,yf-1);ctx.lineTo(cN+edge*(half-5)*pn.scale,yn-1);ctx.stroke();}
+        if(canopy){
+          const ryN=projectWorldY(dn,4.55,horizonY,bottomY),ryF=projectWorldY(df,4.55,horizonY,bottomY);
+          ctx.fillStyle=layout.historic?'rgba(95,84,66,.94)':'rgba(79,89,94,.94)';
+          ctx.beginPath();ctx.moveTo(cF-27*pf.scale,ryF);ctx.lineTo(cN-27*pn.scale,ryN);ctx.lineTo(cN+27*pn.scale,ryN);ctx.lineTo(cF+27*pf.scale,ryF);ctx.closePath();ctx.fill();
+          for(let t=.14;t<.92;t+=.18){
+            const d=df+(dn-df)*t,pp=project(d),cc=trackCenter(d)+centerOffset*pp.scale,yy=platformY(d),top=projectWorldY(d,4.3,horizonY,bottomY);
+            ctx.strokeStyle='rgba(65,69,70,.94)';ctx.lineWidth=Math.max(.8,1.7*pp.scale);ctx.beginPath();ctx.moveTo(cc,yy);ctx.lineTo(cc,top);ctx.stroke();
+          }
         }
-        if(layout.canopy && pFar.scale>.10){
-          ctx.fillStyle=layout.historic?'#76684f':theme.accent;
-          ctx.globalAlpha=.86;
-          ctx.beginPath();
-          ctx.moveTo(islandFar-30*pFar.scale,pFar.y-53*pFar.scale);
-          ctx.lineTo(islandNear-30*pNear.scale,pNear.y-53*pNear.scale);
-          ctx.lineTo(islandNear+30*pNear.scale,pNear.y-53*pNear.scale);
-          ctx.lineTo(islandFar+30*pFar.scale,pFar.y-53*pFar.scale);
-          ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+        // island station name board
+        const d=clampD(stationCenter+12),pp=project(d),cc=trackCenter(d)+centerOffset*pp.scale,yy=platformY(d);
+        if(pp.scale>.07){
+          ctx.fillStyle='#f7f7f1';ctx.fillRect(cc-34*pp.scale,yy-50*pp.scale,68*pp.scale,19*pp.scale);
+          ctx.fillStyle='#24313a';ctx.textAlign='center';ctx.font='700 '+Math.max(6,9*pp.scale)+'px sans-serif';ctx.fillText(stationName,cc,yy-36*pp.scale);
         }
         ctx.restore();
       }
 
-      // draw platform type
       if(layout.type==='single'){
-        drawSidePlatform(layout.platformSide || -1, !!layout.canopy);
-      }else if(layout.type==='island'){
-        drawIslandPlatform();
+        drawPlatformBody(layout.platformSide||profile.side||-1,15,78,!!layout.canopy);
       }else if(layout.type==='opposed'){
-        drawSidePlatform(-1, !!layout.canopy);
-        drawSidePlatform(1, !!layout.canopy);
+        drawPlatformBody(-1,15,74,!!layout.canopy);drawPlatformBody(1,15,74,!!layout.canopy);
+      }else if(layout.type==='island'){
+        drawIslandPlatform(profile.side||1,!!layout.canopy);
       }else if(layout.type==='mixed'){
-        drawSidePlatform(-1, !!layout.canopy);
-        drawIslandPlatform();
+        const side=profile.side||-1;
+        drawPlatformBody(side,15,74,!!layout.canopy);
+        drawIslandPlatform(-side,!!layout.canopy);
       }
 
-
-      // stop target
+      // stop target remains on the actual running rail.
       const pTarget=project(Math.max(.3,remaining));
       if(pTarget.scale>.02){
         const targetCx=cx+trackCurveOffset(Math.max(.3,remaining));
@@ -5033,22 +5378,6 @@
           const x0=targetCx-halfW+(i/10)*2*halfW;
           ctx.fillRect(x0,pTarget.y-3*pTarget.scale-2,(2*halfW/10)+1,5*pTarget.scale+2);
         }
-      }
-
-      // station sign + platform layout label
-      if(pFar.scale>.05){
-        const sideForSign = layout.type==='island' ? 1 : (layout.platformSide || -1);
-        const signX=cxFar+sideForSign*(railGauge0*pFar.scale+48*pFar.scale);
-        const signY=pFar.y-47*pFar.scale;
-        ctx.save();
-        ctx.fillStyle=layout.historic?'#9c7446':theme.accent;
-        ctx.fillRect(signX-38*pFar.scale,signY-12*pFar.scale,76*pFar.scale,21*pFar.scale);
-        ctx.strokeStyle='#1c1a14';ctx.lineWidth=Math.max(1,1.5*pFar.scale);
-        ctx.strokeRect(signX-38*pFar.scale,signY-12*pFar.scale,76*pFar.scale,21*pFar.scale);
-        ctx.fillStyle='#fff';ctx.textAlign='center';
-        ctx.font='bold '+Math.max(7,11*pFar.scale)+'px "Zen Kaku Gothic New"';
-        ctx.fillText(stationName,signX,signY+4*pFar.scale);
-        ctx.restore();
       }
     }
 
