@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>飯田線 運転シミュレーター — AUDIO / STRUCTURE FIX</title>
+<title>飯田線 運転シミュレーター — SAVE / CROSSING / STOP ALERT</title>
 
 <style id="service-mode-css">
 #serviceModeBox{
@@ -483,6 +483,25 @@
 }
 </style>
 
+
+<style id="save-resume-css">
+#saveResumeBar{display:flex;align-items:center;gap:6px;margin-left:4px}
+#saveResumeBar button{border:1px solid #3a4148;background:#171b1f;color:#dfe4e8;border-radius:14px;padding:4px 9px;font:700 9px 'Yu Gothic',Meiryo,sans-serif;cursor:pointer;white-space:nowrap}
+#saveResumeBar button:hover{border-color:#8a6830;color:#f0b554}
+#saveResumeBar .resume{border-color:rgba(79,163,209,.55);color:#72bce7}
+#saveResumeModal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,4,6,.78);backdrop-filter:blur(5px)}
+#saveResumeModal.show{display:flex}
+.saveResumeCard{width:min(520px,96vw);background:linear-gradient(180deg,#171b20,#0b0e11);border:1px solid #3b434a;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.65);padding:18px;color:#e9ecef;font-family:'Yu Gothic',Meiryo,sans-serif}
+.saveResumeTitle{font-size:17px;font-weight:700;color:#e8a33d;letter-spacing:.04em}.saveResumeSub{margin-top:6px;font-size:11px;line-height:1.65;color:#98a1aa}
+.saveResumeCred{margin:14px 0;padding:12px;background:#080b0e;border:1px solid #30373d;border-radius:8px;font-family:monospace}
+.saveResumeCredRow{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:center;margin:6px 0}.saveResumeCredRow span{font-size:10px;color:#7e8790}.saveResumeCredRow b{font-size:16px;letter-spacing:.08em;color:#f2f3f4;word-break:break-all;user-select:all}
+.saveResumeFields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.saveResumeFields label{display:flex;flex-direction:column;gap:5px;font-size:9px;color:#7e8790}.saveResumeFields input{width:100%;background:#090c0f;color:#f1f3f5;border:1px solid #343b42;border-radius:7px;padding:9px 10px;font:13px monospace;outline:none}.saveResumeFields input:focus{border-color:#4fa3d1}
+.saveResumeActions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:14px}.saveResumeActions button{border:1px solid #394149;background:#20262b;color:#e6eaed;border-radius:18px;padding:8px 14px;font-weight:700;cursor:pointer}.saveResumeActions button.primary{background:#e8a33d;color:#17120a;border-color:#e8a33d}.saveResumeActions button.blue{background:#286f9c;color:white;border-color:#418ebd}.saveResumeActions button.danger{color:#ff9e9e;border-color:#6f3939}
+#saveResumeStatus{min-height:18px;margin-top:10px;font-size:10px;color:#8f99a2}.saveResumeStatus.ok{color:#63c887}.saveResumeStatus.err{color:#ff8080}
+#saveResumePaused{position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;pointer-events:none;background:rgba(2,4,6,.22);font:700 22px 'Yu Gothic',sans-serif;color:#f4c066;text-shadow:0 2px 12px #000;letter-spacing:.16em}#saveResumePaused.show{display:flex}
+@media(max-width:700px){#saveResumeBar{width:100%;margin-left:0}.saveResumeFields{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <style>
@@ -749,6 +768,10 @@
 <div id="app">
   <div id="title">TRAIN DRIVER SIM — 飯田線 天竜峡 → 中部天竜 <span class="otp" id="otpBadge">定時率 100%</span>
     <button id="audioBtn" style="margin-left:auto;background:#202428;color:#e8a33d;border:1px solid #70552b;border-radius:14px;padding:4px 10px;cursor:pointer;">🔊 音声 ON</button>
+    <div id="saveResumeBar">
+      <button id="interruptSaveBtn" type="button">⏸ 中断・ID発行</button>
+      <button id="resumeSaveBtn" class="resume" type="button">🔐 中断データ読込</button>
+    </div>
     <div id="serviceModeBox">
       <label>列車種別</label>
       <select id="serviceSelect">
@@ -758,6 +781,7 @@
         <option value="inaji3">特急 伊那路3号 飯田（夜）</option>
         <option value="hiraokaLocal">普通 平岡 22:25（天竜峡始発）</option>
         <option value="iidaLocal">普通 飯田 08:15（天竜峡始発）</option>
+        <option value="toyokawaLocal">普通 豊川 08:03（豊橋始発・407M）</option>
       </select>
       <span id="serviceBadge">普通 / LOCAL</span>
       <label style="margin-left:6px;">ルート</label>
@@ -767,6 +791,7 @@
         <option value="inaji3night">現在線 中部天竜→飯田（伊那路3号・夜）</option>
         <option value="tenryu_hiraoka">現在線 天竜峡→平岡</option>
         <option value="tenryu_iida">現在線 天竜峡→飯田</option>
+        <option value="toyohashi_toyokawa">現在線 豊橋→豊川（都市区間）</option>
       </select>
       <span id="routeBadge" style="padding:4px 9px;border-radius:13px;background:#252a2f;color:#63b5e4;border:1px solid rgba(99,181,228,.38);font-size:10px;">現在線</span>
       <span id="nightRunBadge">NIGHT RUN</span>
@@ -779,6 +804,7 @@
   <div id="stage">
       <div id="runtimeStatus">CORE RUNNING</div>
     <canvas id="trackCanvas"></canvas>
+    <div id="saveResumePaused">運転中断中</div>
 
     <div class="hud">
       <div class="lbl">次駅 NEXT STOP</div>
@@ -987,6 +1013,30 @@
     </aside>
   </div>
 </div>
+
+<div id="saveResumeModal" aria-hidden="true">
+  <div class="saveResumeCard" role="dialog" aria-modal="true" aria-labelledby="saveResumeTitle">
+    <div class="saveResumeTitle" id="saveResumeTitle">運転中断データ</div>
+    <div class="saveResumeSub" id="saveResumeSub">IDとパスワードを入力すると、中断した運転状態を呼び出せます。</div>
+    <div class="saveResumeCred" id="saveResumeIssued" style="display:none">
+      <div class="saveResumeCredRow"><span>再開ID</span><b id="issuedSaveId">—</b></div>
+      <div class="saveResumeCredRow"><span>パスワード</span><b id="issuedSavePass">—</b></div>
+    </div>
+    <div class="saveResumeFields" id="saveResumeFields">
+      <label>再開ID<input id="resumeIdInput" autocomplete="off" spellcheck="false" placeholder="IIDA-XXXX-XXXX"></label>
+      <label>パスワード<input id="resumePassInput" type="password" autocomplete="off" spellcheck="false" placeholder="8文字"></label>
+    </div>
+    <div id="saveResumeStatus" class="saveResumeStatus"></div>
+    <div class="saveResumeActions">
+      <button id="saveResumeDeleteBtn" class="danger" type="button" style="display:none">このセーブを削除</button>
+      <button id="saveResumeCloseBtn" type="button">閉じる</button>
+      <button id="saveResumeContinueBtn" type="button" style="display:none">今の運転を続ける</button>
+      <button id="saveResumeLoadBtn" class="blue" type="button">呼び出す</button>
+      <button id="saveResumeCopyBtn" class="primary" type="button" style="display:none">ID・パスワードをコピー</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   const canvas = document.getElementById('trackCanvas');
@@ -1146,6 +1196,61 @@
     geometry:northUrbanGeometry.map(g=>JSON.parse(JSON.stringify(g)))
   };
 
+  // 豊橋→豊川：飯田線南端の都市・近郊区間。
+  // 駅間距離は営業キロ差（合計8.7km）。線形・制限速度はシミュレーター向け設定。
+  const toyohashiToyokawaStations = ['豊橋','船町','下地','小坂井','牛久保','豊川'];
+  const toyohashiToyokawaLengths = [1500,700,2200,2200,2100];
+  const toyohashiToyokawaLimits = [60,70,85,85,75];
+  const toyohashiToyokawaThemes = [
+    {sky:['#91c6df','#edf7fb'],ground:['#71896d','#3f5145'],accent:'#e59a36',decor:'city'},
+    {sky:['#89bfd9','#e9f5fa'],ground:['#66866b','#354b40'],accent:'#d99a3f',decor:'river'},
+    {sky:['#9bcadf','#eef7f5'],ground:['#77946e','#435943'],accent:'#d8a34b',decor:'suburban'},
+    {sky:['#9fcde0','#f1f8f4'],ground:['#7f9b70','#4b6246'],accent:'#d8a34b',decor:'field'},
+    {sky:['#95c4d8','#eef4f1'],ground:['#738d68','#40553f'],accent:'#e19b3b',decor:'city'}
+  ];
+  const toyohashiToyokawaGeometry = [
+    {
+      grade:2, alignment:[[0,0],[.18,-2],[.42,3],[.72,-2],[1,0]],
+      curves:[[.18,.42,-1,650],[.60,.86,1,720]], tunnels:[], bridges:[], cliffs:[],
+      scenery:'city', mapBearing:356,
+      landmark:{type:'toyohashiTerminal',name:'豊橋駅・飯田線／名鉄線共用区間',at:.16,side:-1}
+    },
+    {
+      grade:0, alignment:[[0,0],[.18,1],[.52,-1],[1,0]],
+      curves:[[.06,.24,1,900],[.76,.94,-1,900]], tunnels:[], bridges:[[.10,.82]], cliffs:[],
+      scenery:'river', riverSide:1, riverWidth:1.15, mapBearing:2,
+      bridgeNames:[{range:[.10,.82],name:'豊川橋梁'}],
+      landmark:{type:'toyokawaRiver',name:'豊川・豊川橋梁',at:.46,side:1}
+    },
+    {
+      grade:1, alignment:[[0,0],[.20,2],[.46,-4],[.70,5],[1,0]],
+      curves:[[.24,.48,-1,520],[.56,.82,1,480]], tunnels:[], bridges:[], cliffs:[],
+      scenery:'city', mapBearing:12,
+      landmark:{type:'hiraiJunction',name:'平井信号場・名鉄名古屋本線分岐',at:.76,side:-1}
+    },
+    {
+      grade:3, alignment:[[0,0],[.24,-3],[.54,2],[.78,-2],[1,0]],
+      curves:[[.10,.34,-1,620],[.58,.84,1,650]], tunnels:[], bridges:[[.47,.52]], cliffs:[],
+      scenery:'city', mapBearing:18,
+      bridgeNames:[{range:[.47,.52],name:'市街地架道橋'}]
+    },
+    {
+      grade:2, alignment:[[0,0],[.16,2],[.38,-3],[.66,4],[1,0]],
+      curves:[[.16,.40,1,560],[.58,.86,-1,520]], tunnels:[], bridges:[], cliffs:[],
+      scenery:'city', mapBearing:20,
+      landmark:{type:'toyokawaTerminal',name:'豊川稲荷門前・終点豊川',at:.80,side:1}
+    }
+  ];
+  const toyohashiToyokawaRouteData = {
+    id:'toyohashi_toyokawa',
+    label:'現在線 豊橋→豊川（都市区間）',
+    stations:toyohashiToyokawaStations,
+    lengths:toyohashiToyokawaLengths,
+    limits:toyohashiToyokawaLimits,
+    geometry:toyohashiToyokawaGeometry,
+    themes:toyohashiToyokawaThemes
+  };
+
   const routeDefs = {
     modern: modernRouteData,
     old1955: {
@@ -1158,9 +1263,54 @@
     },
     inaji3night: inaji3NightRouteData,
     tenryu_hiraoka: tenryuHiraokaRouteData,
-    tenryu_iida: tenryuIidaRouteData
+    tenryu_iida: tenryuIidaRouteData,
+    toyohashi_toyokawa: toyohashiToyokawaRouteData
   };
   let currentRoute = 'modern';
+
+  // ---------- level crossings ----------
+  // Simulator placements. Crossing candidates are rejected automatically when
+  // they overlap a tunnel or a bridge.
+  const crossingFractionsByRoute={
+    toyohashi_toyokawa:{
+      0:[.27,.61,.84],1:[.91],2:[.19,.43,.72,.90],3:[.18,.34,.68,.88],4:[.20,.47,.73]
+    },
+    tenryu_iida:{
+      0:[.68],1:[.34,.79],2:[.58],3:[.32,.76],4:[.29,.67],5:[.35,.72],6:[.31,.69],7:[.28,.64],8:[.30,.72]
+    }
+  };
+
+  function crossingCandidateFractions(){
+    const explicit=crossingFractionsByRoute[currentRoute]?.[stationIdx];
+    if(explicit)return explicit.slice();
+    const st=lineStations[stationIdx]||'';
+    const prof=stationSceneProfiles?.[st];
+    if(!prof?.road)return [];
+    if(['urbanCore','urban','suburban','railTown'].includes(prof.zone))return [.34,.72];
+    if(['mountainTown','riverTown','retroTown','village','damVillage','gorgeTown'].includes(prof.zone))return [.74];
+    return [.67];
+  }
+
+  function currentLevelCrossings(){
+    const g=currentGeometry();
+    const candidates=crossingCandidateFractions();
+    const blocked=f=>{
+      const margin=.028;
+      return [...(g.tunnels||[]),...(g.bridges||[])].some(r=>f>=r[0]-margin&&f<=r[1]+margin);
+    };
+    return candidates.filter(f=>f>.07&&f<.94&&!blocked(f)).map((f,i)=>({
+      at:f,worldM:f*segLen,distance:f*segLen-position,
+      key:`${currentRoute}:${stationIdx}:${i}`,label:'踏切'
+    }));
+  }
+
+  window.iidaCrossingData={
+    getCurrent(){return currentLevelCrossings().map(x=>({...x}));},
+    nearestAhead(maxDistance=500){
+      const list=currentLevelCrossings().filter(x=>x.distance>0&&x.distance<=maxDistance);
+      return list.sort((a,b)=>a.distance-b.distance)[0]||null;
+    }
+  };
 
 
   // ---------- ホーム形式 ----------
@@ -1197,7 +1347,13 @@
     '下山村':   {type:'single',  tracks:1, platformSide:-1, label:'単式ホーム'},
     '鼎':       {type:'single',  tracks:1, platformSide:-1, label:'単式ホーム'},
     '切石':     {type:'single',  tracks:1, platformSide:-1, label:'単式ホーム'},
-    '飯田':     {type:'opposed', tracks:2, platformSide:0,  label:'終着駅 / 2面2線', canopy:true}
+    '飯田':     {type:'opposed', tracks:2, platformSide:0,  label:'終着駅 / 2面2線', canopy:true},
+    '豊橋':     {type:'mixed',   tracks:3, platformSide:-1, label:'飯田線・名鉄共用部 / 3線', canopy:true},
+    '船町':     {type:'opposed', tracks:2, platformSide:0,  label:'相対式2面2線'},
+    '下地':     {type:'opposed', tracks:2, platformSide:0,  label:'相対式2面2線'},
+    '小坂井':   {type:'opposed', tracks:2, platformSide:0,  label:'相対式2面2線', canopy:true},
+    '牛久保':   {type:'opposed', tracks:2, platformSide:0,  label:'相対式2面2線', canopy:true},
+    '豊川':     {type:'mixed',   tracks:3, platformSide:0,  label:'2面3線 / 折返し設備', canopy:true}
   };
 
   const historicPlatformLayouts = {
@@ -1263,6 +1419,24 @@
       main:2, platform:'島式',
       leftSidings:1, rightSidings:2,
       northYardConnection:true, southYardNoDirect:true, yard:true, spread:76
+    },
+    '豊橋': {
+      label:'飯田線・名鉄共用部＋豊橋駅構内',
+      main:3, platform:'頭端・島式',
+      leftSidings:2, rightSidings:2,
+      bothEndPoints:true, yard:true, spread:86
+    },
+    '小坂井': {
+      label:'平井信号場分岐後・複線区間',
+      main:2, platform:'相対式',
+      leftSidings:0, rightSidings:1,
+      bothEndPoints:true, spread:72
+    },
+    '豊川': {
+      label:'2面3線＋折返し・留置線',
+      main:3, platform:'島式・単式',
+      leftSidings:1, rightSidings:2,
+      bothEndPoints:true, storage:true, yard:true, spread:82
     }
   };
 
@@ -1407,6 +1581,19 @@
       id:'iidaLocal', label:'普通', english:'LOCAL', destination:'飯田',
       route:'tenryu_iida', originTime:8*3600+15*60, targetArrival:8*3600+43*60,
       runFactor:1.0, dwell:20, oneMan:false, vehicle:'313系 2両', stops:[]
+    },
+    toyokawaLocal: {
+      id:'toyokawaLocal', label:'普通 407M', english:'LOCAL', destination:'豊川',
+      route:'toyohashi_toyokawa', originTime:8*3600+3*60, runFactor:1.0, dwell:20,
+      oneMan:false, vehicle:'313系 2両', stops:[],
+      fixedTimes:{
+        '豊橋':{dep:8*3600+3*60},
+        '船町':{arr:8*3600+5*60+30,dep:8*3600+6*60},
+        '下地':{arr:8*3600+7*60+30,dep:8*3600+8*60},
+        '小坂井':{arr:8*3600+10*60+40,dep:8*3600+11*60},
+        '牛久保':{arr:8*3600+13*60+40,dep:8*3600+14*60},
+        '豊川':{arr:8*3600+18*60,dep:8*3600+18*60}
+      }
     }
   };
   let currentService = 'local';
@@ -1431,7 +1618,7 @@
 
   function stationDwellSeconds(svc,stationName,index){
     if(index>=lineStations.length-1)return 0;
-    const major=new Set(['天竜峡','温田','平岡','水窪','中部天竜','飯田']);
+    const major=new Set(['天竜峡','温田','平岡','水窪','中部天竜','飯田','豊橋','豊川']);
     if(svc.id==='inaji'||svc.id==='inaji3')return major.has(stationName)?45:35;
     if(major.has(stationName))return 40;
     return Math.max(30,svc.dwell||30);
@@ -1543,6 +1730,7 @@
   const SPEED_LIMIT = 70;
   let overspeedFlash = 0;
   let simSeconds = ORIGIN_TIME;
+  let simPaused = false;
 
   let phase = 'run';       // 'run' | 'held_signal' | 'arrived'
   let signalAspect = 'green';
@@ -1552,7 +1740,8 @@
     get notch(){return notch;},
     get phase(){return phase;},
     get position(){return position;},
-    get segmentLength(){return segLen;}
+    get segmentLength(){return segLen;},
+    get paused(){return simPaused;}
   };
   let signalPos = 0;
   let heldSignalTimer = 0;
@@ -1606,7 +1795,9 @@
             ? '　<span style="color:#63b5e4">天竜峡22:25 → 平岡23:00</span>'
             : currentRoute==='tenryu_iida'
               ? '　<span style="color:#63b5e4">天竜峡08:15 → 飯田08:43</span>'
-              : '';
+              : currentRoute==='toyohashi_toyokawa'
+                ? '　<span style="color:#63b5e4">407M　豊橋08:03 → 船町08:06 → 下地08:08 → 小坂井08:11 → 牛久保08:14 → 豊川08:18</span>'
+                : '';
       const crewText=hasConductor()
         ? '<span style="color:#e8a33d">車掌乗務 / '+svc.vehicle+'</span>'
         : '<span style="color:#63b5e4">車掌乗務 / '+svc.vehicle+'</span>';
@@ -1621,6 +1812,7 @@
   }
 
   function resetRuntimeState(){
+    simPaused=false; savePausedEl?.classList.remove('show');
     stationIdx=0; position=0; speed=0; totalScore=0; results=[];
     segLen=segLengths[0]; phase='run'; setNotch(0);
     doorsOpen=false;doorCycleComplete=true;departureAuthority=true;
@@ -1644,12 +1836,14 @@
     serviceDefs.inaji3.stops=['中部天竜','水窪','平岡','温田','天竜峡','飯田'];
     serviceDefs.hiraokaLocal.stops=[...routeDefs.tenryu_hiraoka.stations];
     serviceDefs.iidaLocal.stops=[...routeDefs.tenryu_iida.stations];
+    serviceDefs.toyokawaLocal.stops=[...routeDefs.toyohashi_toyokawa.stations];
   }
 
   function defaultServiceForRoute(routeId){
     if(routeId==='inaji3night')return 'inaji3';
     if(routeId==='tenryu_hiraoka')return 'hiraokaLocal';
     if(routeId==='tenryu_iida')return 'iidaLocal';
+    if(routeId==='toyohashi_toyokawa')return 'toyokawaLocal';
     return 'local';
   }
 
@@ -1678,7 +1872,9 @@
     segLengths=[...r.lengths];
     speedLimits=[...r.limits];
     lineGeometry=r.geometry.map(g=>JSON.parse(JSON.stringify(g)));
-    stationThemes=lineStations.slice(0,-1).map((_,i)=>themePalette[i%themePalette.length]);
+    stationThemes=(r.themes&&r.themes.length)
+      ? r.themes.map(t=>JSON.parse(JSON.stringify(t)))
+      : lineStations.slice(0,-1).map((_,i)=>themePalette[i%themePalette.length]);
 
     if(!keepService || !serviceDefs[currentService] || (serviceDefs[currentService].route||'modern')!==currentRoute){
       currentService=defaultServiceForRoute(currentRoute);
@@ -1694,7 +1890,8 @@
       badge.textContent=currentRoute==='old1955'?'旧線 〜1955'
         :currentRoute==='inaji3night'?'中部天竜 → 飯田'
         :currentRoute==='tenryu_hiraoka'?'天竜峡 → 平岡'
-        :currentRoute==='tenryu_iida'?'天竜峡 → 飯田':'現在線';
+        :currentRoute==='tenryu_iida'?'天竜峡 → 飯田'
+        :currentRoute==='toyohashi_toyokawa'?'豊橋 → 豊川':'現在線';
     }
     const nightBadge=document.getElementById('nightRunBadge');
     if(nightBadge)nightBadge.classList.toggle('on',currentRoute==='inaji3night');
@@ -1714,7 +1911,9 @@
             ?'TRAIN DRIVER SIM — 普通 天竜峡 → 平岡'
             :currentRoute==='tenryu_iida'
               ?'TRAIN DRIVER SIM — 普通 天竜峡 → 飯田'
-              :'TRAIN DRIVER SIM — 飯田線 天竜峡 → 中部天竜';
+              :currentRoute==='toyohashi_toyokawa'
+                ?'TRAIN DRIVER SIM — 普通 407M 豊橋 → 豊川'
+                :'TRAIN DRIVER SIM — 飯田線 天竜峡 → 中部天竜';
       titleEl.firstChild.nodeValue=titleText+' ';
     }
 
@@ -1733,7 +1932,9 @@
           ?'普通 平岡行：天竜峡 22:25 → 平岡 23:00'
           :currentRoute==='tenryu_iida'
             ?'普通 飯田行：天竜峡 08:15 → 飯田 08:43'
-            :'現在線モード：天竜峡 → 中部天竜');
+            :currentRoute==='toyohashi_toyokawa'
+              ?'普通 407M 豊川行：豊橋 08:03 → 豊川 08:18'
+              :'現在線モード：天竜峡 → 中部天竜');
   }
 
   const serviceSelect=document.getElementById('serviceSelect');
@@ -1744,6 +1945,232 @@
     currentService=defaultServiceForRoute(routeSelect.value);
     applyRoute(routeSelect.value,true);
   };
+
+
+  // ---------- interruption save / ID + password resume ----------
+  const SAVE_PREFIX='IIDA_SIM_SAVE_V1:';
+  const SAVE_INDEX_KEY='IIDA_SIM_SAVE_INDEX_V1';
+  const saveModal=document.getElementById('saveResumeModal');
+  const savePausedEl=document.getElementById('saveResumePaused');
+  const saveStatus=document.getElementById('saveResumeStatus');
+  const issuedBox=document.getElementById('saveResumeIssued');
+  const fieldsBox=document.getElementById('saveResumeFields');
+  const issuedIdEl=document.getElementById('issuedSaveId');
+  const issuedPassEl=document.getElementById('issuedSavePass');
+  const resumeIdInput=document.getElementById('resumeIdInput');
+  const resumePassInput=document.getElementById('resumePassInput');
+  const saveLoadBtn=document.getElementById('saveResumeLoadBtn');
+  const saveCopyBtn=document.getElementById('saveResumeCopyBtn');
+  const saveContinueBtn=document.getElementById('saveResumeContinueBtn');
+  const saveDeleteBtn=document.getElementById('saveResumeDeleteBtn');
+  let lastIssuedCredentials=null;
+
+  function setSaveStatus(msg,kind=''){
+    if(!saveStatus)return;
+    saveStatus.textContent=msg||'';
+    saveStatus.className='saveResumeStatus'+(kind?' '+kind:'');
+  }
+  function randomToken(n){
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const arr=new Uint8Array(n);
+    try{crypto.getRandomValues(arr)}catch(_){for(let i=0;i<n;i++)arr[i]=Math.floor(Math.random()*256)}
+    return Array.from(arr,v=>chars[v%chars.length]).join('');
+  }
+  function makeSaveId(){return 'IIDA-'+randomToken(4)+'-'+randomToken(4)}
+  function makeSavePass(){return randomToken(8)}
+  function passHash(id,pass){
+    // Local resume lock, not intended as cryptographic account security.
+    let h=2166136261;
+    const text='IIDA|'+String(id).toUpperCase()+'|'+String(pass);
+    for(let i=0;i<text.length;i++){
+      h^=text.charCodeAt(i);
+      h=Math.imul(h,16777619);
+    }
+    return ('00000000'+(h>>>0).toString(16)).slice(-8);
+  }
+  function getSaveIndex(){
+    try{const a=JSON.parse(localStorage.getItem(SAVE_INDEX_KEY)||'[]');return Array.isArray(a)?a:[]}catch(_){return []}
+  }
+  function setSaveIndex(a){
+    try{localStorage.setItem(SAVE_INDEX_KEY,JSON.stringify(Array.from(new Set(a)).slice(-20)))}catch(_){ }
+  }
+  function saveKey(id){return SAVE_PREFIX+String(id||'').trim().toUpperCase()}
+  function stopInteractiveAudioForPause(){
+    try{window.IidaUnified?.stopAll?.()}catch(_){ }
+    try{window.IidaUnified?.setVehicleState?.('silence')}catch(_){ }
+  }
+  function snapshotState(){
+    return {
+      version:1,
+      savedAt:new Date().toISOString(),
+      route:currentRoute,
+      service:currentService,
+      stationIdx,position,segLen,speed,notch,totalScore,
+      results:JSON.parse(JSON.stringify(results||[])),
+      simSeconds,phase,signalAspect,signalPos,heldSignalTimer,
+      doorsOpen,doorCycleComplete,departureAuthority,conductorState,conductorTimer,actualArrivalSecond,
+      staffReceived,staffRequested,staffTimer,
+      forcedLock,forcedViolation,atsAlarmActive,atsTimer,atsCooldown,atsIncidents,onTimeArrivals,
+      overspeedFlash
+    };
+  }
+  function writeSave(id,pass,snap){
+    const rec={version:1,id,passHash:passHash(id,pass),snapshot:snap};
+    try{
+      localStorage.setItem(saveKey(id),JSON.stringify(rec));
+      const idx=getSaveIndex();idx.push(id);setSaveIndex(idx);
+      return true;
+    }catch(err){
+      console.error('[IIDA SAVE] save failed',err);return false;
+    }
+  }
+  function readSave(id,pass){
+    id=String(id||'').trim().toUpperCase();
+    try{
+      const raw=localStorage.getItem(saveKey(id));
+      if(!raw)return {ok:false,error:'このIDの中断データが見つかりません。'};
+      const rec=JSON.parse(raw);
+      if(rec.passHash!==passHash(id,pass))return {ok:false,error:'パスワードが一致しません。'};
+      if(!rec.snapshot||rec.snapshot.version!==1)return {ok:false,error:'このセーブデータは読み込めない形式です。'};
+      return {ok:true,rec};
+    }catch(err){return {ok:false,error:'中断データの読み込みに失敗しました。'};}
+  }
+  function deleteSave(id){
+    id=String(id||'').trim().toUpperCase();
+    try{
+      localStorage.removeItem(saveKey(id));
+      setSaveIndex(getSaveIndex().filter(x=>x!==id));
+      return true;
+    }catch(_){return false}
+  }
+  function openResumeModal(mode='load'){
+    if(!saveModal)return;
+    saveModal.classList.add('show');saveModal.setAttribute('aria-hidden','false');
+    setSaveStatus('');
+    const issued=mode==='issued';
+    issuedBox.style.display=issued?'block':'none';
+    fieldsBox.style.display=issued?'none':'grid';
+    saveLoadBtn.style.display=issued?'none':'inline-block';
+    saveCopyBtn.style.display=issued?'inline-block':'none';
+    saveContinueBtn.style.display=issued?'inline-block':'none';
+    saveDeleteBtn.style.display=issued?'inline-block':'none';
+    document.getElementById('saveResumeTitle').textContent=issued?'運転を中断しました':'中断データを呼び出す';
+    document.getElementById('saveResumeSub').textContent=issued
+      ?'下のIDとパスワードで、この地点から次回再開できます。両方を控えてください。'
+      :'中断時に発行されたIDとパスワードを入力してください。';
+    if(!issued){
+      const idx=getSaveIndex();
+      if(idx.length&&!resumeIdInput.value)resumeIdInput.value=idx[idx.length-1];
+      setTimeout(()=>resumePassInput.focus(),50);
+    }
+  }
+  function closeResumeModal(){
+    saveModal?.classList.remove('show');saveModal?.setAttribute('aria-hidden','true');
+  }
+  function setPauseState(v){
+    simPaused=!!v;
+    savePausedEl?.classList.toggle('show',simPaused);
+  }
+  function interruptAndIssue(){
+    const snap=snapshotState();
+    setPauseState(true);
+    stopInteractiveAudioForPause();
+    let id,pass,tries=0;
+    do{id=makeSaveId();tries++}while(localStorage.getItem(saveKey(id))&&tries<20);
+    pass=makeSavePass();
+    if(!writeSave(id,pass,snap)){
+      setPauseState(false);
+      openResumeModal('load');
+      setSaveStatus('ブラウザの保存領域を使用できないため、中断データを保存できませんでした。','err');
+      return;
+    }
+    lastIssuedCredentials={id,pass};
+    issuedIdEl.textContent=id;issuedPassEl.textContent=pass;
+    openResumeModal('issued');
+    setSaveStatus('中断地点を保存しました。IDとパスワードはこのブラウザ内の保存データと対応します。','ok');
+    toast('⏸ 運転を中断しました');
+  }
+  function restoreSnapshot(snap){
+    if(!snap||!routeDefs[snap.route]||!serviceDefs[snap.service])throw new Error('route/service invalid');
+    currentService=snap.service;
+    applyRoute(snap.route,true);
+    currentService=snap.service;
+    updateServiceStopsForRoute();
+    ORIGIN_TIME=currentServiceDef().originTime;
+    buildSchedule();
+    updateServiceDisplay();
+
+    stationIdx=Math.max(0,Math.min(segLengths.length-1,Number(snap.stationIdx)||0));
+    segLen=segLengths[stationIdx]||Number(snap.segLen)||segLengths[0];
+    position=Math.max(0,Math.min(segLen+20,Number(snap.position)||0));
+    speed=Math.max(0,Math.min(130,Number(snap.speed)||0));
+    totalScore=Number(snap.totalScore)||0;
+    results=Array.isArray(snap.results)?JSON.parse(JSON.stringify(snap.results)):[];
+    simSeconds=Number.isFinite(Number(snap.simSeconds))?Number(snap.simSeconds):ORIGIN_TIME;
+    phase=['run','held_signal','arrived'].includes(snap.phase)?snap.phase:'run';
+    signalAspect=['green','yellow','red'].includes(snap.signalAspect)?snap.signalAspect:'green';
+    signalPos=Number.isFinite(Number(snap.signalPos))?Number(snap.signalPos):segLen-220;
+    heldSignalTimer=Number(snap.heldSignalTimer)||0;
+    doorsOpen=!!snap.doorsOpen;doorCycleComplete=!!snap.doorCycleComplete;departureAuthority=!!snap.departureAuthority;
+    conductorState=String(snap.conductorState||'idle');conductorTimer=Number(snap.conductorTimer)||0;actualArrivalSecond=Number(snap.actualArrivalSecond)||0;
+    staffReceived=snap.staffReceived!==false;staffRequested=!!snap.staffRequested;staffTimer=Number(snap.staffTimer)||0;
+    forcedLock=!!snap.forcedLock;forcedViolation=!!snap.forcedViolation;atsAlarmActive=!!snap.atsAlarmActive;atsTimer=Number(snap.atsTimer)||0;atsCooldown=Number(snap.atsCooldown)||0;
+    atsIncidents=Number(snap.atsIncidents)||0;onTimeArrivals=Number(snap.onTimeArrivals)||0;overspeedFlash=Number(snap.overspeedFlash)||0;
+    setNotch(Math.max(-8,Math.min(5,Number(snap.notch)||0)));
+
+    document.getElementById('finalOverlay').classList.remove('show');
+    document.getElementById('stationPanel').classList.toggle('show',phase==='arrived');
+    document.getElementById('infoScore').textContent=String(totalScore);
+    const rate=results.length?Math.round(100*onTimeArrivals/results.length):100;
+    document.getElementById('otpBadge').textContent='定時率 '+rate+'%';
+    updateDoorClosedLamp();updateAtsBadge();renderDots();
+    if(phase==='arrived')updateStationPanel();
+    window.iidaRouteInfo={id:currentRoute,label:routeDefs[currentRoute].label,get stations(){return lineStations;},get stationIndex(){return stationIdx;}};
+    setPauseState(false);
+    setTimeout(()=>{try{updateUI();updateCastPanel(true)}catch(_){ }},0);
+  }
+
+  document.getElementById('interruptSaveBtn')?.addEventListener('click',interruptAndIssue);
+  document.getElementById('resumeSaveBtn')?.addEventListener('click',()=>openResumeModal('load'));
+  document.getElementById('saveResumeCloseBtn')?.addEventListener('click',()=>{closeResumeModal();});
+  saveContinueBtn?.addEventListener('click',()=>{setPauseState(false);closeResumeModal();toast('▶ 運転を再開します');});
+  saveLoadBtn?.addEventListener('click',()=>{
+    const id=resumeIdInput.value.trim().toUpperCase(),pass=resumePassInput.value.trim();
+    if(!id||!pass){setSaveStatus('IDとパスワードを両方入力してください。','err');return}
+    const r=readSave(id,pass);
+    if(!r.ok){setSaveStatus(r.error,'err');return}
+    try{
+      restoreSnapshot(r.rec.snapshot);closeResumeModal();
+      resumePassInput.value='';toast('🔐 中断地点から運転を再開しました');
+    }catch(err){console.error('[IIDA SAVE] restore failed',err);setSaveStatus('運転状態の復元に失敗しました。','err');}
+  });
+  saveCopyBtn?.addEventListener('click',async()=>{
+    if(!lastIssuedCredentials)return;
+    const text='再開ID: '+lastIssuedCredentials.id+'\nパスワード: '+lastIssuedCredentials.pass;
+    try{await navigator.clipboard.writeText(text);setSaveStatus('IDとパスワードをコピーしました。','ok')}
+    catch(_){setSaveStatus('コピーできませんでした。画面のIDとパスワードを控えてください。','err')}
+  });
+  saveDeleteBtn?.addEventListener('click',()=>{
+    if(!lastIssuedCredentials)return;
+    if(deleteSave(lastIssuedCredentials.id)){
+      setSaveStatus('この中断データを削除しました。','ok');
+      saveDeleteBtn.style.display='none';lastIssuedCredentials=null;
+    }
+  });
+  saveModal?.addEventListener('click',e=>{if(e.target===saveModal&&!simPaused)closeResumeModal()});
+  window.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&saveModal?.classList.contains('show')&&!simPaused)closeResumeModal();
+    if(e.key==='Enter'&&saveModal?.classList.contains('show')&&saveLoadBtn.style.display!=='none')saveLoadBtn.click();
+  });
+
+  // If this browser already has an interruption save, offer resume on startup.
+  setTimeout(()=>{
+    const idx=getSaveIndex();
+    if(idx.length){
+      openResumeModal('load');
+      setSaveStatus('保存済みの中断データがあります。新規運転なら「閉じる」を選んでください。');
+    }
+  },180);
 
   updateServiceStopsForRoute();
   window.iidaRouteInfo={
@@ -2341,6 +2768,7 @@
   }
 
   document.getElementById('restartBtn').onclick = ()=>{
+    simPaused=false; savePausedEl?.classList.remove('show');
     document.getElementById('finalOverlay').classList.remove('show');
     document.getElementById('stationPanel').classList.remove('show');
     stationIdx = 0; position = 0; speed = 0; totalScore = 0; results = [];
@@ -2380,6 +2808,7 @@
   // ---------- physics ----------
   let lastT = performance.now();
   function physicsStep(dt){
+    if(simPaused)return;
     simSeconds += dt;
 
     if(phase==='arrived'){
@@ -2738,7 +3167,13 @@
     '下山村':{zone:'suburban',signature:'shimoyama',houses:11,station:'small',side:-1,road:true},
     '鼎':{zone:'urban',signature:'kanae',houses:13,station:'small',side:1,road:true},
     '切石':{zone:'urban',signature:'kiriishi',houses:15,station:'small',side:-1,road:true},
-    '飯田':{zone:'urbanCore',signature:'iida',houses:18,station:'city',side:1,road:true}
+    '飯田':{zone:'urbanCore',signature:'iida',houses:18,station:'city',side:1,road:true},
+    '豊橋':{zone:'urbanCore',signature:'toyohashi',houses:20,station:'city',side:-1,road:true},
+    '船町':{zone:'urban',signature:'funamachi',houses:13,station:'small',side:1,road:true},
+    '下地':{zone:'riverTown',signature:'shimoji',houses:7,station:'small',side:-1,road:true,river:true},
+    '小坂井':{zone:'suburban',signature:'kozakai',houses:12,station:'small',side:1,road:true},
+    '牛久保':{zone:'fieldTown',signature:'ushikubo',houses:12,station:'small',side:-1,road:true,fields:true},
+    '豊川':{zone:'urbanCore',signature:'toyokawa',houses:19,station:'city',side:1,road:true}
   };
 
   function inTunnelAtDistance(d=0){
@@ -3363,6 +3798,36 @@
           drawRoad(remaining-260,remaining+200,side,135,25);
           drawTownOnSlope(remaining-210,side,11,false);
           drawApartment(remaining+90,-side,170,3);drawApartment(remaining+190,side,220,4);break;
+        case 'toyohashi':
+          drawRailYard(remaining-300,-side);drawRailYard(remaining-230,side);
+          drawRoad(remaining-300,remaining+200,side,175,29);
+          drawApartment(remaining-70,-side,180,5);drawApartment(remaining+55,side,225,6);
+          drawStationBuilding(remaining+16,side,'city');break;
+        case 'funamachi':
+          drawRailYard(remaining-230,-side);
+          drawRoad(remaining-260,remaining+180,side,145,24);
+          drawTownOnSlope(remaining-170,side,8,false);
+          drawApartment(remaining+135,-side,210,3);drawStationBuilding(remaining+14,side,'small');break;
+        case 'shimoji':
+          drawWaterRibbon(riverSide,1.05,true);
+          drawRoad(remaining-170,remaining+160,-side,245,20);
+          drawTownOnSlope(remaining+35,side,5,false);
+          drawStationBuilding(remaining+12,side,'small');break;
+        case 'kozakai':
+          drawRailYard(remaining-240,-side);
+          drawRoad(remaining-260,remaining+180,side,140,24);
+          drawTownOnSlope(remaining-190,side,9,false);
+          drawApartment(remaining+145,-side,215,3);drawStationBuilding(remaining+14,side,'small');break;
+        case 'ushikubo':
+          [-175,-95,-15,75,155].forEach((o,k)=>drawField(remaining+o,-side,115+k*13,false));
+          drawRoad(remaining-250,remaining+180,side,135,23);
+          drawTownOnSlope(remaining-145,side,8,false);drawStationBuilding(remaining+14,side,'small');break;
+        case 'toyokawa':
+          drawRailYard(remaining-310,-side);drawRailYard(remaining-235,side);
+          drawRoad(remaining-300,remaining+220,side,155,29);
+          drawTownOnSlope(remaining-240,side,12,false);
+          drawApartment(remaining-25,-side,185,5);drawApartment(remaining+100,side,230,5);
+          drawStationBuilding(remaining+16,side,'city');break;
         case 'iida':
           drawRoad(remaining-290,remaining+210,side,145,27);
           drawTownOnSlope(remaining-230,side,12,false);
@@ -3384,6 +3849,59 @@
     ctx.restore();
   }
 
+
+  // ---------- level crossing renderer ----------
+  function drawLevelCrossing(crossing,w,horizonY,bottomY,railGauge0){
+    const d=crossing.distance;
+    if(d<3||d>470||inTunnelAtDistance(Math.max(0,d)))return;
+    const project=projectFn(horizonY,bottomY),p=project(Math.max(3,d));
+    const cx=w/2+trackCurveOffset(Math.max(3,d));
+    const sc=p.scale,y=p.y;
+    const roadHalf=Math.min(w*.47,Math.max(30,285*sc));
+    const roadDepth=Math.max(3,22*sc);
+    ctx.save();
+    ctx.fillStyle='rgba(75,77,76,.96)';
+    ctx.beginPath();
+    ctx.moveTo(cx-roadHalf,y-roadDepth*.60);ctx.lineTo(cx+roadHalf,y-roadDepth*.60);
+    ctx.lineTo(cx+roadHalf*1.03,y+roadDepth*.62);ctx.lineTo(cx-roadHalf*1.03,y+roadDepth*.62);
+    ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(223,215,173,.72)';ctx.lineWidth=Math.max(.6,1.3*sc);
+    ctx.setLineDash([Math.max(3,9*sc),Math.max(2,6*sc)]);
+    ctx.beginPath();ctx.moveTo(cx-roadHalf,y);ctx.lineTo(cx+roadHalf,y);ctx.stroke();ctx.setLineDash([]);
+
+    const active=d<190&&d>-18;
+    const blink=Math.floor(performance.now()/360)%2===0;
+    for(const side of [-1,1]){
+      const px=cx+side*(railGauge0*sc+Math.max(12,48*sc));
+      const groundY=y+1,poleTop=projectWorldY(d,3.9,horizonY,bottomY);
+      const mastW=Math.max(1,4*sc);
+      ctx.fillStyle='#3f4243';ctx.fillRect(px-mastW/2,poleTop,mastW,groundY-poleTop);
+      const arm=Math.max(5,18*sc),cy=poleTop+Math.max(3,10*sc);
+      ctx.strokeStyle='#e7dfc3';ctx.lineWidth=Math.max(1,3*sc);
+      ctx.beginPath();ctx.moveTo(px-arm,cy-arm*.42);ctx.lineTo(px+arm,cy+arm*.42);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(px-arm,cy+arm*.42);ctx.lineTo(px+arm,cy-arm*.42);ctx.stroke();
+      const lampY=cy+Math.max(4,12*sc),lampDx=Math.max(4,9*sc),r=Math.max(1.2,4*sc);
+      for(let k=0;k<2;k++){
+        const on=active&&(k===0?blink:!blink);
+        ctx.fillStyle=on?'#ff3036':'#561719';
+        ctx.beginPath();ctx.arc(px+(k?lampDx:-lampDx),lampY,r,0,Math.PI*2);ctx.fill();
+        if(on){ctx.shadowColor='#ff3538';ctx.shadowBlur=Math.max(2,10*sc);ctx.fill();ctx.shadowBlur=0;}
+      }
+      const gateY=lampY+Math.max(6,15*sc),gateLen=Math.max(18,82*sc);
+      const ang=active?0:(side<0?-1:1)*Math.PI*.34;
+      ctx.save();ctx.translate(px,gateY);ctx.rotate(ang);
+      ctx.strokeStyle='#f0eee4';ctx.lineWidth=Math.max(2,5*sc);
+      ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-side*gateLen,0);ctx.stroke();
+      ctx.strokeStyle='#d74a49';ctx.lineWidth=Math.max(1,2.3*sc);
+      for(let m=10*sc;m<gateLen;m+=18*sc){ctx.beginPath();ctx.moveTo(-side*m,-2*sc);ctx.lineTo(-side*(m+8*sc),2*sc);ctx.stroke();}
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  function drawVisibleLevelCrossings(w,horizonY,bottomY,railGauge0){
+    for(const c of currentLevelCrossings())if(c.distance>2&&c.distance<470)drawLevelCrossing(c,w,horizonY,bottomY,railGauge0);
+  }
 
   // ---------- mountain railway structures ----------
   function drawRailwayFeatures(theme,w,horizonY,bottomY,railGauge0){
@@ -3471,8 +3989,10 @@
     }
 
     // Tunnel interior is an exclusive world state. The exit glow above is
-    // sufficient; a later tunnel portal/bridge must never be projected into it.
+    // sufficient; a later tunnel portal/bridge/crossing must never be projected into it.
     if(currentTunnel)return;
+
+    drawVisibleLevelCrossings(w,horizonY,bottomY,railGauge0);
 
     // 坑口
     let portal=null;
@@ -4588,6 +5108,7 @@
       :currentService==='inaji'?'2'
       :currentService==='hiraokaLocal'?'普'
       :currentService==='iidaLocal'?'普'
+      :currentService==='toyokawaLocal'?'407M'
       :currentService==='rapid'?'快':'普';
 
     document.getElementById('castTrainName').textContent=svc.label+' '+svc.destination+'行';
@@ -4730,7 +5251,8 @@
       cliff:!!activeRange(gNow.cliffs,fNow),
       point:pointActive,
       pointName:(nextPoint&&((segLen-position)<330)?nextPoint.label:(currPoint?currPoint.label:'')),
-      platformType:getPlatformLayout(lineStations[stationIdx+1]||'').label
+      platformType:getPlatformLayout(lineStations[stationIdx+1]||'').label,
+      crossing:(window.iidaCrossingData?.nearestAhead?.(120)?.distance||Infinity)<120
     };
     window.iidaGeometryState=geometryState;
 
@@ -4745,18 +5267,21 @@
       if(geometryState.bridge)features.push('緑色鋼橋');
       if(geometryState.cliff)features.push('崖区間');
       if(geometryState.point)features.push('構内分岐');
+      if(geometryState.crossing)features.push('踏切接近');
       const named=currentNamedFeature();
       drvStructure.textContent=named || (features.length?features.join(' / '):'通常区間');
     }
     if(drvPlatform){
       drvPlatform.textContent=geometryState.platformType+' / '+(
         currentRoute==='old1955'?'旧線':
-        currentRoute==='inaji3night'?'伊那路3号・夜':'現在線'
+        currentRoute==='inaji3night'?'伊那路3号・夜':
+        currentRoute==='toyohashi_toyokawa'?'豊橋→豊川':'現在線'
       );
     }
     if(drvLandmark){
       drvLandmark.textContent=currentNamedFeature() || (
-        currentRoute==='inaji3night' && stationIdx>=19 ? '伊那谷・飯田市街' : '—'
+        currentRoute==='inaji3night' && stationIdx>=19 ? '伊那谷・飯田市街' :
+        currentRoute==='toyohashi_toyokawa' ? '豊橋・豊川都市近郊区間' : '—'
       );
     }
     document.getElementById('infoTotal').textContent = segLen + ' m';
@@ -4902,6 +5427,7 @@ const stationIndex=()=>Number.isFinite(window.iidaRouteInfo?.stationIndex)?windo
 let soundOn=window.IidaAudioCore?.isEnabled?.() ?? true;
 const sharedAudioContext=()=>window.IidaAudioCore?.ensureContext?.()||null;
 let lastSpeed=0,lastArrived=false,lastService='',lastApproach=-1,lastSeg=-1,lastPass=-1;
+let stopReminderSeg=-1,crossingBellKey='',crossingBellLastAt=0,crossingBellPhase=0;
 let approachSoundSeg=-1, stopSoundSeg=-1, departSoundSeg=-1, bellSeg=-1;
 let audioState='silence',stateAudio=null,brakeCooldown=0;
 let departureActive=false,departurePending=false,departureStartedAt=0,lastRunStamp=performance.now();
@@ -5301,7 +5827,9 @@ const stationEnglish={
  '城西':'Shironishi','相月':'Aizuki','佐久間':'Sakuma','中部天竜':'Chubu-Tenryu',
  '川路':'Kawaji','時又':'Tokimata','駄科':'Dashina','毛賀':'Kega','伊那八幡':'Ina-Yawata',
  '下山村':'Shimoyamamura','鼎':'Kanae','切石':'Kiriishi','飯田':'Iida',
- '白神':'Shiragami','天龍山室':'Tenryu-Yamamuro','豊根口':'Toyoneguchi'
+ '白神':'Shiragami','天龍山室':'Tenryu-Yamamuro','豊根口':'Toyoneguchi',
+ '豊橋':'Toyohashi','船町':'Funamachi','下地':'Shimoji','小坂井':'Kozakai',
+ '牛久保':'Ushikubo','豊川':'Toyokawa'
 };
 const enStation=st=>stationEnglish[st]||st;
 
@@ -5451,6 +5979,46 @@ function departureAnnouncement(st){
  },900);
 }
 
+function playStopReminderChime(){
+ const ac=sharedAudioContext();
+ if(!soundOn||!mediaUnlocked||!ac||ac.state!=='running')return false;
+ const base=ac.currentTime+.01;
+ const notes=[1046.5,1318.5,1568.0,1318.5];
+ notes.forEach((freq,i)=>{
+  const o=ac.createOscillator(),g=ac.createGain(),t=base+i*.115;
+  o.type='triangle';o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.050,t+.012);
+  g.gain.exponentialRampToValueAtTime(.0001,t+.19);
+  o.connect(g);g.connect(masterNode(ac));o.start(t);o.stop(t+.205);
+ });
+ return true;
+}
+function stopStationReminder(st){
+ if(!soundOn)return;
+ playStopReminderChime();
+ setTimeout(()=>{
+  announce([{text:'次は停車です。次は停車です。',lang:'ja-JP',rate:.94,pauseAfter:180}],{priority:2});
+  audioStatus(`停車駅接近報知：${st}`);
+ },560);
+}
+function playCrossingCabPulse(){
+ const ac=sharedAudioContext();
+ if(!soundOn||!mediaUnlocked||!ac||ac.state!=='running')return;
+ const now=ac.currentTime,freq=crossingBellPhase++%2===0?880:740;
+ const o=ac.createOscillator(),g=ac.createGain();
+ o.type='triangle';o.frequency.setValueAtTime(freq,now);
+ g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.017,now+.008);
+ g.gain.exponentialRampToValueAtTime(.0001,now+.15);
+ o.connect(g);g.connect(masterNode(ac));o.start(now);o.stop(now+.16);
+}
+function updateCrossingCabAudio(sp){
+ const c=window.iidaCrossingData?.nearestAhead?.(175);
+ if(!c||sp<3||c.distance<6){crossingBellKey='';return;}
+ if(c.key!==crossingBellKey){crossingBellKey=c.key;crossingBellLastAt=0;crossingBellPhase=0;}
+ const now=performance.now(),interval=Math.max(330,590-Math.min(160,sp*2.2));
+ if(now-crossingBellLastAt>=interval){crossingBellLastAt=now;playCrossingCabPulse();}
+}
+
 window.IidaUnified={
  announceStation(st,type){
   if(type==='arrive')arrivalAnnouncement(st);
@@ -5494,6 +6062,14 @@ window.IidaUnified={
   o1.start(now);o2.start(now);o1.stop(now+1.45);o2.stop(now+1.45);
   return true;
  },
+ stopAll(){
+  stopAllTrainAudio();voiceQueue=[];voiceBusy=false;
+  try{speechSynthesis.cancel()}catch(_){}
+  crossingBellKey='';
+ },
+ setVehicleState(state){setState(state||'silence');},
+ playStopReminderTest(){stopStationReminder(next());return true;},
+ playCrossingTest(){playCrossingCabPulse();return true;},
  getAudioDebug(){
   const ac=sharedAudioContext();
   return {enabled:soundOn,contextState:ac?.state||'none',unlocked:mediaUnlocked,bankReady,loaded:Object.keys(audioBuffers),activeOneShots:oneShots.size,departureActive,audioState};
@@ -5524,7 +6100,7 @@ function buildPanel(){
    <div id="precisionAudioTitle"><span id="precisionAudioLamp"></span>AUDIO / ANNOUNCEMENT SYSTEM</div>
    <div id="precisionAudioState">音声待機：最初に画面をクリック</div>
  </div>
- <div id="precisionAudioText">WebAudio実録音源 / 発車→走行クロスフェード / 車掌ドア・ブザー / 日英放送</div>
+ <div id="precisionAudioText">WebAudio実録音源 / 発車→走行クロスフェード / 踏切 / 停車駅接近報知 / 車掌ドア・ブザー / 日英放送</div>
  <div id="precisionAudioControls">
    <button id="precisionSound">🔊 音源 ON</button>
    <select id="precisionVoice"><option value="AUTO">日本語音声：自動</option></select>
@@ -5533,6 +6109,8 @@ function buildPanel(){
    <button id="testBrake">ブレーキ</button>
    <button id="testStop">停車</button>
    <button id="testDepart">発車</button>
+   <button id="testStopReminder">停車報知</button>
+   <button id="testCrossing">踏切ベル</button>
    <button id="testAnn">次駅放送</button>
  </div>`;
  host.insertAdjacentElement('afterend',p);
@@ -5562,11 +6140,20 @@ function buildPanel(){
  $('testBrake').onclick=()=>play('brake',1);
  $('testStop').onclick=()=>play('stop',.9);
  $('testDepart').onclick=()=>play('depart',.9);
+ $('testStopReminder').onclick=()=>stopStationReminder(next());
+ $('testCrossing').onclick=()=>playCrossingCabPulse();
  $('testAnn').onclick=()=>approachAnnouncement(next());
 }
 
 function update(){
  buildPanel();
+
+ const drivePauseState=window.iidaDriveState||{};
+ if(drivePauseState.paused){
+  if(audioState!=='silence')setState('silence');
+  crossingBellKey='';
+  return;
+ }
 
  const s=service();
  const sp=speed();
@@ -5643,10 +6230,20 @@ function update(){
   }
  }
 
+ // ---- crossing audible warning in the cab ----
+ updateCrossingCabAudio(sp);
+
+ // ---- stop-station approach reminder ----
+ if(stopHere&&st&&st!=='運転終了'&&d<780&&d>515&&stopReminderSeg!==idx){
+  stopReminderSeg=idx;
+  stopStationReminder(st);
+ }
+
  // ---- announcements ----
  if(s.id!==lastService){
   lastService=s.id;
   lastApproach=-1;
+  stopReminderSeg=-1;crossingBellKey='';
   voiceQueue=[];voiceBusy=false;
   try{speechSynthesis.cancel()}catch(_){}
   setTimeout(startAnnouncement,500);
@@ -5670,4 +6267,3 @@ window.addEventListener('load',()=>{
 
 </body>
 </html>
-
